@@ -2,13 +2,13 @@ import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
     container: {
-        flex: 1, // Ocupa a tela inteira
-        backgroundColor: '#1C1C1C', // Cor de fundo para toda a tela
+        flex: 1, 
+        backgroundColor: '#1C1C1C', 
     },
     block: {
-        flex: 1, // Cada bloco ocupa um terço da tela
-        justifyContent: 'center', // Centraliza verticalmente
-        alignItems: 'center', // Centraliza horizontalmente
+        flex: 1, 
+        justifyContent: 'center', 
+        alignItems: 'center', 
     },
     sportifyIcon: {
         width: '80%',
