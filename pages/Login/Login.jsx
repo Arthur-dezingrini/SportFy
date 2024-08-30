@@ -1,26 +1,51 @@
-import React from "react";
-import { View, Text, SafeAreaView, Image, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  Image,
+  TouchableOpacity,
+  Pressable,
+} from "react-native";
 import styles from "./LoginStyle";
-import Input from './../../components/Input/Input'
-import Button from './../../components/Button/Button'
+import Input from "./../../components/Input/Input";
+import Button from "./../../components/Button/Button";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
-export default function Login() {
+export default function Login({ navigation }) {
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setIsPasswordVisible(!isPasswordVisible);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
+      <Pressable onPress={() => navigation.navigate('Initial')} style={styles.arrowBack}>
+        <Icon name="arrow-back" size={24} color="#43F16A"></Icon>
+      </Pressable>
       <View style={styles.imageContainer}>
-        <Image source={require("../../assets/Logo_icon.png")} style={styles.image}></Image>
+        <Image
+          source={require("../../assets/Logo_icon.png")}
+          style={styles.image}
+        ></Image>
       </View>
-      <View>
-        <Input placeholder={"Email"}></Input>
-        <Input placeholder={"Senha"}></Input>
+      <View style={styles.formContainer}>
+        <Input placeholder={"Email"} icon={"person"}></Input>
+        <Input
+          placeholder={"Senha"}
+          icon={isPasswordVisible ? "visibility" : "visibility-off"}
+          secureTextEntry={!isPasswordVisible}
+          onPressIcon={togglePasswordVisibility}
+        ></Input>
         <View>
-            <TouchableOpacity>
-                <Text>Esqueci a senha</Text>
-            </TouchableOpacity>
+          <TouchableOpacity>
+            <Text style={styles.passwordText}>Esqueci a senha</Text>
+          </TouchableOpacity>
         </View>
-        <View>
-            <Button children={"LOGAR"}></Button>
-        </View>
+      </View>
+      <View style={styles.buttonContainer}>
+        <Button onPress={() => navigation.navigate('Home')} children={"LOGAR"}></Button>
       </View>
     </SafeAreaView>
   );

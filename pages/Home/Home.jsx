@@ -1,14 +1,13 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import MainFooter from '../../components/MainFooter/MainFooter';
+import FotterMain from '../../components/FotterMain/FotterMain';
+import styles from './HomeStyle'
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Home () {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Home</Text>
-      <MainFooter>
-        Profile
-      </MainFooter>
-    </View>
+    <SafeAreaView style={styles.container}>
+      <FotterMain></FotterMain>
+    </SafeAreaView>
   );
 }
