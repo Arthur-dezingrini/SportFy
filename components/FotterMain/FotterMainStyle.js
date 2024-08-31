@@ -8,6 +8,8 @@ export default StyleSheet.create({
         alignContent: 'center',
         padding: '5%',
         flexDirection: 'row',
+        borderTopColor: '#46FF6F',
+        borderTopWidth: 2
     }, 
     imageBall: {
         height: 30,
