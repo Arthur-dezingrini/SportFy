@@ -6,6 +6,7 @@ import Login from "./pages/Login/Login";
 import Initial from "./pages/Initial/Initial"
 import Register from "./pages/Register/Register";
 import Home from "./pages/Home/Home";
+import RegisterMatch from "./pages/RegisterMatch/RegisterMatch";
 
 const Stack = createStackNavigator();
 
@@ -31,6 +32,11 @@ export default function App() {
           <Stack.Screen
             name="Home"
             component={Home}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="RegisterMatch"
+            component={RegisterMatch}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>
