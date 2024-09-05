@@ -11,7 +11,10 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Precisamos da sua localização para mostrar os jogos mais próximos."
+      }
     },
     "android": {
       "adaptiveIcon": {
