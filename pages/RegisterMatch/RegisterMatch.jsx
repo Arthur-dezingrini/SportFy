@@ -1,13 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  SafeAreaView,
-  View,
-  Button,
-  Alert,
-  Platform,
-  Text,
-  TouchableOpacity,
-} from "react-native";
+import { SafeAreaView, View, Button, Alert, Platform } from "react-native";
 import FotterMain from "../../components/FotterMain/FotterMain";
 import styles from "./RegisterMatchStyle";
 import ActionInput from "../../components/ActionInput/ActionInput";
@@ -16,8 +8,8 @@ import MapView, { Marker } from "react-native-maps";
 import axios from "axios";
 import * as Location from "expo-location";
 import moment from "moment";
-import DateModal from '../../modals/DateModal/DateModal'
-
+import DateModal from "../../modals/DateModal/DateModal";
+import TimeModal from "../../modals/TimeModal/TimeModal";
 
 export default function RegisterMatch({ navigation }) {
   const [location, setLocation] = useState("");
@@ -34,7 +26,7 @@ export default function RegisterMatch({ navigation }) {
   const [showCalendarModal, setShowCalendarModal] = useState(false);
   const [markedDates, setMarkedDates] = useState({});
   const [selectedDate, setSelectedDate] = useState(null);
-
+  const [showTimeModal, setShowTimeModal] = useState(false);
 
   const GOOGLE_API_KEY = "AIzaSyCqR9pyqkCysNHTtDz_hNXjIJNLGuDYq0Q";
 
@@ -127,6 +119,11 @@ export default function RegisterMatch({ navigation }) {
     setShowCalendarModal(false);
   };
 
+  const handleSelectTime = (time) => {
+    setTime(time);
+    setShowTimeModal(false); 
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <HeaderTop>Cadastrar Partida</HeaderTop>
@@ -167,9 +164,14 @@ export default function RegisterMatch({ navigation }) {
           />
           <ActionInput
             textButton={"Alterar"}
-            placeholder={"Horario"}
+            placeholder={"Horário"}
             value={time}
-            onChangeText={setTime}
+            onPress={() => setShowTimeModal(true)}
+          />
+          <TimeModal
+            isVisible={showTimeModal}
+            onBackdropPress={() => setShowTimeModal(false)}
+            onSelectTime={handleSelectTime}
           />
           <ActionInput textButton={"Pagar"} placeholder={"Valor Total"} />
           <ActionInput
@@ -182,4 +184,3 @@ export default function RegisterMatch({ navigation }) {
     </SafeAreaView>
   );
 }
-

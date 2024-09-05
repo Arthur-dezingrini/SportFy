@@ -11,7 +11,7 @@ export default StyleSheet.create({
     color: '#1C1C1C',
     fontSize: 16,
     fontWeight: '600',
-    fontSize: '24px',
+    fontSize: 24,
   },
   arrow: {
     position: 'absolute',
