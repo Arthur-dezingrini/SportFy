@@ -23,14 +23,14 @@ export default StyleSheet.create({
         height: '20%',
     },
     text: {
-        marginTop: 10, // Espaçamento entre a imagem e o texto
-        color: 'white', // Cor do texto
-        fontSize: 18, // Tamanho do texto
+        marginTop: 10,
+        color: 'white',
+        fontSize: 18,
         
     },
     divider: {
-        height: 1, // Altura da linha divisória
-        backgroundColor: 'white', // Cor da linha divisória
-        width: '100%', // Ocupa a largura total da tela
+        height: 1,
+        backgroundColor: 'white',
+        width: '100%',
     }
 });
