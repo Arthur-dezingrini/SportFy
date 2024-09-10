@@ -7,21 +7,22 @@ import Initial from "./pages/Initial/Initial"
 import Register from "./pages/Register/Register";
 import Home from "./pages/Home/Home";
 import RegisterMatch from "./pages/RegisterMatch/RegisterMatch";
+import Match from "./pages/Match/Match";
 
 const Stack = createStackNavigator();
 
 export default function App() {
   return (
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="RegisterMatch">
-          <Stack.Screen
-            name="Login"
-            component={Login}
+        <Stack.Navigator initialRouteName="Initial">
+        <Stack.Screen
+            name="Initial"
+            component={Initial}
             options={{ headerShown: false }}
           />
           <Stack.Screen
-            name="Initial"
-            component={Initial}
+            name="Login"
+            component={Login}
             options={{ headerShown: false }}
           />
           <Stack.Screen
@@ -37,6 +38,11 @@ export default function App() {
           <Stack.Screen
             name="RegisterMatch"
             component={RegisterMatch}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Match"
+            component={Match}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>

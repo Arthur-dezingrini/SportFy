@@ -1,10 +1,10 @@
-import { View, Image, Text } from "react-native";
+import { View, Image, Text, Pressable } from "react-native";
 import styles from "./CardGameHomeStyle";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
-export default function CardGameHome() {
+export default function CardGameHome({ navigation }) {
   return (
-    <View style={styles.container}>
+    <Pressable onPress={() => navigation.navigate('Match')} style={styles.container}>
       <View>
         <Image
           style={styles.image}
@@ -20,6 +20,6 @@ export default function CardGameHome() {
 
         <Text style={styles.value}>R$ 200,00/Hora</Text>
       </View>
-    </View>
+    </Pressable>
   );
 }

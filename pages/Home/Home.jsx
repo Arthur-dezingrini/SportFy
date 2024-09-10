@@ -16,7 +16,7 @@ export default function Home({ navigation }) {
   });
 
   const renderItem = ({ item, index }) => {
-    return <CardGameHome key={index} />;
+    return <CardGameHome navigation={navigation} key={index} />;
   };
 
   const data = [{}, {}, {}, {}, {}, {}, {}, {}];
