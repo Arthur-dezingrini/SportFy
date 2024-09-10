@@ -17,6 +17,8 @@ export default function Match({ navigation }) {
             style={styles.image} 
             resizeMode="cover" 
           />
+          {/* Gradiente com opacity */}
+          <View style={styles.overlay} />
         </View>
 
         {/* Container das informações */}
@@ -24,27 +26,27 @@ export default function Match({ navigation }) {
           <Text style={styles.title}>Nome da Quadra</Text>
           
           <View style={styles.infoRow}>
-            <Icon name="calendar" size={20} color="#fff" />
+            <Icon name="event" size={20} color="#fff" />
             <Text style={styles.infoText}>Data: 31/12/2024</Text>
           </View>
 
           <View style={styles.infoRow}>
-            <Icon name="clock-o" size={20} color="#fff" />
+            <Icon name="schedule" size={20} color="#fff" />
             <Text style={styles.infoText}>Horário: 13:00</Text>
           </View>
 
           <View style={styles.infoRow}>
-            <Icon name="ticket" size={20} color="#fff" />
+            <Icon name="attach-money" size={20} color="#fff" />
             <Text style={styles.infoText}>Valor da partida: $300</Text>
           </View>
 
           <View style={styles.infoRow}>
-            <Icon name="map-marker" size={20} color="#fff" />
+            <Icon name="location-on" size={20} color="#fff" />
             <Text style={styles.infoText}>Localização da quadra</Text>
           </View>
 
           <View style={styles.infoRow}>
-            <Icon name="users" size={20} color="#fff" />
+            <Icon name="account-circle" size={20} color="#fff" />
             <Text style={styles.infoText}>Jogadores confirmados: 7/14</Text>
           </View>
         </View>
