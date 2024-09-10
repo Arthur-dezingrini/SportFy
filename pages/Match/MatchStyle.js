@@ -15,7 +15,7 @@ export default StyleSheet.create({
     },
     infoContainer: {
       padding: 20,
-      backgroundColor: '#333',
+      backgroundColor: '#1c1c1c',
       borderRadius: 10,
       margin: 20,
     },

@@ -13,7 +13,7 @@ export default function Match({ navigation }) {
         {/* Imagem com o gradiente embutido */}
         <View style={styles.imageContainer}>
           <Image 
-            source={{ uri: './../../assets/stadium1.png' }} 
+            source={require('./../../assets/stadium.png')}
             style={styles.image} 
             resizeMode="cover" 
           />
@@ -25,27 +25,27 @@ export default function Match({ navigation }) {
           
           <View style={styles.infoRow}>
             <Icon name="calendar" size={20} color="#fff" />
-            <Text style={styles.infoText}>Data da partida</Text>
+            <Text style={styles.infoText}>Data: 31/12/2024</Text>
           </View>
 
           <View style={styles.infoRow}>
             <Icon name="clock-o" size={20} color="#fff" />
-            <Text style={styles.infoText}>Horário da partida</Text>
+            <Text style={styles.infoText}>Horário: 13:00</Text>
           </View>
 
           <View style={styles.infoRow}>
             <Icon name="ticket" size={20} color="#fff" />
-            <Text style={styles.infoText}>Valor da partida</Text>
+            <Text style={styles.infoText}>Valor da partida: $300</Text>
           </View>
 
           <View style={styles.infoRow}>
             <Icon name="map-marker" size={20} color="#fff" />
-            <Text style={styles.infoText}>Endereço da quadra</Text>
+            <Text style={styles.infoText}>Localização da quadra</Text>
           </View>
 
           <View style={styles.infoRow}>
             <Icon name="users" size={20} color="#fff" />
-            <Text style={styles.infoText}>Jogadores confirmados</Text>
+            <Text style={styles.infoText}>Jogadores confirmados: 7/14</Text>
           </View>
         </View>
       </View>
