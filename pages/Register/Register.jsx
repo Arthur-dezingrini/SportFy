@@ -27,9 +27,9 @@ export default function Register({ navigation }) {
 
   const onSubmit = async (data) => {
     try {
-      data.birthday = new Date(moment(data.birthday).format('YYYY-MM-DD'))
+      data.birthday = new Date(data.birthday)
+      data.email = data.email.toLowerCase()
       const response = userService.cadastrar(data);
-      console.log(response)
       if (response.status) {
       }
     } catch (error) {

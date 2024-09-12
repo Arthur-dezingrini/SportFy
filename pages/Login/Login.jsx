@@ -14,6 +14,7 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
+import * as userService from "../../services/userService.js";
 
 const schema = Yup.object().shape({
   email: Yup.string().required("E-mail é obrigatório"),
@@ -21,19 +22,25 @@ const schema = Yup.object().shape({
 });
 
 export default function Login({ navigation }) {
+  const { control, handleSubmit, formState: { errors } } = useForm({
+    resolver: yupResolver(schema),
+  });
+  
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(schema),
-  });
+  const Logar = async (data) => {
+    try {
+      const response = await userService.Login(data);
+      if (response.status === 200) {
 
-  const logar = () => {};
+        navigation.navigate("Home")
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.AndroidSafeArea}>
