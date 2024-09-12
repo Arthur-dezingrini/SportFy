@@ -14,15 +14,20 @@ export default StyleSheet.create({
       width: '100%',
       height: '100%',
     },
-    // Estilo do overlay com gradiente de opacidade
     overlay: {
       position: 'absolute',
       top: 0,
       left: 0,
       right: 0,
       bottom: 0,
-      backgroundColor: 'transparent', // Começa transparente
-      backgroundImage: 'linear-gradient(to bottom, rgba(28, 28, 28, 0.2), rgba(28, 28, 28, 1))', // Termina na cor de fundo
+    },
+    darkOverlay: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)', // Cor preta com 50% de opacidade
     },
     infoContainer: {
       padding: 20,
@@ -47,4 +52,4 @@ export default StyleSheet.create({
       color: '#fff',
       marginLeft: 10,
     },
-});
+  });

@@ -18,14 +18,16 @@
     "expo": "~51.0.28",
     "expo-location": "~17.0.1",
     "expo-status-bar": "~1.12.1",
+    "link": "^2.1.1",
     "moment": "^2.30.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.53.0",
-    "react-native": "0.74.5",
+    "react-native": "^0.74.5",
     "react-native-animatable": "^1.4.0",
     "react-native-calendars": "^1.1306.0",
     "react-native-gesture-handler": "^2.18.1",
+    "react-native-linear-gradient": "^2.8.3",
     "react-native-maps": "1.14.0",
     "react-native-modal": "^13.0.1",
     "react-native-modal-datetime-picker": "^18.0.0",
@@ -34,7 +36,8 @@
     "react-native-snap-carousel": "^4.0.0-beta.6",
     "react-native-vector-icons": "^10.1.0",
     "react-native-web": "~0.19.10",
-    "yup": "^1.4.0"
+    "yup": "^1.4.0",
+    "expo-linear-gradient": "~13.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

@@ -4,6 +4,7 @@ import styles from "./MatchStyle";
 import Input from "./../../components/Input/Input";
 import Button from "./../../components/Button/Button";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function Match({ navigation }) {
 
@@ -17,8 +18,13 @@ export default function Match({ navigation }) {
             style={styles.image} 
             resizeMode="cover" 
           />
-          {/* Gradiente com opacity */}
-          <View style={styles.overlay} />
+          {/* Camada para escurecer a imagem */}
+          <View style={styles.darkOverlay} />
+           {/* Aplicando o gradiente */}
+          <LinearGradient
+            colors={['rgba(28,28,28,0)', 'rgba(28,28,28,1)']} // Transparente no topo, cor sólida no fim
+            style={styles.overlay}
+          />
         </View>
 
         {/* Container das informações */}
