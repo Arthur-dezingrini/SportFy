@@ -5,11 +5,14 @@ import Input from "./../../components/Input/Input";
 import Button from "./../../components/Button/Button";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { LinearGradient } from 'expo-linear-gradient';
+import HeaderTop from "./../../components/HeaderTop/HeaderTop";
+import FotterMain from "../../components/FotterMain/FotterMain";
 
 export default function Match({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
+      <HeaderTop>Partida</HeaderTop>
       <View style={styles.container}>
         {/* Imagem com o gradiente embutido */}
         <View style={styles.imageContainer}>
@@ -29,7 +32,7 @@ export default function Match({ navigation }) {
 
         {/* Container das informações */}
         <View style={styles.infoContainer}>
-          <Text style={styles.title}>Nome da Quadra</Text>
+          <Text style={styles.title}>Nabi Abi Chedid</Text>
           
           <View style={styles.infoRow}>
             <Icon name="event" size={20} color="#fff" />
@@ -57,6 +60,7 @@ export default function Match({ navigation }) {
           </View>
         </View>
       </View>
+      <FotterMain navigation={navigation} />
     </SafeAreaView>
   );
 }
