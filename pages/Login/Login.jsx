@@ -36,52 +36,54 @@ export default function Login({ navigation }) {
   const logar = () => {};
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Pressable
-        onPress={() => navigation.navigate("Initial")}
-        style={styles.arrowBack}
-      >
-        <Icon name="arrow-back" size={24} color="#43F16A"></Icon>
-      </Pressable>
-      <View style={styles.imageContainer}>
-        <Image
-          source={require("../../assets/Logo_icon.png")}
-          style={styles.image}
-        ></Image>
-      </View>
-      <View style={styles.formContainer}>
-        {/* Email */}
-        <Controller
-          control={control}
-          name="email"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Input placeholder={"Email"} icon={"person"}></Input>
-          )}
-        />
-
-        <Controller
-          control={control}
-          name="email"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Input
-              placeholder={"Senha"}
-              icon={isPasswordVisible ? "visibility" : "visibility-off"}
-              secureTextEntry={!isPasswordVisible}
-              onPressIcon={togglePasswordVisibility}
-            ></Input>
-          )}
-        />
-        <View>
-          <TouchableOpacity>
-            <Text style={styles.passwordText}>Esqueci a senha</Text>
-          </TouchableOpacity>
+    <SafeAreaView style={styles.AndroidSafeArea}>
+      <View style={styles.container}>
+        <Pressable
+          onPress={() => navigation.navigate("Initial")}
+          style={styles.arrowBack}
+        >
+          <Icon name="arrow-back" size={24} color="#43F16A"></Icon>
+        </Pressable>
+        <View style={styles.imageContainer}>
+          <Image
+            source={require("../../assets/Logo_icon.png")}
+            style={styles.image}
+          ></Image>
         </View>
-      </View>
-      <View style={styles.buttonContainer}>
-        <Button
-          onPress={() => navigation.navigate("Home")}
-          children={"LOGAR"}
-        ></Button>
+        <View style={styles.formContainer}>
+          {/* Email */}
+          <Controller
+            control={control}
+            name="email"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input placeholder={"Email"} icon={"person"}></Input>
+            )}
+          />
+
+          <Controller
+            control={control}
+            name="email"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                placeholder={"Senha"}
+                icon={isPasswordVisible ? "visibility" : "visibility-off"}
+                secureTextEntry={!isPasswordVisible}
+                onPressIcon={togglePasswordVisibility}
+              ></Input>
+            )}
+          />
+          <View>
+            <TouchableOpacity>
+              <Text style={styles.passwordText}>Esqueci a senha</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+        <View style={styles.buttonContainer}>
+          <Button
+            onPress={() => navigation.navigate("Home")}
+            children={"LOGAR"}
+          ></Button>
+        </View>
       </View>
     </SafeAreaView>
   );
