@@ -11,17 +11,36 @@ import styles from "./LoginStyle";
 import Input from "./../../components/Input/Input";
 import Button from "./../../components/Button/Button";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
+
+const schema = Yup.object().shape({
+  email: Yup.string().required("E-mail é obrigatório"),
+  password: Yup.string().required("Senha é obrigatória"),
+});
 
 export default function Login({ navigation }) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
+
+  const logar = () => {};
 
   return (
     <SafeAreaView style={styles.container}>
-      <Pressable onPress={() => navigation.navigate('Initial')} style={styles.arrowBack}>
+      <Pressable
+        onPress={() => navigation.navigate("Initial")}
+        style={styles.arrowBack}
+      >
         <Icon name="arrow-back" size={24} color="#43F16A"></Icon>
       </Pressable>
       <View style={styles.imageContainer}>
@@ -31,13 +50,27 @@ export default function Login({ navigation }) {
         ></Image>
       </View>
       <View style={styles.formContainer}>
-        <Input placeholder={"Email"} icon={"person"}></Input>
-        <Input
-          placeholder={"Senha"}
-          icon={isPasswordVisible ? "visibility" : "visibility-off"}
-          secureTextEntry={!isPasswordVisible}
-          onPressIcon={togglePasswordVisibility}
-        ></Input>
+        {/* Email */}
+        <Controller
+          control={control}
+          name="email"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <Input placeholder={"Email"} icon={"person"}></Input>
+          )}
+        />
+
+        <Controller
+          control={control}
+          name="email"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <Input
+              placeholder={"Senha"}
+              icon={isPasswordVisible ? "visibility" : "visibility-off"}
+              secureTextEntry={!isPasswordVisible}
+              onPressIcon={togglePasswordVisibility}
+            ></Input>
+          )}
+        />
         <View>
           <TouchableOpacity>
             <Text style={styles.passwordText}>Esqueci a senha</Text>
@@ -45,7 +78,10 @@ export default function Login({ navigation }) {
         </View>
       </View>
       <View style={styles.buttonContainer}>
-        <Button onPress={() => navigation.navigate('Home')} children={"LOGAR"}></Button>
+        <Button
+          onPress={() => navigation.navigate("Home")}
+          children={"LOGAR"}
+        ></Button>
       </View>
     </SafeAreaView>
   );

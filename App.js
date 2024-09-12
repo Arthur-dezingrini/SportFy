@@ -8,11 +8,13 @@ import Register from "./pages/Register/Register";
 import Home from "./pages/Home/Home";
 import RegisterMatch from "./pages/RegisterMatch/RegisterMatch";
 import Match from "./pages/Match/Match";
+import { AppProvider } from "./appContext";
 
 const Stack = createStackNavigator();
 
 export default function App() {
   return (
+    <AppProvider>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Initial">
         <Stack.Screen
@@ -47,5 +49,6 @@ export default function App() {
           />
         </Stack.Navigator>
       </NavigationContainer>
+    </AppProvider>
   );
 }

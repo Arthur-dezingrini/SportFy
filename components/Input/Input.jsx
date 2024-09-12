@@ -19,4 +19,4 @@ export default function Input({ value, placeholder, onChangeText, secureTextEntr
       )}
     </View>
   );
-}
+} 
