@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, SafeAreaView, Pressable } from "react-native";
+import { View, Text, Pressable } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
@@ -9,12 +9,13 @@ import styles from "./RegisterStyle";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import * as userService from '../../services/userService'
 import moment from 'moment'
-
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { parse } from 'date-fns';
 
 const schema = Yup.object().shape({
   name: Yup.string().required("Nome é obrigatório"),
   email: Yup.string().email("E-mail inválido").required("E-mail é obrigatório"),
-  number: Yup.string().required("Número é obrigatório"),
+  number: Yup.string().required("Número é obrigatório").max(11),
   birthday: Yup.string().required("Data de nascimento é obrigatória"),
   password: Yup.string().min(6, "A senha deve ter no mínimo 6 caracteres").required("Senha é obrigatória"),
   repetPassword: Yup.string().oneOf([Yup.ref("password"), null], "As senhas não coincidem").required("Confirme sua senha"),
@@ -27,13 +28,14 @@ export default function Register({ navigation }) {
 
   const onSubmit = async (data) => {
     try {
-      data.birthday = new Date(data.birthday)
+      data.birthday = new Date(data.birthday);
       data.email = data.email.toLowerCase()
       const response = userService.cadastrar(data);
-      if (response.status) {
+      if (response.status === 200) {
+        navigation.navigate("Login")
       }
     } catch (error) {
-      Alert.alert(error.message)
+      console.error(error.message)
     }
   };
 

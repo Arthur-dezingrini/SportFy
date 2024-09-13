@@ -34,7 +34,11 @@ export default StyleSheet.create({
     },
     AndroidSafeArea: {
         flex: 1,
-        backgroundColor: "white",
+        backgroundColor: '#FFF',
         paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
-    }
+    },
+    androidTopView: {
+        height: 30,  
+        backgroundColor: '#FFF',  
+      },    
 });
