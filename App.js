@@ -39,7 +39,7 @@
     return (
       <AppProvider>
         <NavigationContainer>
-          <Stack.Navigator initialRouteName={isAuthenticated ? "Home" : "Initial"}>
+          <Stack.Navigator initialRouteName={isAuthenticated ? "Home" : "RegisterMatch"}>
           <Stack.Screen
               name="Initial"
               component={Initial}

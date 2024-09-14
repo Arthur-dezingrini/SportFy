@@ -10,8 +10,9 @@ import * as Location from "expo-location";
 import moment from "moment";
 import DateModal from "../../modals/DateModal/DateModal";
 import TimeModal from "../../modals/TimeModal/TimeModal";
+import InviteModal from '../../modals/InviteModal/InviteModal';
 
-export default function RegisterMatch({ navigation }) {
+export default function RegisterMatch({ navigation, locationMatch }) {
   const [location, setLocation] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
@@ -27,8 +28,9 @@ export default function RegisterMatch({ navigation }) {
   const [markedDates, setMarkedDates] = useState({});
   const [selectedDate, setSelectedDate] = useState(null);
   const [showTimeModal, setShowTimeModal] = useState(false);
+  const [isInviteModalVisible, setInviteModalVisible] = useState(false); // Novo estado para o InviteModal
 
-  const GOOGLE_API_KEY = "AIzaSyCqR9pyqkCysNHTtDz_hNXjIJNLGuDYq0Q";
+  const GOOGLE_API_KEY = "SUA_GOOGLE_API_KEY_AQUI";
 
   useEffect(() => {
     const getLocationPermission = async () => {
@@ -121,7 +123,11 @@ export default function RegisterMatch({ navigation }) {
 
   const handleSelectTime = (time) => {
     setTime(time);
-    setShowTimeModal(false); 
+    setShowTimeModal(false);
+  };
+
+  const handleInviteFriends = () => {
+    setInviteModalVisible(true); // Exibe o InviteModal
   };
 
   return (
@@ -173,10 +179,18 @@ export default function RegisterMatch({ navigation }) {
             onBackdropPress={() => setShowTimeModal(false)}
             onSelectTime={handleSelectTime}
           />
-          <ActionInput textButton={"Pagar"} placeholder={"Valor Total"} />
+          {locationMatch && (
+            <ActionInput textButton={"Pagar"} placeholder={"Valor Total"} />
+          )}
           <ActionInput
             textButton={"Convidar"}
             placeholder={"Convidar Amigos"}
+            onPress={handleInviteFriends}
+          />
+          <InviteModal
+            onBackdropPress={() => setInviteModalVisible(false)}
+            isVisible={isInviteModalVisible}
+            onClose={() => setInviteModalVisible(false)} 
           />
         </View>
       )}
