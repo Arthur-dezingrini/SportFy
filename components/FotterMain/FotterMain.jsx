@@ -15,7 +15,7 @@ export default function FotterMain({ navigation }) {
           style={styles.imageBall}
         />
       </Pressable>
-      <Pressable onPress={() => navigation.navigate('Perfil')}>
+      <Pressable onPress={() => navigation.navigate('Profile')}>
         <Icon name="person" color={"#FFF"} size={35} />
       </Pressable>
     </View>
