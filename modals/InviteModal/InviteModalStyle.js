@@ -1,17 +1,19 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
+
+const { height } = Dimensions.get("window");
 
 export const styles = StyleSheet.create({
   modalView: {
-    backgroundColor: "#C1C1C1",
+    backgroundColor: "#fff",
     borderTopEndRadius: 10,
     borderTopStartRadius: 10,
     borderTopColor: "#46FF6F",
     borderTopWidth: 1,
     width: "100%",
-    minHeight: 200, 
-    maxHeight: '40%',
     padding: 10,
-    flexDirection: "column",
+  },
+  modalContent: {
+    flex: 1,
   },
   title: {
     alignSelf: "center",
@@ -19,7 +21,10 @@ export const styles = StyleSheet.create({
     fontWeight: "700",
   },
   separator: {
-    height: 15,
-    backgroundColor: "transparent",
+    height: 15,  
+    backgroundColor: "transparent", 
+  },
+  listContainer: {
+    maxHeight: height * 0.35,
   },
 });
