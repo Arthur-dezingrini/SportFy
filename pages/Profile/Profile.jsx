@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, SafeAreaView, Image, TouchableOpacity, Pressable } from "react-native";
+import { View, Text, SafeAreaView, Image, TouchableOpacity, Pressable, FlatList } from "react-native";
 import styles from "./ProfileStyle";
 import Input from "./../../components/Input/Input";
 import Button from "./../../components/Button/Button";
@@ -8,57 +8,49 @@ import { LinearGradient } from 'expo-linear-gradient';
 import HeaderTop from "./../../components/HeaderTop/HeaderTop";
 import FotterMain from "../../components/FotterMain/FotterMain";
 
+const options = [
+{ id: '1', icon: '👤', text: 'Trocar perfil/cadastrar quadra' },
+{ id: '2', icon: '💬', text: 'Mensagens' },
+{ id: '3', icon: '🤝', text: 'Convidar amigos' },
+{ id: '4', icon: '⚽', text: 'Novo time' },
+{ id: '5', icon: 'ℹ️', text: 'Suporte' },
+{ id: '6', icon: '🚪', text: 'Sair' },
+];
+
 export default function Profile({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
       <HeaderTop>PERFIL</HeaderTop>
       <View style={styles.container}>
-        {/* Imagem com o gradiente embutido */}
-        <View style={styles.imageContainer}>
-          <Image 
-            source={require('./../../assets/stadium.png')}
-            style={styles.image} 
-            resizeMode="cover" 
+        {/* Imagem de fundo */}
+      <View style={styles.backgroundImageContainer}>
+        <Image
+          source={{ uri: 'path_to_background_image' }} // Substituir pela sua imagem
+          style={styles.backgroundImage}
+        />
+        {/* Imagem de perfil */}
+        <View style={styles.profileContainer}>
+          <Image
+            source={{ uri: 'path_to_profile_image' }} // Substituir pela sua imagem
+            style={styles.profileImage}
           />
-          {/* Camada para escurecer a imagem */}
-          <View style={styles.darkOverlay} />
-           {/* Aplicando o gradiente */}
-          <LinearGradient
-            colors={['rgba(28,28,28,0)', 'rgba(28,28,28,1)']} // Transparente no topo, cor sólida no fim
-            style={styles.overlay}
-          />
+          <Text style={styles.userName}>Nome do Usuário</Text>
         </View>
+      </View>
 
-        {/* Container das informações */}
-        <View style={styles.infoContainer}>
-          <Text style={styles.title}>Nabi Abi Chedid</Text>
-          
-          <View style={styles.infoRow}>
-            <Icon name="event" size={20} color="#fff" />
-            <Text style={styles.infoText}>Data: 31/12/2024</Text>
-          </View>
-
-          <View style={styles.infoRow}>
-            <Icon name="schedule" size={20} color="#fff" />
-            <Text style={styles.infoText}>Horário: 13:00</Text>
-          </View>
-
-          <View style={styles.infoRow}>
-            <Icon name="attach-money" size={20} color="#fff" />
-            <Text style={styles.infoText}>Valor da partida: $300</Text>
-          </View>
-
-          <View style={styles.infoRow}>
-            <Icon name="location-on" size={20} color="#fff" />
-            <Text style={styles.infoText}>Localização da quadra</Text>
-          </View>
-
-          <View style={styles.infoRow}>
-            <Icon name="account-circle" size={20} color="#fff" />
-            <Text style={styles.infoText}>Jogadores confirmados: 7/14</Text>
-          </View>
-        </View>
+      {/* Lista de opções */}
+      <FlatList
+        data={options}
+        keyExtractor={item => item.id}
+        renderItem={({ item }) => (
+          <TouchableOpacity style={styles.optionContainer}>
+            <Text style={styles.optionIcon}>{item.icon}</Text>
+            <Text style={styles.optionText}>{item.text}</Text>
+          </TouchableOpacity>
+        )}
+        style={styles.optionsList}
+      />
       </View>
       <FotterMain navigation={navigation} />
     </SafeAreaView>
