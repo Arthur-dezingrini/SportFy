@@ -1,4 +1,4 @@
-import { View, Image, Text } from "react-native";
+import { View, Image, Text, TouchableOpacity } from "react-native";
 import { styles } from "./FriendComponentStyle";
 import Add from "../Add/Add";
 
@@ -12,7 +12,9 @@ export default function FriendComponent({ name, image }) {
         ></Image>
         <Text> Arthur Dezingrini </Text>
       </View>
-      <Add></Add>
+      <TouchableOpacity>
+        <Add></Add>
+      </TouchableOpacity>
     </View>
   );
 }
