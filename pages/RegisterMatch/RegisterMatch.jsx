@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { SafeAreaView, View, Button, Alert, Platform } from "react-native";
 import FotterMain from "../../components/FotterMain/FotterMain";
 import styles from "./RegisterMatchStyle";
@@ -18,19 +18,15 @@ export default function RegisterMatch({ navigation, locationMatch }) {
   const [time, setTime] = useState("");
   const [showMap, setShowMap] = useState(false);
   const [latiLong, setlatiLong] = useState(null);
-  const [initialRegion, setInitialRegion] = useState({
-    latitude: -23.55052,
-    longitude: -46.633308,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
-  });
+  const [initialRegion, setInitialRegion] = useState({ latitude: -23.55052, longitude: -46.633308, latitudeDelta: 0.0922, longitudeDelta: 0.0421,});
   const [showCalendarModal, setShowCalendarModal] = useState(false);
   const [markedDates, setMarkedDates] = useState({});
   const [selectedDate, setSelectedDate] = useState(null);
   const [showTimeModal, setShowTimeModal] = useState(false);
-  const [isInviteModalVisible, setInviteModalVisible] = useState(false); // Novo estado para o InviteModal
+  const [isInviteModalVisible, setInviteModalVisible] = useState(false); 
+  const actionSheetRef = useRef(null);  
 
-  const GOOGLE_API_KEY = "SUA_GOOGLE_API_KEY_AQUI";
+  const GOOGLE_API_KEY = "AIzaSyCqR9pyqkCysNHTtDz_hNXjIJNLGuDYq0Q";
 
   useEffect(() => {
     const getLocationPermission = async () => {
@@ -127,8 +123,9 @@ export default function RegisterMatch({ navigation, locationMatch }) {
   };
 
   const handleInviteFriends = () => {
-    setInviteModalVisible(true); // Exibe o InviteModal
+    actionSheetRef.current?.setModalVisible(true);
   };
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -188,9 +185,7 @@ export default function RegisterMatch({ navigation, locationMatch }) {
             onPress={handleInviteFriends}
           />
           <InviteModal
-            onBackdropPress={() => setInviteModalVisible(false)}
-            isVisible={isInviteModalVisible}
-            onClose={() => setInviteModalVisible(false)} 
+            ref={actionSheetRef}
           />
         </View>
       )}

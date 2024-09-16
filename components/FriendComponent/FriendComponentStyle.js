@@ -10,10 +10,10 @@ export const styles = StyleSheet.create({
     }, 
     image: {
         borderRadius: 25,
-        height: 50,
-        width: 50,
+        height: 45,
+        width: 45,
         borderColor: '#65CC41',
-        borderWidth: 1
+        borderWidth: 2
     }, 
     nameContainer: {
         flexDirection: 'row',

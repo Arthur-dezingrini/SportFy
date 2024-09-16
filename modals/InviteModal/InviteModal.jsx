@@ -1,39 +1,29 @@
-import React from "react";
-import { Text, View, ScrollView } from "react-native";
-import FriendComponent from "../../components/FriendComponent/FriendComponent";
-import { styles } from "./InviteModalStyle";
-import Modal from "react-native-modal";
+import React from 'react';
+import { View, Text, FlatList } from 'react-native';
+import ActionSheet from 'react-native-actions-sheet';
+import FriendComponent from '../../components/FriendComponent/FriendComponent'
+import { styles } from './InviteModalStyle'
 
-export default function InviteModal({ onClose, isVisible }) {
+const players = [
+  { id: '1', name: 'Luan Domingues', image: 'https://link-para-imagem1.png' },
+  { id: '2', name: 'Luccas Rosa', image: 'https://link-para-imagem2.png' },
+  { id: '3', name: 'David Costa', image: 'https://link-para-imagem3.png' },
+];
+
+const InviteModal = React.forwardRef((props, ref) => {
   return (
-    <Modal
-      isVisible={isVisible}
-      onBackdropPress={onClose} 
-      onSwipeComplete={onClose} 
-      swipeDirection="down" 
-      style={styles.overlay}
-      backdropOpacity={0.5} 
-    >
-      <View style={styles.modalView}>
+    <ActionSheet ref={ref} containerStyle={styles.modalView}>
+      <View>
         <Text style={styles.title}>Enviar Convite</Text>
-        <ScrollView style={styles.scrollView}>
-          <View style={{ gap: 15 }}>
-            <FriendComponent />
-            <FriendComponent />
-            <FriendComponent />
-            <FriendComponent />
-            <FriendComponent />
-            <FriendComponent />
-            <FriendComponent />
-            <FriendComponent />
-            <FriendComponent />
-            <FriendComponent />
-            <FriendComponent />
-            <FriendComponent />
-            <FriendComponent />
-          </View>
-        </ScrollView>
+        <FlatList
+          data={players}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => <FriendComponent friend={item} />}
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
+        />
       </View>
-    </Modal>
+    </ActionSheet>
   );
-}
+});
+
+export default InviteModal;
