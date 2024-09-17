@@ -1,18 +1,15 @@
 import React, { useState } from "react";
 import { View, Text, SafeAreaView, Image, TouchableOpacity, Pressable } from "react-native";
 import styles from "./MatchStyle";
-import Input from "./../../components/Input/Input";
-import Button from "./../../components/Button/Button";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { LinearGradient } from 'expo-linear-gradient';
 import HeaderTop from "./../../components/HeaderTop/HeaderTop";
-import FotterMain from "../../components/FotterMain/FotterMain";
 
 export default function Match({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <HeaderTop>Partida</HeaderTop>
+      <HeaderTop back={true} navigation={navigation}>Partida</HeaderTop>
       <View style={styles.container}>
         {/* Imagem com o gradiente embutido */}
         <View style={styles.imageContainer}>
@@ -60,7 +57,6 @@ export default function Match({ navigation }) {
           </View>
         </View>
       </View>
-      <FotterMain navigation={navigation} />
     </SafeAreaView>
   );
 }

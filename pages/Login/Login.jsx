@@ -53,7 +53,7 @@ export default function Login({ navigation }) {
         setUser(response.data.user); 
         setToken(response.data.token); 
         storeSession(response.data.user, response.data.token);
-        navigation.navigate("Home");
+        navigation.navigate("MainTabs");
       } else {
         Alert.alert('Error', 'Email ou Senha Incorretos');
       }
