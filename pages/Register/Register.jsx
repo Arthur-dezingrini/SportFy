@@ -8,9 +8,7 @@ import Input from "../../components/Input/Input";
 import styles from "./RegisterStyle";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import * as userService from '../../services/userService'
-import moment from 'moment'
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { parse } from 'date-fns';
 
 const schema = Yup.object().shape({
   name: Yup.string().required("Nome é obrigatório"),

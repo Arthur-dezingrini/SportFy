@@ -75,7 +75,6 @@ export default function Home({ navigation }) {
           />
         </View>
       </Animated.ScrollView>
-      <FotterMain navigation={navigation}/>
     </SafeAreaView>
   );
 }

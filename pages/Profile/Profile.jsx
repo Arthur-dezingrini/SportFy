@@ -52,7 +52,6 @@ export default function Profile({ navigation }) {
         style={styles.optionsList}
       />
       </View>
-      <FotterMain navigation={navigation} />
     </SafeAreaView>
   );
 }

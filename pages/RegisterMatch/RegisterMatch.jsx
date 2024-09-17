@@ -1,30 +1,57 @@
 import React, { useEffect, useState, useRef } from "react";
-import { SafeAreaView, View, Button, Alert, Platform } from "react-native";
+import {
+  SafeAreaView,
+  View,
+  Button,
+  Alert,
+  Platform,
+  TouchableOpacity,
+} from "react-native";
 import FotterMain from "../../components/FotterMain/FotterMain";
 import styles from "./RegisterMatchStyle";
 import ActionInput from "../../components/ActionInput/ActionInput";
-import HeaderTop from "./../../components/HeaderTop/HeaderTop";
 import MapView, { Marker } from "react-native-maps";
 import axios from "axios";
 import * as Location from "expo-location";
 import moment from "moment";
 import DateModal from "../../modals/DateModal/DateModal";
 import TimeModal from "../../modals/TimeModal/TimeModal";
-import InviteModal from '../../modals/InviteModal/InviteModal';
+import InviteModal from "../../modals/InviteModal/InviteModal";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
+import { Controller, useForm } from "react-hook-form";
+import Icon from "react-native-vector-icons/MaterialIcons";
+import HeaderTop from './../../components/HeaderTop/HeaderTop'
+
+
+const schema = Yup.object().shape({
+  location: Yup.string().required("Localização é obrigatório"),
+  date: Yup.string().required("Data é obrigatório"),
+  hour: Yup.string().required("Horario obrigatório"),
+});
 
 export default function RegisterMatch({ navigation, locationMatch }) {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ resolver: yupResolver(schema) });
   const [location, setLocation] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [showMap, setShowMap] = useState(false);
   const [latiLong, setlatiLong] = useState(null);
-  const [initialRegion, setInitialRegion] = useState({ latitude: -23.55052, longitude: -46.633308, latitudeDelta: 0.0922, longitudeDelta: 0.0421,});
+  const [initialRegion, setInitialRegion] = useState({
+    latitude: -23.55052,
+    longitude: -46.633308,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+  });
   const [showCalendarModal, setShowCalendarModal] = useState(false);
   const [markedDates, setMarkedDates] = useState({});
   const [selectedDate, setSelectedDate] = useState(null);
   const [showTimeModal, setShowTimeModal] = useState(false);
-  const [isInviteModalVisible, setInviteModalVisible] = useState(false); 
-  const actionSheetRef = useRef(null);  
+  const actionSheetRef = useRef(null);
 
   const GOOGLE_API_KEY = "AIzaSyCqR9pyqkCysNHTtDz_hNXjIJNLGuDYq0Q";
 
@@ -126,11 +153,17 @@ export default function RegisterMatch({ navigation, locationMatch }) {
     actionSheetRef.current?.setModalVisible(true);
   };
 
+  const registerMatch = async (data) => {
+    try {
+      console.log("Dados do formulário:", data);
+    } catch (error) {
+      console.error("Erro ao registrar a partida:", error);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
-      <HeaderTop>Cadastrar Partida</HeaderTop>
-
+      <HeaderTop>Registrar Partida</HeaderTop>
       {showMap ? (
         <View style={styles.mapContainer}>
           <MapView
@@ -146,17 +179,33 @@ export default function RegisterMatch({ navigation, locationMatch }) {
         </View>
       ) : (
         <View style={styles.form}>
-          <ActionInput
-            textButton={"Selecionar"}
-            placeholder={"Localização"}
-            value={location}
-            onPress={() => setShowMap(true)}
+          <Controller
+            control={control}
+            name="location"
+            render={({ field: { onChange, onBlur } }) => (
+              <ActionInput
+                textButton={"Selecionar"}
+                placeholder={"Localização"}
+                value={location}
+                onPress={() => setShowMap(true)}
+                onChangeText={onChange}
+                onBlur={onBlur}
+              />
+            )}
           />
-          <ActionInput
-            textButton={"Alterar"}
-            placeholder={"Data"}
-            value={date}
-            onPress={() => setShowCalendarModal(true)}
+          <Controller
+            control={control}
+            name="date"
+            render={({ field: { onChange, onBlur } }) => (
+              <ActionInput
+                textButton={"Alterar"}
+                placeholder={"Data"}
+                value={date}
+                onPress={() => setShowCalendarModal(true)}
+                onChangeText={onChange}
+                onBlur={onBlur}
+              />
+            )}
           />
           <DateModal
             isVisible={showCalendarModal}
@@ -165,11 +214,19 @@ export default function RegisterMatch({ navigation, locationMatch }) {
             markedDates={markedDates}
             onDayPress={handleDateSelect}
           />
-          <ActionInput
-            textButton={"Alterar"}
-            placeholder={"Horário"}
-            value={time}
-            onPress={() => setShowTimeModal(true)}
+          <Controller
+            control={control}
+            name="hour"
+            render={({ field: { onChange, onBlur } }) => (
+              <ActionInput
+                textButton={"Alterar"}
+                placeholder={"Horário"}
+                value={time}
+                onPress={() => setShowTimeModal(true)}
+                onChangeText={onChange}
+                onBlur={onBlur}
+              />
+            )}
           />
           <TimeModal
             isVisible={showTimeModal}
@@ -184,12 +241,15 @@ export default function RegisterMatch({ navigation, locationMatch }) {
             placeholder={"Convidar Amigos"}
             onPress={handleInviteFriends}
           />
-          <InviteModal
-            ref={actionSheetRef}
-          />
+          <InviteModal ref={actionSheetRef} />
+          <TouchableOpacity
+            onPress={() => handleSubmit(registerMatch)}
+            style={styles.register}
+          >
+            <Icon name="arrow-forward" size={24} style={{ color: "#FFF" }} />
+          </TouchableOpacity>
         </View>
       )}
-      <FotterMain navigation={navigation} />
     </SafeAreaView>
   );
 }
