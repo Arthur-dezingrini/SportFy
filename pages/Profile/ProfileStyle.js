@@ -17,6 +17,13 @@ export default StyleSheet.create({
     height: '100%',
     resizeMode: 'cover',
   },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
   profileContainer: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -51,6 +58,6 @@ export default StyleSheet.create({
   },
   optionText: {
     fontSize: 18,
-    color: '#333',
+    color: '#fff',
   },
 });

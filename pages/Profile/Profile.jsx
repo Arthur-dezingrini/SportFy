@@ -9,12 +9,12 @@ import HeaderTop from "./../../components/HeaderTop/HeaderTop";
 import FotterMain from "../../components/FotterMain/FotterMain";
 
 const options = [
-{ id: '1', icon: '👤', text: 'Trocar perfil/cadastrar quadra' },
-{ id: '2', icon: '💬', text: 'Mensagens' },
-{ id: '3', icon: '🤝', text: 'Convidar amigos' },
-{ id: '4', icon: '⚽', text: 'Novo time' },
-{ id: '5', icon: 'ℹ️', text: 'Suporte' },
-{ id: '6', icon: '🚪', text: 'Sair' },
+{ id: '1', icon: 'account-circle', text: 'Trocar perfil/Cadastrar quadra' },
+{ id: '2', icon: 'message', text: 'Mensagens' },
+{ id: '3', icon: 'group', text: 'Convidar amigos' },
+{ id: '4', icon: 'sports-soccer', text: 'Novo time' },
+{ id: '5', icon: 'info', text: 'Suporte' },
+{ id: '6', icon: 'exit-to-app', text: 'Sair' },
 ];
 
 export default function Profile({ navigation }) {
@@ -25,14 +25,23 @@ export default function Profile({ navigation }) {
       <View style={styles.container}>
         {/* Imagem de fundo */}
       <View style={styles.backgroundImageContainer}>
-        <Image
-          source={{ uri: 'path_to_background_image' }} // Substituir pela sua imagem
+          <Image
+            source={ require( './../../assets/profile-background.jpg') } // Substituir pela sua imagem
+            style={styles.backgroundImage}
+          />
+          <Image
+          source={ require( './../../assets/profile-background.jpg') } // Substituir pela sua imagem
           style={styles.backgroundImage}
+          />
+        <LinearGradient
+        colors={['rgba(28,28,28,0)', 'rgba(28,28,28,1)']} // Transparente no topo, cor sólida no fim
+        style={styles.overlay}
         />
+       
         {/* Imagem de perfil */}
         <View style={styles.profileContainer}>
           <Image
-            source={{ uri: 'path_to_profile_image' }} // Substituir pela sua imagem
+            source={ require( './../../assets/nego-ney.jpg') } // Substituir pela sua imagem
             style={styles.profileImage}
           />
           <Text style={styles.userName}>Nome do Usuário</Text>

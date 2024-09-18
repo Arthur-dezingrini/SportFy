@@ -41,6 +41,7 @@ function MainTabs() {
         tabBarInactiveTintColor: 'gray',
         tabBarStyle: {
           backgroundColor: '#333',
+          height: 70,
         },
         headerShown: false, 
       })}
@@ -79,7 +80,7 @@ export default function App() {
     <AppProvider>
       <NavigationContainer>
         <Stack.Navigator
-          initialRouteName={isAuthenticated ? "MainTabs" : "Login"}
+          initialRouteName={isAuthenticated ? "MainTabs" : "MainTabs"}
           screenOptions={{
             headerShown: false,
           }}
