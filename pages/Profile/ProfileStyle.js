@@ -51,6 +51,7 @@ export default StyleSheet.create({
     paddingHorizontal: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#E0E0E0',
+    gap: 15
   },
   optionIcon: {
     fontSize: 24,

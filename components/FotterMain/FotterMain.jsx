@@ -1,11 +1,9 @@
 import React from "react";
-import styles from "./FotterMainStyle";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home from './../../pages/Home/Home'
 import RegisterMatch from './../../pages/RegisterMatch/RegisterMatch'
 import Profile from './../../pages/Profile/Profile'
-import Match from './../../pages/Match/Match'
 
 const Tab = createBottomTabNavigator();
 

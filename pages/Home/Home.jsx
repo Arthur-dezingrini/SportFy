@@ -1,6 +1,5 @@
 import React, { useRef } from "react";
 import { View, Text, Image, Animated } from "react-native";
-import FotterMain from "../../components/FotterMain/FotterMain";
 import styles from "./HomeStyle";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Carousel from "react-native-snap-carousel";

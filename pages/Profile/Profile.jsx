@@ -1,12 +1,9 @@
 import React, { useState } from "react";
 import { View, Text, SafeAreaView, Image, TouchableOpacity, Pressable, FlatList } from "react-native";
 import styles from "./ProfileStyle";
-import Input from "./../../components/Input/Input";
-import Button from "./../../components/Button/Button";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { LinearGradient } from 'expo-linear-gradient';
 import HeaderTop from "./../../components/HeaderTop/HeaderTop";
-import FotterMain from "../../components/FotterMain/FotterMain";
 
 const options = [
 { id: '1', icon: 'account-circle', text: 'Trocar perfil/Cadastrar quadra' },
@@ -54,7 +51,7 @@ export default function Profile({ navigation }) {
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
           <TouchableOpacity style={styles.optionContainer}>
-            <Text style={styles.optionIcon}>{item.icon}</Text>
+            <Icon name={item.icon} size={25} color={'#fff'}></Icon>
             <Text style={styles.optionText}>{item.text}</Text>
           </TouchableOpacity>
         )}
