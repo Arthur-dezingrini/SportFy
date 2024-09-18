@@ -7,7 +7,6 @@ import {
   Platform,
   TouchableOpacity,
 } from "react-native";
-import FotterMain from "../../components/FotterMain/FotterMain";
 import styles from "./RegisterMatchStyle";
 import ActionInput from "../../components/ActionInput/ActionInput";
 import MapView, { Marker } from "react-native-maps";
@@ -17,25 +16,14 @@ import moment from "moment";
 import DateModal from "../../modals/DateModal/DateModal";
 import TimeModal from "../../modals/TimeModal/TimeModal";
 import InviteModal from "../../modals/InviteModal/InviteModal";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as Yup from "yup";
-import { Controller, useForm } from "react-hook-form";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import HeaderTop from './../../components/HeaderTop/HeaderTop'
+import HeaderTop from "./../../components/HeaderTop/HeaderTop";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import RegisterMatchService from './../../services/RegisterMatchService'
+import {user} from "../../appContext"
 
 
-const schema = Yup.object().shape({
-  location: Yup.string().required("Localização é obrigatório"),
-  date: Yup.string().required("Data é obrigatório"),
-  hour: Yup.string().required("Horario obrigatório"),
-});
-
-export default function RegisterMatch({ navigation, locationMatch }) {
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({ resolver: yupResolver(schema) });
+export default function RegisterMatch({ locationMatch }) {
   const [location, setLocation] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
@@ -57,6 +45,21 @@ export default function RegisterMatch({ navigation, locationMatch }) {
 
   useEffect(() => {
     const getLocationPermission = async () => {
+      const storedPermissionStatus = await AsyncStorage.getItem(
+        "locationPermissionStatus"
+      );
+
+      if (storedPermissionStatus === "granted") {
+        let userLocation = await Location.getCurrentPositionAsync({});
+        setInitialRegion({
+          latitude: userLocation.coords.latitude,
+          longitude: userLocation.coords.longitude,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        });
+        return;
+      }
+
       if (Platform.OS === "android") {
         Alert.alert(
           "Permissão de Localização",
@@ -72,6 +75,8 @@ export default function RegisterMatch({ navigation, locationMatch }) {
               onPress: async () => {
                 let { status } =
                   await Location.requestForegroundPermissionsAsync();
+                await AsyncStorage.setItem("locationPermissionStatus", status);
+
                 if (status !== "granted") {
                   Alert.alert(
                     "Permissão negada",
@@ -99,6 +104,8 @@ export default function RegisterMatch({ navigation, locationMatch }) {
               "Precisamos da sua localização para mostrar os jogos mais próximos.",
           },
         });
+
+        await AsyncStorage.setItem("locationPermissionStatus", status);
 
         if (status !== "granted") {
           Alert.alert(
@@ -153,11 +160,11 @@ export default function RegisterMatch({ navigation, locationMatch }) {
     actionSheetRef.current?.setModalVisible(true);
   };
 
-  const registerMatch = async (data) => {
+  const registerMatch = async () => {
     try {
-      console.log("Dados do formulário:", data);
+      const response = await RegisterMatchService.Register(data)
     } catch (error) {
-      console.error("Erro ao registrar a partida:", error);
+      
     }
   };
 
@@ -179,34 +186,20 @@ export default function RegisterMatch({ navigation, locationMatch }) {
         </View>
       ) : (
         <View style={styles.form}>
-          <Controller
-            control={control}
-            name="location"
-            render={({ field: { onChange, onBlur } }) => (
-              <ActionInput
-                textButton={"Selecionar"}
-                placeholder={"Localização"}
-                value={location}
-                onPress={() => setShowMap(true)}
-                onChangeText={onChange}
-                onBlur={onBlur}
-              />
-            )}
+          <ActionInput
+            textButton={"Selecionar"}
+            placeholder={"Localização"}
+            value={location}
+            onPress={() => setShowMap(true)}
           />
-          <Controller
-            control={control}
-            name="date"
-            render={({ field: { onChange, onBlur } }) => (
-              <ActionInput
-                textButton={"Alterar"}
-                placeholder={"Data"}
-                value={date}
-                onPress={() => setShowCalendarModal(true)}
-                onChangeText={onChange}
-                onBlur={onBlur}
-              />
-            )}
-          />
+
+          <ActionInput
+            textButton={"Alterar"}
+            placeholder={"Data"}
+            value={date}
+            onPress={() => setShowCalendarModal(true)}
+            />
+
           <DateModal
             isVisible={showCalendarModal}
             onBackdropPress={() => setShowCalendarModal(false)}
@@ -214,19 +207,11 @@ export default function RegisterMatch({ navigation, locationMatch }) {
             markedDates={markedDates}
             onDayPress={handleDateSelect}
           />
-          <Controller
-            control={control}
-            name="hour"
-            render={({ field: { onChange, onBlur } }) => (
-              <ActionInput
-                textButton={"Alterar"}
-                placeholder={"Horário"}
-                value={time}
-                onPress={() => setShowTimeModal(true)}
-                onChangeText={onChange}
-                onBlur={onBlur}
-              />
-            )}
+          <ActionInput
+            textButton={"Alterar"}
+            placeholder={"Horário"}
+            value={time}
+            onPress={() => setShowTimeModal(true)}
           />
           <TimeModal
             isVisible={showTimeModal}
@@ -243,7 +228,7 @@ export default function RegisterMatch({ navigation, locationMatch }) {
           />
           <InviteModal ref={actionSheetRef} />
           <TouchableOpacity
-            onPress={() => handleSubmit(registerMatch)}
+            onPress={registerMatch}
             style={styles.register}
           >
             <Icon name="arrow-forward" size={24} style={{ color: "#FFF" }} />

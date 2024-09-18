@@ -1,13 +1,11 @@
 import "react-native-gesture-handler";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"; // Certifique-se de importar o Tab Navigator
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import React, { useState, useEffect } from "react";
-import { View, Text } from "react-native";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
-// Suas páginas
 import Login from "./pages/Login/Login";
 import Home from "./pages/Home/Home";
 import RegisterMatch from "./pages/RegisterMatch/RegisterMatch";
@@ -15,7 +13,7 @@ import Profile from "./pages/Profile/Profile";
 import Initial from "./pages/Initial/Initial";
 import Register from "./pages/Register/Register";
 import Match from "./pages/Match/Match";
-import { AppProvider } from "./appContext";
+import { AppProvider, useAuth } from "./appContext";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -27,23 +25,23 @@ function MainTabs() {
         tabBarIcon: ({ color, size }) => {
           let iconName;
 
-          if (route.name === 'Home') {
-            iconName = 'house';
-          } else if (route.name === 'RegisterMatch') {
-            iconName = 'sports-soccer';
-          } else if (route.name === 'Profile') {
-            iconName = 'person';
+          if (route.name === "Home") {
+            iconName = "house";
+          } else if (route.name === "RegisterMatch") {
+            iconName = "sports-soccer";
+          } else if (route.name === "Profile") {
+            iconName = "person";
           }
 
           return <Icon name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: '#43F16A',
-        tabBarInactiveTintColor: 'gray',
+        tabBarActiveTintColor: "#43F16A",
+        tabBarInactiveTintColor: "gray",
         tabBarStyle: {
-          backgroundColor: '#333',
-          height: 70,
+          backgroundColor: "#333",
+          height: 75,
         },
-        headerShown: false, 
+        headerShown: false,
       })}
     >
       <Tab.Screen name="Home" component={Home} />
@@ -53,21 +51,24 @@ function MainTabs() {
   );
 }
 
-
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const {setUser, setToken} = useAuth();
 
   useEffect(() => {
     const checkSession = async () => {
       try {
-        const token = await AsyncStorage.getItem('token');
-        const user = await AsyncStorage.getItem('user');
+        const token = await AsyncStorage.getItem("token");
+        const user = await AsyncStorage.getItem("user");
         if (token && user) {
+          console.log(token, user)
+          setUser(JSON.parse(user)); 
+          setToken(token);  
           setIsAuthenticated(true);
         }
       } catch (error) {
-        console.error('Erro ao verificar a sessão:', error);
+        console.error("Erro ao verificar a sessão:", error);
       } finally {
         setIsLoading(false);
       }
@@ -75,6 +76,10 @@ export default function App() {
 
     checkSession();
   }, []);
+
+  if (isLoading) {
+    return null;
+  }
 
   return (
     <AppProvider>
@@ -93,7 +98,7 @@ export default function App() {
           <Stack.Screen name="Match" component={Match} />
           <Stack.Screen name="Profile" component={Profile} />
         </Stack.Navigator>
-      </NavigationContainer>
+      </NavigationContainer>ges
     </AppProvider>
   );
 }

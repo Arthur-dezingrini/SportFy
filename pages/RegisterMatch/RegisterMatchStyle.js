@@ -1,9 +1,10 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Platform } from "react-native";
 
 export default StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#1c1c1c',
+    paddingTop: Platform.OS === 'Android' ? 15 : 0 
   },
   form: {
     flex: 1,
