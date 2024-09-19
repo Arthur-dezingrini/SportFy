@@ -7,7 +7,6 @@ export default StyleSheet.create({
   },
   backgroundImageContainer: {
     width: '100%',
-    height: '30%',
     height: '35%',
     justifyContent: 'center',
     alignItems: 'center',
@@ -34,7 +33,6 @@ export default StyleSheet.create({
     height: 100,
     borderRadius: 50,
     borderWidth: 3,
-    borderColor: '#fff',
     borderColor: '#46FF6F',
   },
   userName: {
@@ -49,7 +47,6 @@ export default StyleSheet.create({
   optionContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 15,
     paddingVertical: 25,
     paddingHorizontal: 20,
     borderBottomWidth: 1,
