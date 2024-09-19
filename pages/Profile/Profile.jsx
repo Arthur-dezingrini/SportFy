@@ -51,7 +51,7 @@ export default function Profile({ navigation }) {
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
           <TouchableOpacity style={styles.optionContainer}>
-            <Icon name={item.icon} size={25} color={'#fff'}></Icon>
+            <Icon name={item.icon} size={24} color="#fff" style={styles.optionIcon} />
             <Text style={styles.optionText}>{item.text}</Text>
           </TouchableOpacity>
         )}

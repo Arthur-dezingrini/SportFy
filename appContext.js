@@ -3,6 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const AppContext = createContext();
 
+
 export function AppProvider({ children }) {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState('');

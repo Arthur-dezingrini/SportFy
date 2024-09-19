@@ -8,6 +8,7 @@ export default StyleSheet.create({
   backgroundImageContainer: {
     width: '100%',
     height: '30%',
+    height: '35%',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -34,6 +35,7 @@ export default StyleSheet.create({
     borderRadius: 50,
     borderWidth: 3,
     borderColor: '#fff',
+    borderColor: '#46FF6F',
   },
   userName: {
     marginTop: 10,
@@ -48,11 +50,13 @@ export default StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 15,
+    paddingVertical: 25,
     paddingHorizontal: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#E0E0E0',
     gap: 15
   },
+
   optionIcon: {
     fontSize: 24,
     marginRight: 15,

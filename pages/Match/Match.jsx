@@ -30,6 +30,7 @@ export default function Match({ navigation }) {
         {/* Container das informações */}
         <View style={styles.infoContainer}>
           <Text style={styles.title}>Nabi Abi Chedid</Text>
+          <Text style={styles.title}>Nome da Quadra</Text>
           
           <View style={styles.infoRow}>
             <Icon name="event" size={20} color="#fff" />
