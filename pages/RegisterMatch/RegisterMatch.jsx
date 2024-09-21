@@ -19,9 +19,7 @@ import InviteModal from "../../modals/InviteModal/InviteModal";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import HeaderTop from "./../../components/HeaderTop/HeaderTop";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import RegisterMatchService from './../../services/RegisterMatchService'
-import {user} from "../../appContext"
-
+import * as RegisterMatchService from './../../services/RegisterMatchService'
 
 export default function RegisterMatch({ locationMatch }) {
   const [location, setLocation] = useState("");
@@ -39,7 +37,9 @@ export default function RegisterMatch({ locationMatch }) {
   const [markedDates, setMarkedDates] = useState({});
   const [selectedDate, setSelectedDate] = useState(null);
   const [showTimeModal, setShowTimeModal] = useState(false);
+  const [value, setValue] = useState(null)
   const actionSheetRef = useRef(null);
+  const [friendsList, setFriendsList] = useState(null)
 
   const GOOGLE_API_KEY = "AIzaSyCqR9pyqkCysNHTtDz_hNXjIJNLGuDYq0Q";
 
@@ -162,9 +162,17 @@ export default function RegisterMatch({ locationMatch }) {
 
   const registerMatch = async () => {
     try {
-      const response = await RegisterMatchService.Register(data)
+      const Match = {
+        latitude: latiLong.latitude,
+        longitude: latiLong.longitude,
+        date: date,
+        hour: time,
+        value: value ? value : 0,
+        InviteMatchFriends: []
+      }
+      const response = await RegisterMatchService.Register(Match);
     } catch (error) {
-      
+      console.error(error)
     }
   };
 
@@ -226,8 +234,8 @@ export default function RegisterMatch({ locationMatch }) {
             placeholder={"Convidar Amigos"}
             onPress={handleInviteFriends}
           />
-          <InviteModal ref={actionSheetRef} />
-          <TouchableOpacity
+          <InviteModal friends={friendsList} ref={actionSheetRef} />
+          <TouchableOpacity 
             onPress={registerMatch}
             style={styles.register}
           >
