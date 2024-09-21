@@ -11,6 +11,7 @@ import Profile from "./pages/Profile/Profile";
 import Initial from "./pages/Initial/Initial";
 import Register from "./pages/Register/Register";
 import Match from "./pages/Match/Match";
+import FriendList from './pages/FriendList/FriendList'
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -70,6 +71,7 @@ export default function Routes() {
         <Stack.Screen name="RegisterMatch" component={RegisterMatch} />
         <Stack.Screen name="Match" component={Match} />
         <Stack.Screen name="Profile" component={Profile} />
+        <Stack.Screen name="FriendList" component={FriendList} />
       </Stack.Navigator>
     </NavigationContainer>
   );

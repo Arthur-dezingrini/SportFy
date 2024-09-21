@@ -4,8 +4,10 @@ import styles from "./HomeStyle";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Carousel from "react-native-snap-carousel";
 import CardGameHome from "../../components/CardGameHome/CardGameHome";
+import { useAuth } from "../../appContext";
 
 export default function Home({ navigation }) {
+  const { user } = useAuth()
   const scrollY = useRef(new Animated.Value(0)).current;
 
   const headerOpacity = scrollY.interpolate({
@@ -30,7 +32,7 @@ export default function Home({ navigation }) {
           style={styles.image}
         />
         <Text style={styles.textName}>
-          Olá, <Text style={styles.boldText}>Fulano</Text>
+          Olá, <Text style={styles.boldText}>{user.name.split(' ')[0]}</Text>
         </Text>
       </Animated.View>
       <Animated.ScrollView

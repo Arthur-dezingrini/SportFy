@@ -1,6 +1,5 @@
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
-import { user } from "./../appContext"
 
 
 export async function Login(data) {
@@ -8,7 +7,7 @@ export async function Login(data) {
         const response = await axios.post(`${BASE_URL}/login`, data);
         return response;
     } catch (error) {
-        console.error('Error during login:', error);
+        console.error('Error durante login:', error);
         throw error;
     }
 }

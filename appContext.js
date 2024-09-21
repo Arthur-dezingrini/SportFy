@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as userService from "./services/userService";
 
 const AppContext = createContext();
 
@@ -13,12 +14,19 @@ export function AppProvider({ children }) {
   useEffect(() => {
     const checkSession = async () => {
       try {
-        const token = await AsyncStorage.getItem("token");
-        const user = await AsyncStorage.getItem("user");
-        if (token && user) {
-          setUser(JSON.parse(user));
-          setToken(token);
-          setIsAuthenticated(true);
+        const userEmail = await AsyncStorage.getItem("userEmail");
+        const userPassword = await AsyncStorage.getItem("userPassword");
+        if (userEmail && userPassword) {
+          const response = await userService.Login({email: userEmail, password: userPassword})
+          if (response.status === 200) {
+            console.log(response.data)
+            setUser({
+              name: response.data.name,
+              email: response.data.email
+            });
+            setToken(response.data.token);
+            setIsAuthenticated(true);
+          }
         }
       } catch (error) {
         console.error("Erro ao verificar a sessão:", error);

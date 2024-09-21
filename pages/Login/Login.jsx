@@ -17,8 +17,8 @@ import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import * as userService from "../../services/userService.js";
-import { useAppContext } from '../../appContext.js';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAuth } from "../../appContext.js";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const schema = Yup.object().shape({
   email: Yup.string(),
@@ -26,45 +26,52 @@ const schema = Yup.object().shape({
 });
 
 export default function Login({ navigation }) {
-  const { setUser, setToken } = useAppContext(); 
-  const { control, handleSubmit, formState: { errors } } = useForm({
+  const { setUser, setToken } = useAuth();
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
     resolver: yupResolver(schema),
   });
-  
+
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
 
-  const storeSession = async (user, token) => {
+  const storeSession = async (email, password) => {
     try {
-      await AsyncStorage.setItem('user', JSON.stringify(user));
-      await AsyncStorage.setItem('token', token);
+      await AsyncStorage.setItem("userEmail", email);
+      await AsyncStorage.setItem("userPassword", password);
     } catch (error) {
-      console.error('Erro ao salvar a sessão no AsyncStorage:', error);
+      console.error("Erro ao salvar a sessão no AsyncStorage:", error);
     }
   };
-  
+
   const Logar = async (data) => {
     try {
       data.email = data.email.toLowerCase();
       const response = await userService.Login(data);
       if (response.status === 200) {
-        setUser(response.data.user); 
-        setToken(response.data.token); 
-        storeSession(response.data.user, response.data.token);
+        setUser({
+          name: response.data.name,
+          email: response.data.email
+        });
+        setToken(response.data.token);
+        storeSession(data.email, data.password);
         navigation.navigate("MainTabs");
       } else {
-        Alert.alert('Error', 'Email ou Senha Incorretos');
+        Alert.alert("Error", "Email ou Senha Incorretos");
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      {Platform.OS === 'android' && <View style={styles.androidTopView}></View>}
+      {Platform.OS === "android" && <View style={styles.androidTopView}></View>}
       <Pressable
         onPress={() => navigation.navigate("Initial")}
         style={styles.arrowBack}
@@ -115,10 +122,7 @@ export default function Login({ navigation }) {
         </View>
       </View>
       <View style={styles.buttonContainer}>
-        <Button
-          onPress={handleSubmit(Logar)}
-          children={"LOGAR"}
-        />
+        <Button onPress={handleSubmit(Logar)} children={"LOGAR"} />
       </View>
     </SafeAreaView>
   );
