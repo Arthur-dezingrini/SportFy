@@ -19,7 +19,6 @@ export function AppProvider({ children }) {
         if (userEmail && userPassword) {
           const response = await userService.Login({email: userEmail, password: userPassword})
           if (response.status === 200) {
-            console.log(response.data)
             setUser({
               name: response.data.name,
               email: response.data.email
