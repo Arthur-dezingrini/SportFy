@@ -17,7 +17,7 @@ export default function FriendList() {
       await FindPlayers(condition);
     };
     fetchPlayers();
-  }, []);
+  }, [condition]);
 
   const FindPlayers = async (condition = '') => {
     try {
@@ -31,9 +31,13 @@ export default function FriendList() {
     }
   };
 
-  async function InviteFriend(id) {
+  async function InviteFriend(item) {
     try {
-      const response = await FriendListService.InviteFriend(id, token);
+      data = {
+        user: user,
+        userRecive: item 
+      }
+      const response = await FriendListService.InviteFriend(data, token);
       if (response.status === 200) {
         Alert.alert('Sucesso', 'Pedido de amizade enviado com sucesso');
       }
@@ -59,7 +63,7 @@ export default function FriendList() {
           data={players}
           keyExtractor={(item) => item.id.toString()} // Converte para string
           renderItem={({ item }) => (
-            <FriendComponent textColor={'#FFF'} friend={item} onPressAdd={() => InviteFriend(item.id)} />
+            <FriendComponent textColor={'#FFF'} friend={item} onPressAdd={() => InviteFriend(item)} />
           )}
           ItemSeparatorComponent={() => <View style={styles.separator} />}
           showsVerticalScrollIndicator={false}

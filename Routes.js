@@ -59,7 +59,7 @@ export default function Routes() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName={isAuthenticated ? "Initial" : "Initial"}
+        initialRouteName={isAuthenticated ? "Home" : "Initial"}
         screenOptions={{
           headerShown: false,
         }}
