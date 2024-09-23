@@ -4,38 +4,41 @@ import HeaderTop from "./../../components/HeaderTop/HeaderTop";
 import styles from "./FriendListStyle";
 import Input from "./../../components/Input/Input";
 import FriendComponent from "../../components/FriendComponent/FriendComponent";
-import * as FriendListService from './../../services/FriendListService'
+import * as FriendListService from './../../services/FriendListService';
 import { useAuth } from "./../../appContext";  
 
 export default function FriendList() {
   const { token, user } = useAuth(); 
-  const [ condition, setCondition ] = useState(null)
-  const [ players, setPlayers ] = useState(null)
+  const [condition, setCondition] = useState('');
+  const [players, setPlayers] = useState([]);
 
   useEffect(() => {
-   FindPlayers() 
-  })
+    const fetchPlayers = async () => {
+      await FindPlayers(condition);
+    };
+    fetchPlayers();
+  }, []);
 
-  const FindPlayers = async (condition = null) => {
+  const FindPlayers = async (condition = '') => {
     try {
-      const response = await FriendListService.findPlayers(user.id, condition, token)
+      const response = await FriendListService.findPlayers(user.id, condition, token);
       if (response.status === 200) {
-        setPlayers(response.data)
+        console.log(response.data)
+        setPlayers(response.data);
       } 
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
 
-  async function InviteFriend (id) {
-
+  async function InviteFriend(id) {
     try {
-      const response = await FriendListService.InviteFriend(id, token)
+      const response = await FriendListService.InviteFriend(id, token);
       if (response.status === 200) {
-        Alert.alert('Sucesso', 'Pedido de amizade enviado com sucesso')
+        Alert.alert('Sucesso', 'Pedido de amizade enviado com sucesso');
       }
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
   }
 
@@ -48,14 +51,16 @@ export default function FriendList() {
           icon={"search"}
           value={condition}
           onChangeText={setCondition}
-          onPressIcon={() => FindPlayers()}
-        ></Input>
+          onPressIcon={() => FindPlayers(condition)} // Passa a condição atual
+        />
       </View>
       <View style={styles.listContainer}>
         <FlatList
           data={players}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <FriendComponent textColor={'#FFF'} friend={item} onPressAdd={() => InviteFriend(item.id)} />}
+          keyExtractor={(item) => item.id.toString()} // Converte para string
+          renderItem={({ item }) => (
+            <FriendComponent textColor={'#FFF'} friend={item} onPressAdd={() => InviteFriend(item.id)} />
+          )}
           ItemSeparatorComponent={() => <View style={styles.separator} />}
           showsVerticalScrollIndicator={false}
         />

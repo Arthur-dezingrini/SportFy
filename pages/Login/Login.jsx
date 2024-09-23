@@ -55,6 +55,7 @@ export default function Login({ navigation }) {
       const response = await userService.Login(data);
       if (response.status === 200) {
         setUser({
+          id: response.data.id,
           name: response.data.name,
           email: response.data.email
         });

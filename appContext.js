@@ -20,6 +20,7 @@ export function AppProvider({ children }) {
           const response = await userService.Login({email: userEmail, password: userPassword})
           if (response.status === 200) {
             setUser({
+              id: response.data.id,
               name: response.data.name,
               email: response.data.email
             });

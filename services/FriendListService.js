@@ -4,10 +4,9 @@ import { BASE_URL } from "../utils/constants";
 
 export async function InviteFriend(id, token) {
   try {
-    const response = await axios.post(`${BASE_URL}/invite-friend`, id, {
+    const response = await axios.get(`${BASE_URL}/invite-friend?id=${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
       },
     });
     return response;
@@ -17,15 +16,23 @@ export async function InviteFriend(id, token) {
   }
 }
 
-export async function findPlayers(id, condition = null, token) {
-  try {
-    axios.post(`${BASE_URL}/find-players/${id}`, condition, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-  } catch (error) {
-    console.error(error);
+export async function findPlayers(id, condition = '', token) {
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/find-players`, // Mude para usar uma única URL
+        {
+          params: {
+            id,
+            condition,
+          },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response;
+    } catch (error) {
+      console.error(error);
+    }
   }
-}
+  
