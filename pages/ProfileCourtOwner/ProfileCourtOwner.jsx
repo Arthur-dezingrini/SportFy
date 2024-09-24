@@ -55,9 +55,9 @@ export default function ProfileCourtOwner({ navigation }) {
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
           <TouchableOpacity 
-            style={styles.optionContainer}
-            onPress={() => {
-              if (item.id === '1') {
+          style={styles.optionContainer}
+          onPress={() => {
+            if (item.id === '1') {
                 navigation.navigate('Profile');  // Navega para a tela ProfileCourtOwner
               }
             }}
