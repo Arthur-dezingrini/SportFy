@@ -13,14 +13,13 @@ export default function ProfileCourtOwner({ navigation }) {
     { id: '2', icon: 'message', text: 'Mensagens' },
     { id: '3', icon: 'group', text: 'Convidar amigos' },
     { id: '4', icon: 'sports-soccer', text: 'Novo time' },
-    { id: '5', icon: 'sports-soccer', text: 'Cadastrar quadra' },
+    { id: '5', icon: 'stadium', text: 'Cadastrar quadra' },
     { id: '6', icon: 'info', text: 'Suporte' },
     { id: '7', icon: 'exit-to-app', text: 'Sair' },
     ];
 
   return (
     <SafeAreaView style={styles.container}>
-      <HeaderTop>PERFIL</HeaderTop>
       <View style={styles.container}>
         {/* Imagem de fundo */}
       <View style={styles.backgroundImageContainer}>

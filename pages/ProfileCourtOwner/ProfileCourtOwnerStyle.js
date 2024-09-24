@@ -33,7 +33,7 @@ export default StyleSheet.create({
     height: 100,
     borderRadius: 50,
     borderWidth: 3,
-    borderColor: '#46FF6F',
+    borderColor: '#2C67FF',
   },
   userName: {
     marginTop: 10,
