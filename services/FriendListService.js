@@ -1,4 +1,3 @@
-// services/FriendListService.js
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 
@@ -20,7 +19,7 @@ export async function InviteFriend(data, token) {
 export async function findPlayers(id, condition = '', token) {
     try {
       const response = await axios.get(
-        `${BASE_URL}/find-players`, // Mude para usar uma única URL
+        `${BASE_URL}/find-players`,
         {
           params: {
             id,

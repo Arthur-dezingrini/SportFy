@@ -12,7 +12,6 @@ import Initial from "./pages/Initial/Initial";
 import Register from "./pages/Register/Register";
 import Match from "./pages/Match/Match";
 import FriendList from './pages/FriendList/FriendList'
-import ProfileCourtOwner from './pages/ProfileCourtOwner/ProfileCourtOwner'
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -54,13 +53,13 @@ export default function Routes() {
   const { isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {
-    return null; 
+    return null;
   }
 
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName={isAuthenticated ? "Home" : "Initial"}
+        initialRouteName={isAuthenticated ? "MainTabs" : "Initial"}
         screenOptions={{
           headerShown: false,
         }}
@@ -73,7 +72,6 @@ export default function Routes() {
         <Stack.Screen name="Match" component={Match} />
         <Stack.Screen name="Profile" component={Profile} />
         <Stack.Screen name="FriendList" component={FriendList} />
-        <Stack.Screen name="ProfileCourtOwner" component={ProfileCourtOwner} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -1,14 +1,16 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { View, Text, Image, Animated } from "react-native";
 import styles from "./HomeStyle";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Carousel from "react-native-snap-carousel";
 import CardGameHome from "../../components/CardGameHome/CardGameHome";
 import { useAuth } from "../../appContext";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 export default function Home({ navigation }) {
-  const { user } = useAuth()
+  const { user } = useAuth();
   const scrollY = useRef(new Animated.Value(0)).current;
+  const [notifications, setNotifications] = useState(5);
 
   const headerOpacity = scrollY.interpolate({
     inputRange: [0, 100],
@@ -20,6 +22,11 @@ export default function Home({ navigation }) {
     return <CardGameHome navigation={navigation} key={index} />;
   };
 
+  useEffect(() => {
+   
+    
+  }, []);
+
   const data = [{}, {}, {}, {}, {}, {}, {}, {}];
 
   return (
@@ -27,13 +34,23 @@ export default function Home({ navigation }) {
       <Animated.View
         style={[styles.headerContainer, { opacity: headerOpacity }]}
       >
-        <Image
-          source={require("./../../assets/bola.png")}
-          style={styles.image}
-        />
-        <Text style={styles.textName}>
-          Olá, <Text style={styles.boldText}>{user.name.split(' ')[0]}</Text>
-        </Text>
+        <View style={styles.infoContainer}>
+          <Image
+            source={require("./../../assets/bola.png")}
+            style={styles.image}
+          />
+          <Text style={styles.textName}>
+            Olá, <Text style={styles.boldText}>{user.name.split(" ")[0]}</Text>
+          </Text>
+        </View>
+        <View style={styles.notifications}>
+          <Icon name="notifications" color={"#FFF"} size={30} />
+          {notifications > 0 && (
+            <View style={styles.badge}>
+              <Text style={styles.badgeText}>{notifications}</Text>
+            </View>
+          )}
+        </View>
       </Animated.View>
       <Animated.ScrollView
         onScroll={Animated.event(

@@ -66,7 +66,7 @@ export default function Login({ navigation }) {
         Alert.alert("Error", "Email ou Senha Incorretos");
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 

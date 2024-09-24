@@ -29,7 +29,6 @@ export default function Register({ navigation }) {
       data.birthday = new Date(data.birthday);
       data.email = data.email.toLowerCase()
       const response = userService.cadastrar(data);
-      console.log(response)
       if (response) {
         navigation.navigate("Login")
       }

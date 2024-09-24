@@ -6,7 +6,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 export default function Profile({ navigation }) {
   const options = [
-    { id: '1', icon: 'account-circle', text: 'Trocar perfil/Cadastrar quadra' },
+    { id: '1', icon: 'account-circle', text: 'Trocar perfil/Cadastrar quadra', onPress: () => navigation.navigate('ProfileCourtOwner')},
     { id: '2', icon: 'message', text: 'Mensagens' },
     { id: '3', icon: 'group', text: 'Convidar amigos', onPress: () => navigation.navigate('FriendList')},
     { id: '4', icon: 'sports-soccer', text: 'Novo time' },

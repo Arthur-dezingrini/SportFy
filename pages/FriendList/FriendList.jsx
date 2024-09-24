@@ -23,7 +23,6 @@ export default function FriendList() {
     try {
       const response = await FriendListService.findPlayers(user.id, condition, token);
       if (response.status === 200) {
-        console.log(response.data)
         setPlayers(response.data);
       } 
     } catch (error) {

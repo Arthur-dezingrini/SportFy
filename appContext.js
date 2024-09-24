@@ -19,13 +19,13 @@ export function AppProvider({ children }) {
         if (userEmail && userPassword) {
           const response = await userService.Login({email: userEmail, password: userPassword})
           if (response.status === 200) {
+            setIsAuthenticated(true);
             setUser({
               id: response.data.id,
               name: response.data.name,
               email: response.data.email
             });
             setToken(response.data.token);
-            setIsAuthenticated(true);
           }
         }
       } catch (error) {
