@@ -11,6 +11,7 @@ import * as NotificationService from "../../services/NotificationService";
 export default function Home({ navigation }) {
   const { user, token } = useAuth();
   const scrollY = useRef(new Animated.Value(0)).current;
+  const [notificationsCount, setNotificationsCount] = useState(null);
   const [notifications, setNotifications] = useState(null);
 
   const headerOpacity = scrollY.interpolate({
@@ -28,7 +29,8 @@ export default function Home({ navigation }) {
       try {
         const response = await NotificationService.getNotifications(user.id, token);
         if (response.status === 200) {
-          setNotifications(response.data.friendRequests.length + response.data.matchRequests.length)
+          setNotificationsCount(response.data.friendRequests.length + response.data.matchRequests.length)
+          setNotifications(response.data)
         }
       } catch (error) {
         console.error("Erro ao verificar a sessão:", error);
@@ -53,11 +55,11 @@ export default function Home({ navigation }) {
             Olá, <Text style={styles.boldText}>{user.name.split(" ")[0]}</Text>
           </Text>
         </View>
-        <TouchableOpacity style={styles.notifications} onPress={() => navigation.navigate('Notifications')}>
+        <TouchableOpacity style={styles.notifications} onPress={() => navigation.navigate('Notifications', { notifications })}>
           <Icon name="notifications" color={"#FFF"} size={30} />
-          {notifications > 0 && (
+          {notificationsCount > 0 && (
             <View style={styles.badge}>
-              <Text style={styles.badgeText}>{notifications}</Text>
+              <Text style={styles.badgeText}>{notificationsCount}</Text>
             </View>
           )}
         </TouchableOpacity>

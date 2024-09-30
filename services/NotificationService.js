@@ -14,3 +14,33 @@ export async function getNotifications(id, token) {
     throw error;
   }
 }
+
+
+export async function alterStatusRequestFriend(request, token) {
+  try {
+    const response = await axios.put(`${BASE_URL}/notifications/alter-status-friend-request`, request,  {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response;
+  } catch (error) {
+    console.error("Error get Notificações:", error);
+    throw error;
+  }
+}
+
+
+export async function alterStatusRequestMatch(request, token) {
+  try {
+    const response = await axios.put(`${BASE_URL}/notifications/alter-status-match-request`, request, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response;
+  } catch (error) {
+    console.error("Error get Notificações:", error);
+    throw error;
+  }
+}

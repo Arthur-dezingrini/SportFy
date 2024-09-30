@@ -16,13 +16,15 @@ export default StyleSheet.create({
       marginBottom: 16,
       padding: 16,
       backgroundColor: '#2c2c2c',
-      borderRadius: 10
+      borderRadius: 10,
+      maxHeight: '50%'
     },
     MatchContainer: {
       padding: 16,
       backgroundColor: '#2c2c2c',
       borderRadius: 10,
-      gap: 15
+      gap: 15,
+      maxHeight: '50%'
     },
     notificationHeader: {
       fontSize: 16,
