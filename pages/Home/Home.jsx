@@ -1,16 +1,17 @@
 import React, { useRef, useState, useEffect } from "react";
-import { View, Text, Image, Animated } from "react-native";
+import { View, Text, Image, Animated, TouchableOpacity } from "react-native";
 import styles from "./HomeStyle";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Carousel from "react-native-snap-carousel";
 import CardGameHome from "../../components/CardGameHome/CardGameHome";
 import { useAuth } from "../../appContext";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import * as NotificationService from "../../services/NotificationService";
 
 export default function Home({ navigation }) {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const scrollY = useRef(new Animated.Value(0)).current;
-  const [notifications, setNotifications] = useState(5);
+  const [notifications, setNotifications] = useState(null);
 
   const headerOpacity = scrollY.interpolate({
     inputRange: [0, 100],
@@ -23,8 +24,17 @@ export default function Home({ navigation }) {
   };
 
   useEffect(() => {
-   
-    
+    const getNotifications = async () => {
+      try {
+        const response = await NotificationService.getNotifications(user.id, token);
+        if (response.status === 200) {
+          setNotifications(response.data.friendRequests.length + response.data.matchRequests.length)
+        }
+      } catch (error) {
+        console.error("Erro ao verificar a sessão:", error);
+      }
+    };
+    getNotifications()
   }, []);
 
   const data = [{}, {}, {}, {}, {}, {}, {}, {}];
@@ -43,14 +53,14 @@ export default function Home({ navigation }) {
             Olá, <Text style={styles.boldText}>{user.name.split(" ")[0]}</Text>
           </Text>
         </View>
-        <View style={styles.notifications}>
+        <TouchableOpacity style={styles.notifications} onPress={() => navigation.navigate('Notifications')}>
           <Icon name="notifications" color={"#FFF"} size={30} />
           {notifications > 0 && (
             <View style={styles.badge}>
               <Text style={styles.badgeText}>{notifications}</Text>
             </View>
           )}
-        </View>
+        </TouchableOpacity>
       </Animated.View>
       <Animated.ScrollView
         onScroll={Animated.event(

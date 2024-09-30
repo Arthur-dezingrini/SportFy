@@ -54,7 +54,7 @@ export default function FriendList() {
           icon={"search"}
           value={condition}
           onChangeText={setCondition}
-          onPressIcon={() => FindPlayers(condition)} // Passa a condição atual
+          onPressIcon={() => FindPlayers(condition)}
         />
       </View>
       <View style={styles.listContainer}>
