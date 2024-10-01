@@ -1,19 +1,40 @@
-import React from "react";
+import React, {useState} from "react";
 import { View, Text, SafeAreaView, Image, TouchableOpacity, FlatList } from "react-native";
 import styles from "./ProfileStyle";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { LinearGradient } from 'expo-linear-gradient';
 
 export default function Profile({ navigation }) {
+  const [userType, setUserType] = useState('jogador')
   const options = [
-    { id: '1', icon: 'account-circle', text: 'Trocar perfil/Cadastrar quadra', onPress: () => navigation.navigate('ProfileCourtOwner')},
+    { 
+      id: '1', icon: 'account-circle', text: userType === 'jogador' ? 'Ir para perfil de dono de quadra' : 'Ir para perfil de jogador', onPress: () => switchProfile() 
+    },
     { id: '2', icon: 'message', text: 'Mensagens' },
     { id: '3', icon: 'group', text: 'Convidar amigos', onPress: () => navigation.navigate('FriendList')},
     { id: '4', icon: 'sports-soccer', text: 'Novo time' },
-    { id: '5', icon: 'info', text: 'Suporte' },
-    { id: '6', icon: 'exit-to-app', text: 'Sair' },
+    { id: '5', icon: 'stadium', text: 'Cadastrar quadra' },
+    { id: '6', icon: 'info', text: 'Suporte' },   
+    { id: '7', icon: 'exit-to-app', text: 'Sair' },
     ];
     
+  const switchProfile = () => {
+    setUserType(prevType => (prevType === 'jogador' ? 'dono' : 'jogador'));
+  }
+
+  const Filter = (userType) => {
+    console.log()
+    return options.filter((option) => {
+      if (userType === 'jogador') {
+        return option.id !== '5'; 
+      } else if (userType === 'dono') {  
+        return option.id !== '3' && option.id !== '4'; 
+      }
+      return true;
+    });
+  }
+
+  const filteredOptions = Filter(userType);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -22,30 +43,29 @@ export default function Profile({ navigation }) {
         {/* Imagem de fundo */}
       <View style={styles.backgroundImageContainer}>
           <Image
-            source={ require( './../../assets/profile-background.jpg') } // Substituir pela sua imagem
+            source={ require( './../../assets/profile-background.jpg') } 
             style={styles.backgroundImage}
           />
           <Image
-          source={ require( './../../assets/profile-background.jpg') } // Substituir pela sua imagem
+          source={ require( './../../assets/profile-background.jpg') } 
           style={styles.backgroundImage}
           />
         <LinearGradient
-        colors={['rgba(28,28,28,0)', 'rgba(28,28,28,1)']} // Transparente no topo, cor sólida no fim
+        colors={['rgba(28,28,28,0)', 'rgba(28,28,28,1)']}
         style={styles.overlay}
         />
        
-        {/* Imagem de perfil */}
         <View style={styles.profileContainer}>
           <Image
-            source={ require( './../../assets/nego-ney.jpg') } // Substituir pela sua imagem
-            style={styles.profileImage}
+            source={ require( './../../assets/nego-ney.jpg') } 
+            style={userType === 'jogador' ? styles.profileImage : styles.profileImageCourtOwner}
           />
           <Text style={styles.userName}>Nome do Usuário</Text>
         </View>
       </View>
 
       <FlatList
-        data={options}
+        data={filteredOptions}
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
           <TouchableOpacity style={styles.optionContainer} onPress={item.onPress}>

@@ -35,6 +35,13 @@ export default StyleSheet.create({
     borderWidth: 3,
     borderColor: '#46FF6F',
   },
+  profileImageCourtOwner: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    borderWidth: 3,
+    borderColor: '#2C67FF',
+  },
   userName: {
     marginTop: 10,
     fontSize: 20,
