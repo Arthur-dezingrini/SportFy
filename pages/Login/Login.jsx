@@ -8,10 +8,10 @@ import {
   Pressable,
   Platform,
   Alert,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  ScrollView
 } from "react-native";
 import styles from "./LoginStyle";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Input from "./../../components/Input/Input";
 import Button from "./../../components/Button/Button";
 import Icon from "react-native-vector-icons/MaterialIcons";
@@ -38,6 +38,7 @@ export default function Login({ navigation }) {
   });
 
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
@@ -76,10 +77,10 @@ export default function Login({ navigation }) {
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : null}
+        behavior={Platform.OS === "ios" ? "padding" : "height"} // Ajusta o conteúdo ao teclado
       >
-        <KeyboardAwareScrollView
-          enableOnAndroid={true}
+        {/* Conteúdo rolável acima do botão */}
+        <ScrollView
           contentContainerStyle={{ flexGrow: 1 }}
           keyboardShouldPersistTaps="handled"
         >
@@ -103,7 +104,7 @@ export default function Login({ navigation }) {
             <Controller
               control={control}
               name="email"
-              render={({ field: { onChange, onBlur, value } }) => (
+              render={({ field: { onChange, value } }) => (
                 <Input
                   placeholder={"Email"}
                   icon={"person"}
@@ -117,7 +118,7 @@ export default function Login({ navigation }) {
             <Controller
               control={control}
               name="password"
-              render={({ field: { onChange, onBlur, value } }) => (
+              render={({ field: { onChange, value } }) => (
                 <Input
                   placeholder={"Senha"}
                   icon={isPasswordVisible ? "visibility" : "visibility-off"}
@@ -135,10 +136,12 @@ export default function Login({ navigation }) {
               </TouchableOpacity>
             </View>
           </View>
-          <View style={styles.buttonContainer}>
-            <Button onPress={handleSubmit(Logar)} children={"LOGAR"} />
-          </View>
-        </KeyboardAwareScrollView>
+        </ScrollView>
+
+        {/* Botão fixo acima do teclado */}
+        <View style={styles.buttonContainer}>
+          <Button onPress={handleSubmit(Logar)} children={"LOGAR"} />
+        </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

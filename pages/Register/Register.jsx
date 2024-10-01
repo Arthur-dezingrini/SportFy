@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, KeyboardAvoidingView, ScrollView, Platform } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
@@ -39,112 +39,122 @@ export default function Register({ navigation }) {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.header}>
-        <Icon onPress={() => navigation.navigate('Initial')} name="arrow-back" size={24} color="#43F16A" />
-      </View>
-      <View style={styles.container}>
-        {/* Nome */}
-        <Controller
-          control={control}
-          name="name"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Input
-              value={value}
-              onChangeText={onChange}
-              placeholder="Nome"
-              onBlur={onBlur}
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1 }}
+          keyboardShouldPersistTaps="handled"
+        >
+          <View style={styles.header}>
+            <Icon onPress={() => navigation.navigate('Initial')} name="arrow-back" size={24} color="#43F16A" />
+          </View>
+          <View style={styles.container}>
+            {/* Nome */}
+            <Controller
+              control={control}
+              name="name"
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  value={value}
+                  onChangeText={onChange}
+                  placeholder="Nome"
+                  onBlur={onBlur}
+                />
+              )}
             />
-          )}
-        />
-        {errors.name && <Text style={{ color: 'red' }}>{errors.name.message}</Text>}
-        
-        {/* E-mail */}
-        <Controller
-          control={control}
-          name="email"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Input
-              value={value}
-              onChangeText={onChange}
-              placeholder="E-mail"
-              onBlur={onBlur}
-            />
-          )}
-        />
-        {errors.email && <Text style={{ color: 'red' }}>{errors.email.message}</Text>}
+            {errors.name && <Text style={{ color: 'red' }}>{errors.name.message}</Text>}
 
-        {/* Número */}
-        <Controller
-          control={control}
-          name="number"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Input
-              value={value}
-              onChangeText={onChange}
-              placeholder="Número"
-              onBlur={onBlur}
+            {/* E-mail */}
+            <Controller
+              control={control}
+              name="email"
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  value={value}
+                  onChangeText={onChange}
+                  placeholder="E-mail"
+                  onBlur={onBlur}
+                />
+              )}
             />
-          )}
-        />
-        {errors.number && <Text style={{ color: 'red' }}>{errors.number.message}</Text>}
+            {errors.email && <Text style={{ color: 'red' }}>{errors.email.message}</Text>}
 
-        {/* Data de nascimento */}
-        <Controller
-          control={control}
-          name="birthday"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Input
-              value={value}
-              onChangeText={onChange}
-              placeholder="Nascimento"
-              onBlur={onBlur}
+            {/* Número */}
+            <Controller
+              control={control}
+              name="number"
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  value={value}
+                  onChangeText={onChange}
+                  placeholder="Número"
+                  onBlur={onBlur}
+                />
+              )}
             />
-          )}
-        />
-        {errors.birthday && <Text style={{ color: 'red' }}>{errors.birthday.message}</Text>}
+            {errors.number && <Text style={{ color: 'red' }}>{errors.number.message}</Text>}
 
-        {/* Senha */}
-        <Controller
-          control={control}
-          name="password"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Input
-              value={value}
-              onChangeText={onChange}
-              placeholder="Senha"
-              onBlur={onBlur}
-              secureTextEntry
+            {/* Data de nascimento */}
+            <Controller
+              control={control}
+              name="birthday"
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  value={value}
+                  onChangeText={onChange}
+                  placeholder="Nascimento"
+                  onBlur={onBlur}
+                />
+              )}
             />
-          )}
-        />
-        {errors.password && <Text style={{ color: 'red' }}>{errors.password.message}</Text>}
+            {errors.birthday && <Text style={{ color: 'red' }}>{errors.birthday.message}</Text>}
 
-        {/* Repetir Senha */}
-        <Controller
-          control={control}
-          name="repetPassword"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Input
-              value={value}
-              onChangeText={onChange}
-              placeholder="Repita a senha"
-              onBlur={onBlur}
-              secureTextEntry
+            {/* Senha */}
+            <Controller
+              control={control}
+              name="password"
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  value={value}
+                  onChangeText={onChange}
+                  placeholder="Senha"
+                  onBlur={onBlur}
+                  secureTextEntry
+                />
+              )}
             />
-          )}
-        />
-        {errors.repetPassword && <Text style={{ color: 'red' }}>{errors.repetPassword.message}</Text>}
+            {errors.password && <Text style={{ color: 'red' }}>{errors.password.message}</Text>}
 
-        <View style={styles.passwordContainer}>
-          <Text style={styles.password}>Já tem conta? </Text>
-          <Pressable onPress={() => navigation.navigate('Login')}>
-            <Text style={styles.login}>Logar</Text>
-          </Pressable>
+            {/* Repetir Senha */}
+            <Controller
+              control={control}
+              name="repetPassword"
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  value={value}
+                  onChangeText={onChange}
+                  placeholder="Repita a senha"
+                  onBlur={onBlur}
+                  secureTextEntry
+                />
+              )}
+            />
+            {errors.repetPassword && <Text style={{ color: 'red' }}>{errors.repetPassword.message}</Text>}
+
+            <View style={styles.passwordContainer}>
+              <Text style={styles.password}>Já tem conta? </Text>
+              <Pressable onPress={() => navigation.navigate('Login')}>
+                <Text style={styles.login}>Logar</Text>
+              </Pressable>
+            </View>
+          </View>
+        </ScrollView>
+        <View style={styles.footer}>
+          <Button onPress={handleSubmit(onSubmit)}>REGISTRAR</Button>
         </View>
-      </View>
-      <View style={styles.footer}>
-        <Button onPress={handleSubmit(onSubmit)}>REGISTRAR</Button>
-      </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
