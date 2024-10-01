@@ -51,9 +51,22 @@ export async function findPlayers(id, condition = '', token) {
     }
   }
 
-  export async function getFriendRequest(id) {
+  export async function getFriendRequest(id, token) {
     try {
       const response = await axios.get(`${BASE_URL}/friend-request?id=${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      return response
+    } catch(error) {
+      console.error(error)
+    }
+  }
+
+  export async function getFriends(id, token) {
+    try {
+      const response = await axios.get(`${BASE_URL}/friends/list/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

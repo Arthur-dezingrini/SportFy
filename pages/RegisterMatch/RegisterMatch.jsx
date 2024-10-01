@@ -20,6 +20,11 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import HeaderTop from "./../../components/HeaderTop/HeaderTop";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as RegisterMatchService from './../../services/RegisterMatchService'
+import * as FriendListService from './../../services/FriendListService'
+import { useAuth } from './../../appContext'
+
+const GOOGLE_API_KEY = "AIzaSyCqR9pyqkCysNHTtDz_hNXjIJNLGuDYq0Q";
+
 
 export default function RegisterMatch({ locationMatch }) {
   const [location, setLocation] = useState("");
@@ -40,8 +45,8 @@ export default function RegisterMatch({ locationMatch }) {
   const [value, setValue] = useState(null)
   const actionSheetRef = useRef(null);
   const [friendsList, setFriendsList] = useState(null)
-
-  const GOOGLE_API_KEY = "AIzaSyCqR9pyqkCysNHTtDz_hNXjIJNLGuDYq0Q";
+  const { user, token } = useAuth()
+  
 
   useEffect(() => {
     const getLocationPermission = async () => {
@@ -156,7 +161,11 @@ export default function RegisterMatch({ locationMatch }) {
     setShowTimeModal(false);
   };
 
-  const handleInviteFriends = () => {
+  const handleInviteFriends = async () => {
+    const response = await FriendListService.getFriends(user.id, token)
+    if (response.status === 200 && response.data.length > 0) {
+      setFriendsList(response.data)
+    }
     actionSheetRef.current?.setModalVisible(true);
   };
 

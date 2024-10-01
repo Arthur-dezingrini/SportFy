@@ -39,6 +39,10 @@ export default function FriendList() {
       const response = await FriendListService.InviteFriend(data, token);
       if (response.status === 200) {
         Alert.alert('Sucesso', 'Pedido de amizade enviado com sucesso');
+        const response2 = await FriendListService.findPlayers(user.id, '', token)
+        if (response2.status === 200) {
+          setPlayers(response.data);
+        }
       }
     } catch (error) {
       console.error(error);

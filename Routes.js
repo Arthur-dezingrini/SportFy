@@ -39,14 +39,13 @@ function MainTabs() {
         tabBarInactiveTintColor: "gray",
         tabBarStyle: {
           backgroundColor: "#333",
-          height: 75,
         },
         headerShown: false,
       })}
     >
       <Tab.Screen name="Home" component={Home} />
-      <Tab.Screen name="RegisterMatch" component={RegisterMatch} />
-      <Tab.Screen name="Profile" component={Profile} />
+      <Tab.Screen name="RegisterMatch" options={{title: 'Criar Partida'}} component={RegisterMatch} />
+      <Tab.Screen name="Profile" options={{title: 'Perfil'}} component={Profile} />
     </Tab.Navigator>
   );
 }
