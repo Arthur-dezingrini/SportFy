@@ -195,19 +195,15 @@ export default function RegisterCourt({ locationMatch }) {
       ) : (
         <View style={styles.form}>
           <ActionInput
+            textButton={"Inserir"}
+            placeholder={"Nome da Arena"}
+          />
+          <ActionInput
             textButton={"Selecionar"}
             placeholder={"Localização"}
             value={location}
             onPress={() => setShowMap(true)}
           />
-
-          <ActionInput
-            textButton={"Alterar"}
-            placeholder={"Data"}
-            value={date}
-            onPress={() => setShowCalendarModal(true)}
-            />
-
           <DateModal
             isVisible={showCalendarModal}
             onBackdropPress={() => setShowCalendarModal(false)}
@@ -216,23 +212,23 @@ export default function RegisterCourt({ locationMatch }) {
             onDayPress={handleDateSelect}
           />
           <ActionInput
-            textButton={"Alterar"}
-            placeholder={"Horário"}
-            value={time}
-            onPress={() => setShowTimeModal(true)}
+            textButton={"Inserir"}
+            placeholder={"Datas e horários"}
           />
           <TimeModal
             isVisible={showTimeModal}
             onBackdropPress={() => setShowTimeModal(false)}
             onSelectTime={handleSelectTime}
           />
-          {locationMatch && (
-            <ActionInput textButton={"Pagar"} placeholder={"Valor Total"} />
-          )}
           <ActionInput
-            textButton={"Convidar"}
-            placeholder={"Convidar Amigos"}
-            onPress={handleInviteFriends}
+            textButton={"Inserir"}
+            placeholder={"Valor da hora"}
+            // onPress={handleInviteFriends}
+          />
+          <ActionInput
+            textButton={"Inserir"}
+            placeholder={"Fotos"}
+            // onPress={handleInviteFriends}
           />
           <InviteModal friends={friendsList} ref={actionSheetRef} />
           <TouchableOpacity 
