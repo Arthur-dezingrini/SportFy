@@ -1,28 +1,33 @@
 import { View, Image, Text, TouchableOpacity } from "react-native";
 import { styles } from "./FriendComponentStyle";
 import Add from "../Add/Add";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import Check from "./../../components/Check/Check";
 
-export default function FriendComponent({ friend, textColor, onPressAdd }) {
+export default function FriendComponent({ friend, friendAdd, friendsAdicionados }) {
   const [isAdded, setIsAdded] = useState(false);
 
-  const handleAddFriend = async () => {
-    if (!isAdded) {
-      await onPressAdd(); 
-      setIsAdded(true); 
-    }
+  useEffect(() => {
+    const isFriendAdded = friendsAdicionados.some(item => item.id === friend.id);
+    setIsAdded(isFriendAdded); 
+  }, [friendsAdicionados, friend]);
+
+  const handleAddFriend = () => {
+    setIsAdded(!isAdded);
+    friendAdd(friend); 
   };
+
   return (
     <View style={styles.container}>
       <View style={styles.nameContainer}>
         <Image
           source={require("./../../assets/stadium.png")}
           style={styles.image}
-        ></Image>
-        <Text style={{ color: textColor }}> {friend.name} </Text>
-        </View>
-      <TouchableOpacity onPress={onPressAdd}>
-        <Add></Add>
+        />
+        <Text>{friend.name}</Text>
+      </View>
+      <TouchableOpacity onPress={handleAddFriend}>
+        {!isAdded ? <Add /> : <Check />}
       </TouchableOpacity>
     </View>
   );

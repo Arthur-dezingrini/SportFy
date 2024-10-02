@@ -19,12 +19,11 @@ import InviteModal from "../../modals/InviteModal/InviteModal";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import HeaderTop from "./../../components/HeaderTop/HeaderTop";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as RegisterMatchService from './../../services/RegisterMatchService'
-import * as FriendListService from './../../services/FriendListService'
-import { useAuth } from './../../appContext'
+import * as RegisterMatchService from "./../../services/RegisterMatchService";
+import * as FriendListService from "./../../services/FriendListService";
+import { useAuth } from "./../../appContext";
 
 const GOOGLE_API_KEY = "AIzaSyCqR9pyqkCysNHTtDz_hNXjIJNLGuDYq0Q";
-
 
 export default function RegisterMatch({ locationMatch }) {
   const [location, setLocation] = useState("");
@@ -42,14 +41,18 @@ export default function RegisterMatch({ locationMatch }) {
   const [markedDates, setMarkedDates] = useState({});
   const [selectedDate, setSelectedDate] = useState(null);
   const [showTimeModal, setShowTimeModal] = useState(false);
-  const [value, setValue] = useState(null)
+  const [value, setValue] = useState(null);
   const actionSheetRef = useRef(null);
-  const [friendsList, setFriendsList] = useState(null)
-  const { user, token } = useAuth()
-  
+  const [friendsList, setFriendsList] = useState(null);
+  const { user, token } = useAuth();
+  const [friendMatch, setFriendsMatch] = useState([])
 
   useEffect(() => {
     const getLocationPermission = async () => {
+      const response = await FriendListService.getFriends(user.id, token);
+      if (response.status === 200 && response.data.length > 0) {
+        setFriendsList(response.data);
+      }
       const storedPermissionStatus = await AsyncStorage.getItem(
         "locationPermissionStatus"
       );
@@ -162,11 +165,12 @@ export default function RegisterMatch({ locationMatch }) {
   };
 
   const handleInviteFriends = async () => {
-    const response = await FriendListService.getFriends(user.id, token)
-    if (response.status === 200 && response.data.length > 0) {
-      setFriendsList(response.data)
-    }
     actionSheetRef.current?.setModalVisible(true);
+  };
+
+  const reviceFriends = (data) => {
+    console.log(data)
+    setFriendsMatch(data);
   };
 
   const registerMatch = async () => {
@@ -177,11 +181,11 @@ export default function RegisterMatch({ locationMatch }) {
         date: date,
         hour: time,
         value: value ? value : 0,
-        InviteMatchFriends: []
-      }
+        InviteMatchFriends: friendMatch,
+      };
       const response = await RegisterMatchService.Register(Match);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
   };
 
@@ -215,7 +219,7 @@ export default function RegisterMatch({ locationMatch }) {
             placeholder={"Data"}
             value={date}
             onPress={() => setShowCalendarModal(true)}
-            />
+          />
 
           <DateModal
             isVisible={showCalendarModal}
@@ -243,11 +247,8 @@ export default function RegisterMatch({ locationMatch }) {
             placeholder={"Convidar Amigos"}
             onPress={handleInviteFriends}
           />
-          <InviteModal friends={friendsList} ref={actionSheetRef} />
-          <TouchableOpacity 
-            onPress={registerMatch}
-            style={styles.register}
-          >
+          <InviteModal friends={friendsList} friendsAdicionados={friendMatch} enviaAmigos={reviceFriends} ref={actionSheetRef} />
+          <TouchableOpacity onPress={registerMatch} style={styles.register}>
             <Icon name="arrow-forward" size={24} style={{ color: "#FFF" }} />
           </TouchableOpacity>
         </View>
