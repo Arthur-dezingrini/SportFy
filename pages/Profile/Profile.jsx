@@ -1,11 +1,29 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import { View, Text, SafeAreaView, Image, TouchableOpacity, FlatList } from "react-native";
 import styles from "./ProfileStyle";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { LinearGradient } from 'expo-linear-gradient';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useAuth } from "../../appContext";
 
 export default function Profile({ navigation }) {
-  const [userType, setUserType] = useState('jogador')
+  const [userType, setUserType] = useState('jogador');
+  const {setTheme} = useAuth();
+
+  useEffect(() => {
+    const loadUserType = async () => {
+      try{
+        const savedUserType = await AsyncStorage.getItem("userType");
+        if (savedUserType !== null) {
+          setUserType(savedUserType);
+      }
+    }catch (error) {
+      console.error("Erro ao carregar o tipo de perfil do AsyncStorage:", error);
+    }
+  };
+  loadUserType();
+}, []);
+
   const options = [
     { 
       id: '1', icon: 'account-circle', text: userType === 'jogador' ? 'Ir para perfil de dono de quadra' : 'Ir para perfil de jogador', onPress: () => switchProfile() 
@@ -18,9 +36,18 @@ export default function Profile({ navigation }) {
     { id: '7', icon: 'exit-to-app', text: 'Sair' },
     ];
     
-  const switchProfile = () => {
-    setUserType(prevType => (prevType === 'jogador' ? 'dono' : 'jogador'));
-  }
+    const switchProfile = async () => {
+      const newUserType = userType === 'jogador' ? 'dono' : 'jogador';
+      setUserType(newUserType);
+  
+      // Salva o tipo de perfil atualizado no AsyncStorage
+      try {
+        await AsyncStorage.setItem("userType", newUserType)
+        setTheme(newUserType);
+      } catch (error) {
+        console.error("Erro ao salvar userType no AsyncStorage:", error);
+      }
+    };
 
   const Filter = (userType) => {
     console.log()

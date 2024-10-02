@@ -5,12 +5,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Carousel from "react-native-snap-carousel";
 import CardGameHome from "../../components/CardGameHome/CardGameHome";
 import { useAuth } from "../../appContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import * as NotificationService from "../../services/NotificationService";
 
 export default function Home({ navigation }) {
   const { user, token } = useAuth();
   const scrollY = useRef(new Animated.Value(0)).current;
+  const [userType, setUserType] = useState(null);
   const [notificationsCount, setNotificationsCount] = useState(null);
   const [notifications, setNotifications] = useState(null);
 
@@ -36,23 +38,50 @@ export default function Home({ navigation }) {
         console.error("Erro ao verificar a sessão:", error);
       }
     };
-    getNotifications()
-  }, []);
+    const fetchUserType = async () => {
+      try {
+        const storedUserType = await AsyncStorage.getItem("userType");
+        if (storedUserType) {
+          setUserType(storedUserType);
+          console.log(userType)
+        }
+      } catch (error) {
+        console.error("Erro ao buscar o tipo de usuário:", error);
+      }
+    };
+    const focusListener = navigation.addListener('focus', () => {
+      fetchUserType(); // Atualiza o tipo de usuário sempre que a Home for focada
+    });
+
+    fetchUserType();
+    getNotifications();
+
+    return () => {
+      focusListener(); // Remove o listener quando o componente for desmontado
+    };
+  }, [navigation]);
 
   const data = [{}, {}, {}, {}, {}, {}, {}, {}];
+
+  const containerStyleHeader = userType === "dono" ? styles.headerContainerOwner : styles.headerContainer;
+  const imageStyle = userType === "dono" ? styles.imageOwner : styles.image;
+
+
+
 
   return (
     <SafeAreaView style={styles.container}>
       <Animated.View
-        style={[styles.headerContainer, { opacity: headerOpacity }]}
+        style={[containerStyleHeader, { opacity: headerOpacity }]}
       >
         <View style={styles.infoContainer}>
           <Image
             source={require("./../../assets/bola.png")}
-            style={styles.image}
+            style={[imageStyle]}
           />
           <Text style={styles.textName}>
             Olá, <Text style={styles.boldText}>{user.name.split(" ")[0]}</Text>
+
           </Text>
         </View>
         <TouchableOpacity style={styles.notifications} onPress={() => navigation.navigate('Notifications', { notifications })}>

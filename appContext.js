@@ -10,6 +10,7 @@ export function AppProvider({ children }) {
   const [token, setToken] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [theme, setTheme] = useState(null);
 
   useEffect(() => {
     const checkSession = async () => {
@@ -39,7 +40,7 @@ export function AppProvider({ children }) {
   }, []);
 
   return (
-    <AppContext.Provider value={{ user, setUser, token, setToken, isAuthenticated, isLoading }}>
+    <AppContext.Provider value={{ theme, setTheme, user, setUser, token, setToken, isAuthenticated, isLoading }}>
       {children}
     </AppContext.Provider>
   );

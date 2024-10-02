@@ -19,6 +19,19 @@ export default StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  headerContainerOwner: {
+    position: 'absolute',
+    top: 50,
+    left: 0,
+    right: 0,
+    zIndex: 1,
+    borderBottomColor: '#2C67FF',
+    borderBottomWidth: 2,
+    padding: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+
   image: {
     height: 50,
     width: 50,
@@ -26,6 +39,15 @@ export default StyleSheet.create({
     borderRadius: 25,
     borderWidth: 2,
   },
+  
+  imageOwner: {
+    height: 50,
+    width: 50,
+    borderColor: '#2C67FF',
+    borderRadius: 25,
+    borderWidth: 2,
+  },
+
   textName: {
     color: '#FFF',
     fontSize: 18,
