@@ -12,6 +12,7 @@ import Register from "./pages/Register/Register";
 import Match from "./pages/Match/Match";
 import FriendList from './pages/FriendList/FriendList'
 import Notifications from "./pages/Notifications/Notifications";
+import RegisterCourt from "./pages/RegisterCourt/RegisterCourt";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -82,6 +83,8 @@ export default function Routes() {
         <Stack.Screen name="Profile" component={Profile} />
         <Stack.Screen name="FriendList" component={FriendList} />
         <Stack.Screen name="Notifications" component={Notifications} />
+        <Stack.Screen name="RegisterCourt" component={RegisterCourt} />
+        
       </Stack.Navigator>
     </NavigationContainer>
   );
