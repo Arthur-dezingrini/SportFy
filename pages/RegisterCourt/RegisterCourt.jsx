@@ -178,7 +178,7 @@ export default function RegisterCourt({ locationMatch }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <HeaderTop>Registrar Partida</HeaderTop>
+      <HeaderTop style={{ backgroundColor: "#2C67FF" }}>Registrar Quadra</HeaderTop>
       {showMap ? (
         <View style={styles.mapContainer}>
           <MapView

@@ -13,7 +13,7 @@ export default function Profile({ navigation }) {
     { id: '2', icon: 'message', text: 'Mensagens' },
     { id: '3', icon: 'group', text: 'Convidar amigos', onPress: () => navigation.navigate('FriendList')},
     { id: '4', icon: 'sports-soccer', text: 'Novo time' },
-    { id: '5', icon: 'stadium', text: 'Cadastrar quadra' },
+    { id: '5', icon: 'stadium', text: 'Cadastrar quadra', onPress: () => navigation.navigate('RegisterCourt')},
     { id: '6', icon: 'info', text: 'Suporte' },   
     { id: '7', icon: 'exit-to-app', text: 'Sair' },
     ];
