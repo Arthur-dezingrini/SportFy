@@ -139,7 +139,6 @@ export default function RegisterMatch({ locationMatch }) {
   const handleSelectLocation = async (event) => {
     const { latitude, longitude } = event.nativeEvent.coordinate;
     setlatiLong({ latitude, longitude });
-
     try {
       const response = await axios.get(
         `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${GOOGLE_API_KEY}`
@@ -169,21 +168,23 @@ export default function RegisterMatch({ locationMatch }) {
   };
 
   const reviceFriends = (data) => {
-    console.log(data)
     setFriendsMatch(data);
   };
 
   const registerMatch = async () => {
     try {
+      console.log(friendMatch.map(friend => friend.id))
       const Match = {
         latitude: latiLong.latitude,
         longitude: latiLong.longitude,
-        date: date,
+        date: moment(date).format('YYYY-MM-DD'),
         hour: time,
         value: value ? value : 0,
-        InviteMatchFriends: friendMatch,
+        creator_id: user.id,
+        inviteMatchFriends: friendMatch.map(friend => friend.id),
       };
-      const response = await RegisterMatchService.Register(Match);
+      const response = await RegisterMatchService.Register(Match, token);
+      console.log(response)
     } catch (error) {
       console.error(error);
     }

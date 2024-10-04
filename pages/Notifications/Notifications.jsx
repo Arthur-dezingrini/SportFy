@@ -15,7 +15,6 @@ export default function Notifications({ navigation }) {
       try {
         const response = await NotificacaoService.getNotifications(user.id, token);
         if (response.status === 200) {
-          console.log(response.data);
           setNotifications(response.data);
         }
       } catch (error) {

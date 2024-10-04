@@ -1,13 +1,11 @@
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
-import { useAuth } from "./../appContext"
 
 
-export async function Register (data) {
-    const { token } = useAuth() 
+export async function Register (data, token) {
     try {
         const response = await axios.post(
-            `${BASE_URL}/register-Match`, 
+            `${BASE_URL}/match/add`, 
             data, 
             {
                 headers: {
@@ -16,6 +14,7 @@ export async function Register (data) {
                 },
             }
         )
+        return response
     } catch (error) {
 
     }

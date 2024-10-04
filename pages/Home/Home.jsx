@@ -43,7 +43,6 @@ export default function Home({ navigation }) {
         const storedUserType = await AsyncStorage.getItem("userType");
         if (storedUserType) {
           setUserType(storedUserType);
-          console.log(userType)
         }
       } catch (error) {
         console.error("Erro ao buscar o tipo de usuário:", error);

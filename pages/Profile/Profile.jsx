@@ -50,7 +50,6 @@ export default function Profile({ navigation }) {
     };
 
   const Filter = (userType) => {
-    console.log()
     return options.filter((option) => {
       if (userType === 'jogador') {
         return option.id !== '5'; 
