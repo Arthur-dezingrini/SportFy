@@ -13,18 +13,14 @@ import MapView, { Marker } from "react-native-maps";
 import axios from "axios";
 import * as Location from "expo-location";
 import moment from "moment";
-import DateModal from "../../modals/DateModal/DateModal";
-import TimeModal from "../../modals/TimeModal/TimeModal";
-import InviteModal from "../../modals/InviteModal/InviteModal";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import HeaderTop from "./../../components/HeaderTop/HeaderTop";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as RegisterMatchService from './../../services/RegisterMatchService'
+import CourtDateModal from "../../modals/CourtDateModal/CourtDateModal";
 
 export default function RegisterCourt({ locationMatch }) {
   const [location, setLocation] = useState("");
-  const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
+  const [showCourtDateModal, setShowCourtDateModal] = useState(false);
   const [showMap, setShowMap] = useState(false);
   const [latiLong, setlatiLong] = useState(null);
   const [initialRegion, setInitialRegion] = useState({
@@ -33,13 +29,8 @@ export default function RegisterCourt({ locationMatch }) {
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   });
-  const [showCalendarModal, setShowCalendarModal] = useState(false);
-  const [markedDates, setMarkedDates] = useState({});
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [showTimeModal, setShowTimeModal] = useState(false);
   const [value, setValue] = useState(null)
   const actionSheetRef = useRef(null);
-  const [friendsList, setFriendsList] = useState(null)
 
   const GOOGLE_API_KEY = "AIzaSyCqR9pyqkCysNHTtDz_hNXjIJNLGuDYq0Q";
 
@@ -146,36 +137,6 @@ export default function RegisterCourt({ locationMatch }) {
     setShowMap(false);
   };
 
-  const handleDateSelect = (day) => {
-    setDate(moment(day.dateString).format("DD-MM-YYYY"));
-    setShowCalendarModal(false);
-  };
-
-  const handleSelectTime = (time) => {
-    setTime(time);
-    setShowTimeModal(false);
-  };
-
-  const handleInviteFriends = () => {
-    actionSheetRef.current?.setModalVisible(true);
-  };
-
-  const registerMatch = async () => {
-    try {
-      const Match = {
-        latitude: latiLong.latitude,
-        longitude: latiLong.longitude,
-        date: date,
-        hour: time,
-        value: value ? value : 0,
-        InviteMatchFriends: []
-      }
-      const response = await RegisterMatchService.Register(Match);
-    } catch (error) {
-      console.error(error)
-    }
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       <HeaderTop style={{ backgroundColor: "#2C67FF" }}>Registrar Quadra</HeaderTop>
@@ -204,41 +165,26 @@ export default function RegisterCourt({ locationMatch }) {
             value={location}
             onPress={() => setShowMap(true)}
           />
-          <DateModal
-            isVisible={showCalendarModal}
-            onBackdropPress={() => setShowCalendarModal(false)}
-            selectedDate={selectedDate}
-            markedDates={markedDates}
-            onDayPress={handleDateSelect}
-          />
           <ActionInput
             textButton={"Inserir"}
             placeholder={"Datas e horários"}
-          />
-          <TimeModal
-            isVisible={showTimeModal}
-            onBackdropPress={() => setShowTimeModal(false)}
-            onSelectTime={handleSelectTime}
+            onPress={() => setShowCourtDateModal(true)}
           />
           <ActionInput
             textButton={"Inserir"}
             placeholder={"Valor da hora"}
-            // onPress={handleInviteFriends}
           />
           <ActionInput
             textButton={"Inserir"}
             placeholder={"Fotos"}
-            // onPress={handleInviteFriends}
           />
-          <InviteModal friends={friendsList} ref={actionSheetRef} />
-          <TouchableOpacity 
-            onPress={registerMatch}
-            style={styles.register}
-          >
-            <Icon name="arrow-forward" size={24} style={{ color: "#FFF" }} />
-          </TouchableOpacity>
         </View>
+        
       )}
+      <CourtDateModal
+        isVisible={showCourtDateModal}
+        onClose={() => setCourtDateModal(false)}
+      />
     </SafeAreaView>
   );
 }
