@@ -6,6 +6,21 @@ export default StyleSheet.create({
     padding: 20,
     backgroundColor: '#fff',
   },
+  safeAreaContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20, // Margem para não cobrir o HeaderTop
+    marginBottom: 20, // Margem para não cobrir o rodapé
+  },
+  modalContainer: {
+    width: '90%', // Deixe um pouco de espaço nas laterais
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 20,
+    elevation: 5,
+    maxHeight: '70%', // Limita a altura do modal para não cobrir todo o conteúdo
+  },
   title: {
     fontSize: 18,
     fontWeight: 'bold',
