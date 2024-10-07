@@ -64,7 +64,7 @@ export default function FriendList() {
       <View style={styles.listContainer}>
         <FlatList
           data={players}
-          keyExtractor={(item) => item.id.toString()} // Converte para string
+          keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <FriendComponent textColor={'#FFF'} friend={item} onPressAdd={() => InviteFriend(item)} />
           )}

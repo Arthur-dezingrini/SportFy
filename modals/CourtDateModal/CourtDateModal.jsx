@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, View, Text, TouchableOpacity, Switch, TextInput } from 'react-native';
+import { Modal, View, Text, TouchableOpacity, Switch, TextInput, SafeAreaView } from 'react-native';
 import styles from './CourtDateModalStyle';
 
 export default function ScheduleModal({ isVisible, onClose }) {

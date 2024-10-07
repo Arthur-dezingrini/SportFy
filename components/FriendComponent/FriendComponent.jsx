@@ -4,17 +4,23 @@ import Add from "../Add/Add";
 import React, { useState, useEffect } from "react";
 import Check from "./../../components/Check/Check";
 
-export default function FriendComponent({ friend, friendAdd, friendsAdicionados }) {
+export default function FriendComponent({ friend, friendAdd, friendsAdicionados, onPressAdd }) {
   const [isAdded, setIsAdded] = useState(false);
 
   useEffect(() => {
-    const isFriendAdded = friendsAdicionados.some(item => item.id === friend.id);
-    setIsAdded(isFriendAdded); 
+    if(friendsAdicionados && friendsAdicionados.length > 0) {
+      const isFriendAdded = friendsAdicionados.some(item => item.id === friend.id);
+      setIsAdded(isFriendAdded); 
+    }
   }, [friendsAdicionados, friend]);
 
   const handleAddFriend = () => {
-    setIsAdded(!isAdded);
-    friendAdd(friend); 
+    if(friendsAdicionados) {
+      setIsAdded(!isAdded);
+      friendAdd(friend); 
+    } else {
+      onPressAdd()
+    }
   };
 
   return (

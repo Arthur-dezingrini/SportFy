@@ -3,7 +3,7 @@ import { BASE_URL } from "../utils/constants";
 
 export async function getNotifications(id, token) {
   try {
-    const response = await axios.get(`${BASE_URL}/notifications/pending-requests/${id}`, {
+    const response = await axios.get(`${BASE_URL}/  /${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
