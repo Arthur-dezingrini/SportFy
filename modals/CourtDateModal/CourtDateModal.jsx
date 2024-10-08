@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Modal, View, Text, TouchableOpacity, Switch, TextInput, StyleSheet } from 'react-native';
+import { Modal, View, Text, TouchableOpacity, Switch, TextInput } from 'react-native';
+import styles from './CourtDateModalStyle';
 
 const CourtDateModal = ({ isVisible, onClose }) => {
   const [days, setDays] = useState({
@@ -44,7 +45,9 @@ const CourtDateModal = ({ isVisible, onClose }) => {
             ]}
           >
             <View style={styles.dayInfo}>
-              <Text style={styles.dayText}>{day.charAt(0).toUpperCase() + day.slice(1)}</Text>
+              <Text style={styles.dayText}>
+                {day.charAt(0).toUpperCase() + day.slice(1)}
+              </Text>
               <Switch
                 value={days[day].enabled}
                 onValueChange={() => toggleDay(day)}
@@ -69,9 +72,7 @@ const CourtDateModal = ({ isVisible, onClose }) => {
               </View>
             )}
 
-            {!days[day].enabled && (
-              <Text style={styles.closedText}>Fechado</Text>
-            )}
+            {!days[day].enabled && <Text style={styles.closedText}>Fechado</Text>}
           </View>
         ))}
 
@@ -87,59 +88,5 @@ const CourtDateModal = ({ isVisible, onClose }) => {
     </Modal>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#fff',
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  dayRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 10,
-    marginBottom: 10,
-    borderRadius: 5,
-  },
-  dayInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  dayText: {
-    fontSize: 16,
-    marginRight: 10,
-  },
-  timeInputs: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  timeInput: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-    width: 60,
-    textAlign: 'center',
-    marginRight: 5,
-  },
-  closedText: {
-    color: '#999',
-  },
-  actions: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 20,
-  },
-  cancelButton: {
-    color: 'red',
-  },
-  applyButton: {
-    color: 'green',
-  },
-});
 
 export default CourtDateModal;
