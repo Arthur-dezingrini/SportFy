@@ -5,15 +5,12 @@ import {
   Button,
   Alert,
   Platform,
-  TouchableOpacity,
 } from "react-native";
 import styles from "./RegisterCourtStyle";
 import ActionInput from "../../components/ActionInput/ActionInput";
 import MapView, { Marker } from "react-native-maps";
 import axios from "axios";
 import * as Location from "expo-location";
-import moment from "moment";
-import Icon from "react-native-vector-icons/MaterialIcons";
 import HeaderTop from "./../../components/HeaderTop/HeaderTop";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CourtDateModal from "../../modals/CourtDateModal/CourtDateModal";
@@ -21,6 +18,7 @@ import CourtDateModal from "../../modals/CourtDateModal/CourtDateModal";
 export default function RegisterCourt({ locationMatch }) {
   const [location, setLocation] = useState("");
   const [showCourtDateModal, setShowCourtDateModal] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
   const [showMap, setShowMap] = useState(false);
   const [latiLong, setlatiLong] = useState(null);
   const [initialRegion, setInitialRegion] = useState({
@@ -183,7 +181,7 @@ export default function RegisterCourt({ locationMatch }) {
       )}
       <CourtDateModal
         isVisible={showCourtDateModal}
-        onClose={() => setCourtDateModal(false)}
+        onClose={() => setShowCourtDateModal(false)}
       />
     </SafeAreaView>
   );
