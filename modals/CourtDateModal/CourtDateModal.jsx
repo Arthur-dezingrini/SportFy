@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Modal, View, Text, TouchableOpacity, Switch, TextInput } from 'react-native';
 import styles from './CourtDateModalStyle';
 
-const CourtDateModal = ({ isVisible, onClose }) => {
+export default function CourtDateModal({ isVisible, onClose }) {
   const [days, setDays] = useState({
     domingo: { enabled: false, open: '', close: '' },
     segunda: { enabled: false, open: '', close: '' },
@@ -87,6 +87,4 @@ const CourtDateModal = ({ isVisible, onClose }) => {
       </View>
     </Modal>
   );
-};
-
-export default CourtDateModal;
+}

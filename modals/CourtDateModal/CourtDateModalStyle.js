@@ -5,11 +5,9 @@ export default StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: '#fff',
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 20,
+    marginTop: 50, // Define uma margem para não cobrir o header
+    marginBottom: 50, // Define uma margem para não cobrir o footer
+    borderRadius: 10, // Opcional: arredondamento para as bordas do modal
   },
   dayRow: {
     flexDirection: 'row',
