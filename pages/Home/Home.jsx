@@ -29,13 +29,13 @@ export default function Home({ navigation }) {
   useEffect(() => {
     const getNotifications = async () => {
       try {
-        const response = await NotificationService.getNotifications(user.id, token);
+        const response = await NotificationService.getNotifications(user.id, token)
         if (response.status === 200) {
           setNotificationsCount(response.data.friendRequests.length + response.data.matchRequests.length)
           setNotifications(response.data)
         }
       } catch (error) {
-        console.error("Erro ao verificar a sessão:", error);
+        console.error("Erro ao verificar a sessão:", error.response.data);
       }
     };
     const fetchUserType = async () => {

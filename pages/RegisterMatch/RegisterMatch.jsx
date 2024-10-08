@@ -25,7 +25,7 @@ import { useAuth } from "./../../appContext";
 
 const GOOGLE_API_KEY = "AIzaSyCqR9pyqkCysNHTtDz_hNXjIJNLGuDYq0Q";
 
-export default function RegisterMatch({ locationMatch }) {
+export default function RegisterMatch({ navigation, locationMatch }) {
   const [location, setLocation] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
@@ -173,18 +173,24 @@ export default function RegisterMatch({ locationMatch }) {
 
   const registerMatch = async () => {
     try {
-      console.log(friendMatch.map(friend => friend.id))
+      if (latiLong.latitude == null || time == null) {
+        Alert.alert('Ops', 'Esta faltando alguma informação')
+        return
+      }
       const Match = {
         latitude: latiLong.latitude,
         longitude: latiLong.longitude,
-        date: moment(date).format('YYYY-MM-DD'),
+        date: moment(new Date (date)).format('YYYY-MM-DD'),
         hour: time,
         value: value ? value : 0,
         creator_id: user.id,
         inviteMatchFriends: friendMatch.map(friend => friend.id),
       };
       const response = await RegisterMatchService.Register(Match, token);
-      console.log(response)
+      if (response.status === 200) {
+        const createdMatch = RegisterMatchService.getMatch(token)
+        navigation.navigate("Match", { match: Match })
+      }
     } catch (error) {
       console.error(error);
     }

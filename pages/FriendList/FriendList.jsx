@@ -22,6 +22,7 @@ export default function FriendList() {
   const FindPlayers = async (condition = '') => {
     try {
       const response = await FriendListService.findPlayers(user.id, condition, token);
+      console.log(response)
       if (response.status === 200) {
         setPlayers(response.data);
       } 
@@ -41,7 +42,7 @@ export default function FriendList() {
         Alert.alert('Sucesso', 'Pedido de amizade enviado com sucesso');
         const response2 = await FriendListService.findPlayers(user.id, '', token)
         if (response2.status === 200) {
-          setPlayers(response.data);
+          setPlayers(response2.data);
         }
       }
     } catch (error) {
