@@ -41,7 +41,7 @@ export default function CourtDateModal({ isVisible, onClose }) {
             key={day}
             style={[
               styles.dayRow,
-              { backgroundColor: days[day].enabled ? '#1c1c1c' : '#2c2c2c' },
+              { backgroundColor: days[day].enabled ? '#111' : '#2c2c2c' },
             ]}
           >
             <View style={styles.dayInfo}>
