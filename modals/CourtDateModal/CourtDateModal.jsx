@@ -4,13 +4,13 @@ import styles from './CourtDateModalStyle';
 
 export default function CourtDateModal({ isVisible, onClose }) {
   const [days, setDays] = useState({
-    Dom: { enabled: false, open: '', close: '' },
-    Seg: { enabled: false, open: '', close: '' },
-    Ter: { enabled: false, open: '', close: '' },
-    Qua: { enabled: false, open: '', close: '' },
-    Qui: { enabled: false, open: '', close: '' },
-    Sex: { enabled: false, open: '', close: '' },
-    Sáb: { enabled: false, open: '', close: '' },
+    Dom: { enabled: false, intervals: [{ open: '', close: '' }] },
+    Seg: { enabled: false, intervals: [{ open: '', close: '' }] },
+    Ter: { enabled: false, intervals: [{ open: '', close: '' }] },
+    Qua: { enabled: false, intervals: [{ open: '', close: '' }] },
+    Qui: { enabled: false, intervals: [{ open: '', close: '' }] },
+    Sex: { enabled: false, intervals: [{ open: '', close: '' }] },
+    Sáb: { enabled: false, intervals: [{ open: '', close: '' }] },
   });
 
   const toggleDay = (day) => {
@@ -23,14 +23,24 @@ export default function CourtDateModal({ isVisible, onClose }) {
     });
   };
 
-  const handleTimeChange = (day, type, value) => {
+  const handleTimeChange = (day, index, type, value) => {
+    const updatedIntervals = days[day].intervals.map((interval, i) =>
+      i === index ? { ...interval, [type]: value } : interval
+    );
     setDays({
       ...days,
-      [day]: {
-        ...days[day],
-        [type]: value,
-      },
+      [day]: { ...days[day], intervals: updatedIntervals },
     });
+  };
+
+  const addInterval = (day) => {
+    if (days[day].intervals.length < 6) {
+      const updatedIntervals = [...days[day].intervals, { open: '', close: '' }];
+      setDays({
+        ...days,
+        [day]: { ...days[day], intervals: updatedIntervals },
+      });
+    }
   };
 
   return (
@@ -41,7 +51,7 @@ export default function CourtDateModal({ isVisible, onClose }) {
             key={day}
             style={[
               styles.dayRow,
-              { backgroundColor: days[day].enabled ? '#111' : '#2c2c2c' },
+              { backgroundColor: days[day].enabled ? '#1c1c1c' : '#2c2c2c' },
             ]}
           >
             <View style={styles.dayInfo}>
@@ -55,22 +65,42 @@ export default function CourtDateModal({ isVisible, onClose }) {
             </View>
 
             {days[day].enabled && (
-              <View style={styles.timeInputs}>
-                <TextInput
-                  style={styles.timeInput}
-                  placeholder="08:00"
-                  placeholderTextColor = "#999" 
-                  value={days[day].open}
-                  onChangeText={(value) => handleTimeChange(day, 'open', value)}
-                />
-                <Text> - </Text>
-                <TextInput
-                  style={styles.timeInput}
-                  placeholder="18:00"
-                  placeholderTextColor = "#999" 
-                  value={days[day].close}
-                  onChangeText={(value) => handleTimeChange(day, 'close', value)}
-                />
+              <View style={styles.intervalContainer}>
+                {days[day].intervals.map((interval, index) => (
+                  <View key={index} style={styles.timeInputs}>
+                    <TextInput
+                      style={styles.timeInput}
+                      placeholder="08:00"
+                      placeholderTextColor="#999"
+                      value={interval.open}
+                      onChangeText={(value) =>
+                        handleTimeChange(day, index, 'open', value)
+                      }
+                    />
+                    <Text> - </Text>
+                    <TextInput
+                      style={styles.timeInput}
+                      placeholder="18:00"
+                      placeholderTextColor="#999"
+                      value={interval.close}
+                      onChangeText={(value) =>
+                        handleTimeChange(day, index, 'close', value)
+                      }
+                    />
+                  </View>
+                ))}
+
+                {/* Novo View para centralizar o botão "+" */}
+                {days[day].intervals.length < 6 && (
+                  <View style={styles.addButtonContainer}>
+                    <TouchableOpacity
+                      style={styles.addButton}
+                      onPress={() => addInterval(day)}
+                    >
+                      <Text style={styles.addButtonText}>+</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
               </View>
             )}
 

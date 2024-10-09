@@ -158,7 +158,7 @@ export default function RegisterCourt({ locationMatch }) {
             placeholder={"Nome da Arena"}
           />
           <ActionInput
-            textButton={"Selecionar"}
+            textButton={"Inserir"}
             placeholder={"Localização"}
             value={location}
             onPress={() => setShowMap(true)}
