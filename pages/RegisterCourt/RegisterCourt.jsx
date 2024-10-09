@@ -165,7 +165,7 @@ export default function RegisterCourt({ locationMatch }) {
           />
           <ActionInput
             textButton={"Inserir"}
-            placeholder={"Datas e horários"}
+            placeholder={"Horários"}
             onPress={() => setShowCourtDateModal(true)}
           />
           <ActionInput
