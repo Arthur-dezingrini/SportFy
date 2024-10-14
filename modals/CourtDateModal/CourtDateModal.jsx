@@ -43,80 +43,86 @@ export default function CourtDateModal({ isVisible, onClose }) {
     }
   };
 
+  const applyChanges = () => {
+    // Lógica de aplicação das mudanças pode ser adicionada aqui
+    onClose(); 
+  };
+
   return (
     <Modal visible={isVisible} animationType="slide" transparent={true}>
       <ScrollView style={styles.container}>
-        {Object.keys(days).map((day) => (
-          <View
-            key={day}
-            style={[
-              styles.dayRow,
-              { backgroundColor: days[day].enabled ? '#1c1c1c' : '#2c2c2c' },
-            ]}
-          >
-            <View style={styles.dayInfo}>
-              <Text style={styles.dayText}>
-                {day.charAt(0).toUpperCase() + day.slice(1)}
-              </Text>
-              <Switch
-                value={days[day].enabled}
-                onValueChange={() => toggleDay(day)}
-              />
-            </View>
-
-            {days[day].enabled && (
-              <View style={styles.intervalContainer}>
-                {days[day].intervals.map((interval, index) => (
-                  <View key={index} style={styles.timeInputs}>
-                    <TextInput
-                      style={styles.timeInput}
-                      placeholder="08:00"
-                      placeholderTextColor="#999"
-                      value={interval.open}
-                      onChangeText={(value) =>
-                        handleTimeChange(day, index, 'open', value)
-                      }
-                    />
-                    <Text> - </Text>
-                    <TextInput
-                      style={styles.timeInput}
-                      placeholder="18:00"
-                      placeholderTextColor="#999"
-                      value={interval.close}
-                      onChangeText={(value) =>
-                        handleTimeChange(day, index, 'close', value)
-                      }
-                    />
-                  </View>
-                ))}
-
-                {/* Novo View para centralizar o botão "+" */}
-                {days[day].intervals.length < 6 && (
-                  <View style={styles.addButtonContainer}>
-                    <TouchableOpacity
-                      style={styles.addButton}
-                      onPress={() => addInterval(day)}
-                    >
-                      <Text style={styles.addButtonText}>+</Text>
-                    </TouchableOpacity>
-                  </View>
-                )}
+        <View>
+          {Object.keys(days).map((day) => (
+            <View
+              key={day}
+              style={[
+                styles.dayRow,
+                { backgroundColor: days[day].enabled ? '#111' : '#2c2c2c' },
+              ]}
+            >
+              <View style={styles.dayInfo}>
+                <Text style={styles.dayText}>
+                  {day.charAt(0).toUpperCase() + day.slice(1)}
+                </Text>
+                <Switch
+                  value={days[day].enabled}
+                  onValueChange={() => toggleDay(day)}
+                />
               </View>
-            )}
-
-            {!days[day].enabled && <Text style={styles.closedText}>Fechado</Text>}
-          </View>
-        ))}
-
-        <View style={styles.actions}>
-          <TouchableOpacity onPress={onClose}>
-            <Text style={styles.cancelButton}>Cancelar</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={onClose}>
-            <Text style={styles.applyButton}>Aplicar</Text>
-          </TouchableOpacity>
+    
+              {days[day].enabled && (
+                <View style={styles.intervalContainer}>
+                  {days[day].intervals.map((interval, index) => (
+                    <View key={index} style={styles.timeInputs}>
+                      <TextInput
+                        style={styles.timeInput}
+                        placeholder="08:00"
+                        placeholderTextColor="#999"
+                        value={interval.open}
+                        onChangeText={(value) =>
+                          handleTimeChange(day, index, 'open', value)
+                        }
+                      />
+                      <Text> - </Text>
+                      <TextInput
+                        style={styles.timeInput}
+                        placeholder="18:00"
+                        placeholderTextColor="#999"
+                        value={interval.close}
+                        onChangeText={(value) =>
+                          handleTimeChange(day, index, 'close', value)
+                        }
+                      />
+                    </View>
+                  ))}
+    
+                  {days[day].intervals.length < 6 && (
+                    <View style={styles.addButtonContainer}>
+                      <TouchableOpacity
+                        style={styles.addButton}
+                        onPress={() => addInterval(day)}
+                      >
+                        <Text style={styles.addButtonText}>+</Text>
+                      </TouchableOpacity>
+                    </View>
+                  )}
+                </View>
+              )}
+    
+              {!days[day].enabled && <Text style={styles.closedText}>Fechado</Text>}
+              
+            </View>
+          ))}
         </View>
       </ScrollView>
+          <View style={styles.actions}>
+            <TouchableOpacity style={styles.button} onPress={onClose}>
+              <Text style={styles.cancelButton}>Cancelar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={onClose}>
+              <Text style={styles.applyButton}>Aplicar</Text>
+            </TouchableOpacity>
+          </View>
     </Modal>
   );
 }
