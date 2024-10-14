@@ -24,8 +24,15 @@ export default function CourtDateModal({ isVisible, onClose }) {
   };
 
   const handleTimeChange = (day, index, type, value) => {
+    // Filtra o input para aceitar apenas números
+    let filteredValue = value.replace(/[^0-9]/g, '').slice(0, 4);
+    // Adiciona ":" automaticamente após os dois primeiros dígitos
+    if (filteredValue.length > 2) {
+      filteredValue = `${filteredValue.slice(0, 2)}:${filteredValue.slice(2)}`;
+    }
+
     const updatedIntervals = days[day].intervals.map((interval, i) =>
-      i === index ? { ...interval, [type]: value } : interval
+      i === index ? { ...interval, [type]: filteredValue } : interval
     );
     setDays({
       ...days,
@@ -79,6 +86,8 @@ export default function CourtDateModal({ isVisible, onClose }) {
                         placeholder="08:00"
                         placeholderTextColor="#999"
                         value={interval.open}
+                        maxLength={5} // Limita o input a 5 caracteres
+                        keyboardType="numeric" // Garante que o teclado numérico seja exibido
                         onChangeText={(value) =>
                           handleTimeChange(day, index, 'open', value)
                         }
@@ -89,6 +98,8 @@ export default function CourtDateModal({ isVisible, onClose }) {
                         placeholder="18:00"
                         placeholderTextColor="#999"
                         value={interval.close}
+                        maxLength={5} // Limita o input a 5 caracteres
+                        keyboardType="numeric" // Garante que o teclado numérico seja exibido
                         onChangeText={(value) =>
                           handleTimeChange(day, index, 'close', value)
                         }
