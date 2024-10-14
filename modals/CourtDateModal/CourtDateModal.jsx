@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Modal, View, Text, TouchableOpacity, Switch, TextInput, ScrollView } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import styles from './CourtDateModalStyle';
 
 export default function CourtDateModal({ isVisible, onClose }) {
@@ -13,6 +14,8 @@ export default function CourtDateModal({ isVisible, onClose }) {
     Sáb: { enabled: false, intervals: [{ open: '', close: '' }] },
   });
 
+  const [showTimePicker, setShowTimePicker] = useState({ day: null, index: null, type: null });
+
   const toggleDay = (day) => {
     setDays({
       ...days,
@@ -23,21 +26,25 @@ export default function CourtDateModal({ isVisible, onClose }) {
     });
   };
 
-  const handleTimeChange = (day, index, type, value) => {
-    // Filtra o input para aceitar apenas números
-    let filteredValue = value.replace(/[^0-9]/g, '').slice(0, 4);
-    // Adiciona ":" automaticamente após os dois primeiros dígitos
-    if (filteredValue.length > 2) {
-      filteredValue = `${filteredValue.slice(0, 2)}:${filteredValue.slice(2)}`;
+  const handleTimeChange = (event, selectedTime, day, index, type) => {
+    if (selectedTime) {
+      const formattedTime = selectedTime.toLocaleTimeString('pt-BR', {
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+      const updatedIntervals = days[day].intervals.map((interval, i) =>
+        i === index ? { ...interval, [type]: formattedTime } : interval
+      );
+      setDays({
+        ...days,
+        [day]: { ...days[day], intervals: updatedIntervals },
+      });
     }
+    setShowTimePicker({ day: null, index: null, type: null }); // Fecha o picker após a seleção
+  };
 
-    const updatedIntervals = days[day].intervals.map((interval, i) =>
-      i === index ? { ...interval, [type]: filteredValue } : interval
-    );
-    setDays({
-      ...days,
-      [day]: { ...days[day], intervals: updatedIntervals },
-    });
+  const openTimePicker = (day, index, type) => {
+    setShowTimePicker({ day, index, type });
   };
 
   const addInterval = (day) => {
@@ -81,29 +88,31 @@ export default function CourtDateModal({ isVisible, onClose }) {
                 <View style={styles.intervalContainer}>
                   {days[day].intervals.map((interval, index) => (
                     <View key={index} style={styles.timeInputs}>
-                      <TextInput
+                      <TouchableOpacity
                         style={styles.timeInput}
-                        placeholder="08:00"
-                        placeholderTextColor="#999"
-                        value={interval.open}
-                        maxLength={5} // Limita o input a 5 caracteres
-                        keyboardType="numeric" // Garante que o teclado numérico seja exibido
-                        onChangeText={(value) =>
-                          handleTimeChange(day, index, 'open', value)
-                        }
-                      />
+                        onPress={() => openTimePicker(day, index, 'open')}
+                      >
+                        <Text
+                          style={{
+                            color: interval.open ? '#fff' : '#999'  // Cor do texto e do "placeholder"
+                          }}
+                        >
+                          {interval.open || '08:00'}
+                        </Text>
+                      </TouchableOpacity>
                       <Text> - </Text>
-                      <TextInput
+                      <TouchableOpacity
                         style={styles.timeInput}
-                        placeholder="18:00"
-                        placeholderTextColor="#999"
-                        value={interval.close}
-                        maxLength={5} // Limita o input a 5 caracteres
-                        keyboardType="numeric" // Garante que o teclado numérico seja exibido
-                        onChangeText={(value) =>
-                          handleTimeChange(day, index, 'close', value)
-                        }
-                      />
+                        onPress={() => openTimePicker(day, index, 'close')}
+                      >
+                        <Text
+                          style={{
+                            color: interval.close ? '#fff' : '#999'  // Cor do texto e do "placeholder"
+                          }}
+                        >
+                          {interval.close || '18:00'}
+                        </Text>
+                      </TouchableOpacity>
                     </View>
                   ))}
     
@@ -121,9 +130,20 @@ export default function CourtDateModal({ isVisible, onClose }) {
               )}
     
               {!days[day].enabled && <Text style={styles.closedText}>Fechado</Text>}
-              
+    
             </View>
           ))}
+          {showTimePicker.day && (
+            <DateTimePicker
+              mode="time"
+              display="default"
+              is24Hour={true}  // Define o formato 24 horas
+              value={new Date()}
+              onChange={(event, selectedTime) =>
+                handleTimeChange(event, selectedTime, showTimePicker.day, showTimePicker.index, showTimePicker.type)
+              }
+            />
+          )}
         </View>
       </ScrollView>
           <View style={styles.actions}>
