@@ -4,11 +4,14 @@ export default StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    margin: 60,
     backgroundColor: '#111',
     borderRadius: 20,
     maxHeight: 580,
+    width: '90%',
+    margin: 20,
+    marginTop: 80
   },
+
   dayRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -18,30 +21,35 @@ export default StyleSheet.create({
     borderRadius: 10,
     backgroundColor: '#2c2c2c',
   },
+
   dayInfo: {
     flexDirection: 'row',
     alignItems: 'center',
   },
+
   dayText: {
     fontSize: 16,
     marginRight: 10,
     color: '#fff',
     width: 40,
   },
+
   timeInputs: {
     flexDirection: 'row',
     alignItems: 'center',
     marginLeft: 20,
     marginBottom: 5,
   },
+
   timeInput: {
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
-    width: 60,
+    width: 75,
     textAlign: 'center',
     marginRight: 5,
     color: '#fff',
   },
+
   addButton: {
     backgroundColor: 'green',
     borderRadius: 20,
@@ -50,45 +58,53 @@ export default StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 10,
-    alignSelf: 'flex-start', // Alinha o botão "+" à esquerda
+    alignSelf: 'flex-start',
     marginLeft: 15, 
   },
+  
   addButtonText: {
     color: '#fff',
     fontSize: 15,
   },
+
   addButtonContainer: {
     flexDirection: 'row',
-    justifyContent: 'center', // Centraliza o botão na linha
+    justifyContent: 'center', 
   },
+  
   closedText: {
     color: '#999',
   },
+
   actions: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 25,
-    position: 'absolute', // Mantém os botões fixos
-    bottom: 0, // Coloca os botões na parte inferior da tela
+    position: 'absolute', 
+    bottom: 0, 
     left: 0,
     right: 0,
-    backgroundColor: '#111', // Pode ajustar conforme o estilo do modal
+    backgroundColor: '#111', 
   },
+
   button: {
-    backgroundColor: '#333', // Cor de fundo do botão
-    borderRadius: 10, // Bordas arredondadas
-    paddingVertical: 12, // Aumenta a área vertical clicável
-    paddingHorizontal: 20, // Aumenta a área horizontal clicável
-    marginHorizontal: 10, // Espaçamento entre os botões
+    backgroundColor: '#333', 
+    borderRadius: 10, 
+    paddingVertical: 12, 
+    paddingHorizontal: 20, 
+    marginHorizontal: 10,
   },
+
   cancelButton: {
     color: 'red',
     fontSize: 16,
     textAlign: 'center',
   },
+
   applyButton: {
     color: '#46FF6F',
     fontSize: 16,
     textAlign: 'center',
   },
+
 });

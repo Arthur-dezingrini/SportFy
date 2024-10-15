@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, View, Text, TouchableOpacity, Switch, TextInput, ScrollView } from 'react-native';
+import { Modal, View, Text, TouchableOpacity, Switch, ScrollView } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import styles from './CourtDateModalStyle';
 
@@ -14,7 +14,21 @@ export default function CourtDateModal({ isVisible, onClose }) {
     Sáb: { enabled: false, intervals: [{ open: '', close: '' }] },
   });
 
-  const [showTimePicker, setShowTimePicker] = useState({ day: null, index: null, type: null });
+  const handleTimeChange = (event, selectedTime, day, index, type) => {
+    if (selectedTime) {
+      const formattedTime = selectedTime.toLocaleTimeString('pt-BR', {
+        hour: '2-digit',
+        minute: '2-digit',
+      }); 
+      const updatedIntervals = days[day].intervals.map((interval, i) =>
+        i === index ? { ...interval, [type]: formattedTime } : interval
+      );
+      setDays({
+        ...days,
+        [day]: { ...days[day], intervals: updatedIntervals },
+      });
+    }
+  };
 
   const toggleDay = (day) => {
     setDays({
@@ -26,27 +40,6 @@ export default function CourtDateModal({ isVisible, onClose }) {
     });
   };
 
-  const handleTimeChange = (event, selectedTime, day, index, type) => {
-    if (selectedTime) {
-      const formattedTime = selectedTime.toLocaleTimeString('pt-BR', {
-        hour: '2-digit',
-        minute: '2-digit',
-      });
-      const updatedIntervals = days[day].intervals.map((interval, i) =>
-        i === index ? { ...interval, [type]: formattedTime } : interval
-      );
-      setDays({
-        ...days,
-        [day]: { ...days[day], intervals: updatedIntervals },
-      });
-    }
-    setShowTimePicker({ day: null, index: null, type: null }); // Fecha o picker após a seleção
-  };
-
-  const openTimePicker = (day, index, type) => {
-    setShowTimePicker({ day, index, type });
-  };
-
   const addInterval = (day) => {
     if (days[day].intervals.length < 6) {
       const updatedIntervals = [...days[day].intervals, { open: '', close: '' }];
@@ -55,11 +48,6 @@ export default function CourtDateModal({ isVisible, onClose }) {
         [day]: { ...days[day], intervals: updatedIntervals },
       });
     }
-  };
-
-  const applyChanges = () => {
-    // Lógica de aplicação das mudanças pode ser adicionada aqui
-    onClose(); 
   };
 
   return (
@@ -83,39 +71,34 @@ export default function CourtDateModal({ isVisible, onClose }) {
                   onValueChange={() => toggleDay(day)}
                 />
               </View>
-    
+
               {days[day].enabled && (
                 <View style={styles.intervalContainer}>
                   {days[day].intervals.map((interval, index) => (
                     <View key={index} style={styles.timeInputs}>
-                      <TouchableOpacity
+                      <DateTimePicker
+                        mode="time"
+                        display="default"
+                        is24Hour={true}
+                        value={interval.open ? new Date() : new Date()}
+                        onChange={(event, selectedTime) =>
+                          handleTimeChange(event, selectedTime, day, index, 'open')
+                        }
                         style={styles.timeInput}
-                        onPress={() => openTimePicker(day, index, 'open')}
-                      >
-                        <Text
-                          style={{
-                            color: interval.open ? '#fff' : '#999'  // Cor do texto e do "placeholder"
-                          }}
-                        >
-                          {interval.open || '08:00'}
-                        </Text>
-                      </TouchableOpacity>
-                      <Text> - </Text>
-                      <TouchableOpacity
-                        style={styles.timeInput}
-                        onPress={() => openTimePicker(day, index, 'close')}
-                      >
-                        <Text
-                          style={{
-                            color: interval.close ? '#fff' : '#999'  // Cor do texto e do "placeholder"
-                          }}
-                        >
-                          {interval.close || '18:00'}
-                        </Text>
-                      </TouchableOpacity>
+                      />
+                      <DateTimePicker
+                        mode="time"
+                        display="default"
+                        is24Hour={true}
+                        value={interval.close ? new Date() : new Date()}
+                        onChange={(event, selectedTime) =>
+                          handleTimeChange(event, selectedTime, day, index, 'close')
+                        }
+                        style={styles.timeInput} // Agora o DateTimePicker aparece diretamente ao lado
+                      />
                     </View>
                   ))}
-    
+
                   {days[day].intervals.length < 6 && (
                     <View style={styles.addButtonContainer}>
                       <TouchableOpacity
@@ -128,32 +111,20 @@ export default function CourtDateModal({ isVisible, onClose }) {
                   )}
                 </View>
               )}
-    
+
               {!days[day].enabled && <Text style={styles.closedText}>Fechado</Text>}
-    
             </View>
           ))}
-          {showTimePicker.day && (
-            <DateTimePicker
-              mode="time"
-              display="default"
-              is24Hour={true}  // Define o formato 24 horas
-              value={new Date()}
-              onChange={(event, selectedTime) =>
-                handleTimeChange(event, selectedTime, showTimePicker.day, showTimePicker.index, showTimePicker.type)
-              }
-            />
-          )}
         </View>
       </ScrollView>
-          <View style={styles.actions}>
-            <TouchableOpacity style={styles.button} onPress={onClose}>
-              <Text style={styles.cancelButton}>Cancelar</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={onClose}>
-              <Text style={styles.applyButton}>Aplicar</Text>
-            </TouchableOpacity>
-          </View>
+      <View style={styles.actions}>
+        <TouchableOpacity style={styles.button} onPress={onClose}>
+          <Text style={styles.cancelButton}>Cancelar</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={onClose}>
+          <Text style={styles.applyButton}>Aplicar</Text>
+        </TouchableOpacity>
+      </View>
     </Modal>
   );
 }
