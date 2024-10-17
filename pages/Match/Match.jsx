@@ -26,21 +26,21 @@ export default function Match({ navigation, route }) {
         </View>
 
         <View style={styles.infoContainer}>
-          <Text style={styles.title}>{match?.location || 'Nome da Quadra'}</Text>
+          <Text style={styles.title}>{'Nome da Quadra'}</Text>
           
           <View style={styles.infoRow}>
             <Icon name="event" size={20} color="#fff" />
-            <Text style={styles.infoText}>Data: {match?.date || '31/12/2024'}</Text>
+            <Text style={styles.infoText}>Data: {match?.date}</Text>
           </View>
 
           <View style={styles.infoRow}>
             <Icon name="schedule" size={20} color="#fff" />
-            <Text style={styles.infoText}>Horário: {match?.hour || '13:00'}</Text>
+            <Text style={styles.infoText}>Horário: {match?.hour}</Text>
           </View>
 
           <View style={styles.infoRow}>
             <Icon name="attach-money" size={20} color="#fff" />
-            <Text style={styles.infoText}>Valor da partida: ${match?.value || '300'}</Text>
+            <Text style={styles.infoText}>Valor da partida: ${match?.value}</Text>
           </View>
 
           <View style={styles.infoRow}>
@@ -50,7 +50,7 @@ export default function Match({ navigation, route }) {
 
           <View style={styles.infoRow}>
             <Icon name="account-circle" size={20} color="#fff" />
-            <Text style={styles.infoText}>Jogadores confirmados: 0</Text>
+            <Text style={styles.infoText}>Jogadores confirmados: {match.confirmPlayersCount} / {match.totalPlayersCount}</Text>
           </View>
         </View>
       </View>
