@@ -23,7 +23,7 @@ export default function Home({ navigation }) {
   });
 
   const renderItem = ({ item, index }) => {
-    return <CardGameHome navigation={navigation} key={index} />;
+    return <CardGameHome navigation={navigation} key={index} game={item}/>;
   };
 
   useEffect(() => {
@@ -49,14 +49,14 @@ export default function Home({ navigation }) {
       }
     };
     const focusListener = navigation.addListener('focus', () => {
-      fetchUserType(); // Atualiza o tipo de usuário sempre que a Home for focada
+      fetchUserType();
     });
 
     fetchUserType();
     getNotifications();
 
     return () => {
-      focusListener(); // Remove o listener quando o componente for desmontado
+      focusListener(); 
     };
   }, [navigation]);
 
@@ -64,9 +64,6 @@ export default function Home({ navigation }) {
 
   const containerStyleHeader = userType === "dono" ? styles.headerContainerOwner : styles.headerContainer;
   const imageStyle = userType === "dono" ? styles.imageOwner : styles.image;
-
-
-
 
   return (
     <SafeAreaView style={styles.container}>

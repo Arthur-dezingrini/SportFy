@@ -94,7 +94,7 @@ export default function CourtDateModal({ isVisible, onClose }) {
                       >
                         <Text
                           style={{
-                            color: interval.open ? '#fff' : '#999'  // Cor do texto e do "placeholder"
+                            color: interval.open ? '#46FF6F' : '#999'  // Cor do texto e do "placeholder"
                           }}
                         >
                           {interval.open || '08:00'}
@@ -107,7 +107,7 @@ export default function CourtDateModal({ isVisible, onClose }) {
                       >
                         <Text
                           style={{
-                            color: interval.close ? '#fff' : '#999'  // Cor do texto e do "placeholder"
+                            color: interval.close ? '#46FF6F' : '#999'  // Cor do texto e do "placeholder"
                           }}
                         >
                           {interval.close || '18:00'}

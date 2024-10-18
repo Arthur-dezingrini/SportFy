@@ -184,12 +184,14 @@ export default function RegisterMatch({ navigation, locationMatch }) {
         hour: time,
         value: value ? value : 0,
         creator_id: user.id,
+        location: location,
         inviteMatchFriends: friendMatch.map(friend => friend.id),
       };
       const response = await RegisterMatchService.Register(Match, token);
       if (response.status === 200) {
-        const createdMatch = RegisterMatchService.getMatch(token)
-        navigation.navigate("Match", { match: Match })
+        const createdMatch = await RegisterMatchService.getMatch(response.data, token)
+        console.log(createdMatch.data)
+        navigation.navigate("Match", { match: createdMatch.data })
       }
     } catch (error) {
       console.error(error);

@@ -21,10 +21,10 @@ export async function Register (data, token) {
 
 }
 
-export async function getFriends (data) {
+export async function getMatch (matchId, token) {
     try {
         const response = await axios.get(
-            `${BASE_URL}/get-friends`, 
+            `${BASE_URL}/match/get-match/${matchId}`, 
             {
                 headers: {
                   'Authorization': `Bearer ${token}`,
@@ -32,8 +32,9 @@ export async function getFriends (data) {
                 },
             }
         )
+
+        return response
     } catch (error) {
 
     }
-
 }
