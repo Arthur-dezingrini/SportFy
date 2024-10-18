@@ -3,16 +3,19 @@ import { Modal, View, Text, TouchableOpacity, Switch, ScrollView } from 'react-n
 import DateTimePicker from '@react-native-community/datetimepicker';
 import styles from './CourtDateModalStyle';
 
+const initialDaysState = {
+  Dom: { enabled: false, intervals: [{ open: '', close: '' }] },
+  Seg: { enabled: false, intervals: [{ open: '', close: '' }] },
+  Ter: { enabled: false, intervals: [{ open: '', close: '' }] },
+  Qua: { enabled: false, intervals: [{ open: '', close: '' }] },
+  Qui: { enabled: false, intervals: [{ open: '', close: '' }] },
+  Sex: { enabled: false, intervals: [{ open: '', close: '' }] },
+  Sáb: { enabled: false, intervals: [{ open: '', close: '' }] },
+};
+
 export default function CourtDateModal({ isVisible, onClose }) {
-  const [days, setDays] = useState({
-    Dom: { enabled: false, intervals: [{ open: '', close: '' }] },
-    Seg: { enabled: false, intervals: [{ open: '', close: '' }] },
-    Ter: { enabled: false, intervals: [{ open: '', close: '' }] },
-    Qua: { enabled: false, intervals: [{ open: '', close: '' }] },
-    Qui: { enabled: false, intervals: [{ open: '', close: '' }] },
-    Sex: { enabled: false, intervals: [{ open: '', close: '' }] },
-    Sáb: { enabled: false, intervals: [{ open: '', close: '' }] },
-  });
+
+  const [days, setDays] = useState(initialDaysState);
 
   const [showTimePicker, setShowTimePicker] = useState({ visible: false, day: null, index: null, type: null });
 
@@ -87,6 +90,11 @@ export default function CourtDateModal({ isVisible, onClose }) {
         [day]: { ...days[day], intervals: updatedIntervals },
       });
     }
+  };
+
+  // Função para resetar o modal
+  const resetDays = () => {
+    setDays(initialDaysState);  // Reseta os dias para o estado inicial
   };
 
   return (
@@ -173,14 +181,22 @@ export default function CourtDateModal({ isVisible, onClose }) {
           )}
         </View>
       </ScrollView>
+
       <View style={styles.actions}>
-        <TouchableOpacity style={styles.button} onPress={onClose}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => {
+            resetDays(); // Reseta o estado quando o usuário clica em cancelar
+            onClose();
+          }}
+        >
           <Text style={styles.cancelButton}>Cancelar</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={onClose}>
           <Text style={styles.applyButton}>Aplicar</Text>
         </TouchableOpacity>
       </View>
+
     </Modal>
   );
 }
