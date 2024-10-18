@@ -98,6 +98,28 @@ export default function CourtDateModal({ isVisible, onClose }) {
     setDays(initialDaysState);  // Reseta os dias para o estado inicial
   };
 
+  // Função para validar se há intervalos incompletos (apenas um horário inserido)
+  const validateIntervals = () => {
+    for (const day in days) {
+      if (days[day].enabled) {
+        for (const interval of days[day].intervals) {
+          if ((!interval.open && interval.close) || (interval.open && !interval.close)) {
+            alert('Não é possível um intervalo de horários com apenas um horário inserido!');
+            return false; // Interrompe a execução e não permite aplicar
+          }
+        }
+      }
+    }
+    return true; // Validação passou
+  };
+
+  // Função chamada ao clicar em "Aplicar" para validação de intervalos
+  const handleApply = () => {
+    if (validateIntervals()) {
+      onClose(); // Fecha o modal se a validação passar
+    }
+  };
+
   return (
     <Modal visible={isVisible} animationType="slide" transparent={true}>
       <ScrollView style={styles.container}>
@@ -193,7 +215,7 @@ export default function CourtDateModal({ isVisible, onClose }) {
         >
           <Text style={styles.cancelButton}>Cancelar</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={onClose}>
+        <TouchableOpacity style={styles.button} onPress={handleApply}>
           <Text style={styles.applyButton}>Aplicar</Text>
         </TouchableOpacity>
       </View>
