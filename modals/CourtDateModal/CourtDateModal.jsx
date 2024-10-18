@@ -32,9 +32,35 @@ export default function CourtDateModal({ isVisible, onClose }) {
         hour: '2-digit',
         minute: '2-digit',
       });
+      
       const updatedIntervals = days[day].intervals.map((interval, i) =>
         i === index ? { ...interval, [type]: formattedTime } : interval
       );
+
+      const openTime = updatedIntervals[index].open;
+      const closeTime = updatedIntervals[index].close;
+  
+      if (openTime && closeTime) {
+        const [openHours, openMinutes] = openTime.split(':').map(Number);
+        const [closeHours, closeMinutes] = closeTime.split(':').map(Number);
+  
+        // Converte para objetos de data
+        const openDate = new Date();
+        openDate.setHours(openHours, openMinutes);
+  
+        const closeDate = new Date();
+        closeDate.setHours(closeHours, closeMinutes);
+  
+        // Calcula a diferença em milissegundos
+        const difference = closeDate - openDate;
+  
+        // Verifica se a diferença é de pelo menos 1 hora (3600000 ms)
+        if (difference < 3600000) {
+          alert('O intervalo mínimo entre os horários deve ser de 1 hora.');
+          return; // Impede a atualização se a validação falhar
+        }
+      }
+
       setDays({
         ...days,
         [day]: { ...days[day], intervals: updatedIntervals },
