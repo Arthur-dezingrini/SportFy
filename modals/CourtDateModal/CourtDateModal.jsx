@@ -27,7 +27,7 @@ export default function CourtDateModal({ isVisible, onClose }) {
   };
 
   const handleTimeChange = (event, selectedTime, day, index, type) => {
-    if (selectedTime) {
+    if (event.type === "set" && selectedTime) {
       const formattedTime = selectedTime.toLocaleTimeString('pt-BR', {
         hour: '2-digit',
         minute: '2-digit',
@@ -136,7 +136,7 @@ export default function CourtDateModal({ isVisible, onClose }) {
           {showTimePicker.day && (
             <DateTimePicker
               mode="time"
-              display="default"
+              display="spinner"
               is24Hour={true}  // Define o formato 24 horas
               value={new Date()}
               onChange={(event, selectedTime) =>
