@@ -7,9 +7,8 @@ export default StyleSheet.create({
     backgroundColor: '#111',
     borderRadius: 20,
     maxHeight: 580,
-    width: '90%',
-    margin: 20,
-    marginTop: 80
+    width: '70%',
+    margin: 60,
   },
 
   dayRow: {
@@ -19,7 +18,6 @@ export default StyleSheet.create({
     padding: 10,
     marginBottom: 10,
     borderRadius: 10,
-    backgroundColor: '#2c2c2c',
   },
 
   dayInfo: {
@@ -37,41 +35,24 @@ export default StyleSheet.create({
   timeInputs: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginLeft: 20,
+    marginTop: 5,
     marginBottom: 5,
   },
 
   timeInput: {
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
-    width: 75,
+    width: 50,
     textAlign: 'center',
     marginRight: 5,
-    color: '#fff',
-  },
-
-  addButton: {
-    backgroundColor: 'green',
-    borderRadius: 20,
-    width: 20,
-    height: 20,
-    justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 10,
-    alignSelf: 'flex-start',
-    marginLeft: 15, 
-  },
-  
-  addButtonText: {
-    color: '#fff',
-    fontSize: 15,
   },
 
   addButtonContainer: {
     flexDirection: 'row',
     justifyContent: 'center', 
   },
-  
+
   closedText: {
     color: '#999',
   },
@@ -88,8 +69,7 @@ export default StyleSheet.create({
   },
 
   button: {
-    backgroundColor: '#333', 
-    borderRadius: 10, 
+    backgroundColor: 'transparent', 
     paddingVertical: 12, 
     paddingHorizontal: 20, 
     marginHorizontal: 10,

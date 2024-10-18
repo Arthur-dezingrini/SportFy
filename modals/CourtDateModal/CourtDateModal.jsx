@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Modal, View, Text, TouchableOpacity, Switch, ScrollView } from 'react-native';
+import { Modal, View, Text, TouchableOpacity, Switch, ScrollView, Image } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import PngIcon from '../../assets/add-button.png';
 import styles from './CourtDateModalStyle';
 
 const initialDaysState = {
@@ -129,20 +130,20 @@ export default function CourtDateModal({ isVisible, onClose }) {
                       >
                         <Text
                           style={{
-                            color: interval.open ? '#46FF6F' : '#999',  // Cor do texto e do "placeholder"
+                            color: interval.open ? '#46FF6F' : '#999',  fontSize: 18// Cor do texto e do "placeholder"
                           }}
                         >
                           {interval.open || '08:00'}
                         </Text>
                       </TouchableOpacity>
-                      <Text> - </Text>
+                      <Text style={{ color: 'white' }}>  -  </Text>
                       <TouchableOpacity
                         style={styles.timeInput}
                         onPress={() => openTimePicker(day, index, 'close')}
                       >
                         <Text
                           style={{
-                            color: interval.close ? '#46FF6F' : '#999',  // Cor do texto e do "placeholder"
+                            color: interval.close ? '#46FF6F' : '#999',  fontSize: 18// Cor do texto e do "placeholder"
                           }}
                         >
                           {interval.close || '18:00'}
@@ -154,10 +155,10 @@ export default function CourtDateModal({ isVisible, onClose }) {
                   {days[day].intervals.length < 4 && (
                     <View style={styles.addButtonContainer}>
                       <TouchableOpacity
-                        style={styles.addButton}
+                        // style={styles.addButton}
                         onPress={() => addInterval(day)}
                       >
-                        <Text style={styles.addButtonText}>+</Text>
+                        <Image source={PngIcon} style={{ width: 24, height: 24, backgroundColor:'transparent' }} />
                       </TouchableOpacity>
                     </View>
                   )}
