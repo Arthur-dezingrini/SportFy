@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, View, Text, TouchableOpacity, Switch, TextInput, ScrollView } from 'react-native';
+import { Modal, View, Text, TouchableOpacity, Switch, ScrollView } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import styles from './CourtDateModalStyle';
 
@@ -14,7 +14,7 @@ export default function CourtDateModal({ isVisible, onClose }) {
     Sáb: { enabled: false, intervals: [{ open: '', close: '' }] },
   });
 
-  const [showTimePicker, setShowTimePicker] = useState({ day: null, index: null, type: null });
+  const [showTimePicker, setShowTimePicker] = useState({ visible: false, day: null, index: null, type: null });
 
   const toggleDay = (day) => {
     setDays({
@@ -27,12 +27,12 @@ export default function CourtDateModal({ isVisible, onClose }) {
   };
 
   const handleTimeChange = (event, selectedTime, day, index, type) => {
-    if (event.type === "set" && selectedTime) {
+    if (event.type === 'set' && selectedTime) {
       const formattedTime = selectedTime.toLocaleTimeString('pt-BR', {
         hour: '2-digit',
         minute: '2-digit',
       });
-      
+
       const updatedIntervals = days[day].intervals.map((interval, i) =>
         i === index ? { ...interval, [type]: formattedTime } : interval
       );
@@ -40,6 +40,7 @@ export default function CourtDateModal({ isVisible, onClose }) {
       const openTime = updatedIntervals[index].open;
       const closeTime = updatedIntervals[index].close;
   
+      // Validação de intervalo mínimo de 1 hora
       if (openTime && closeTime) {
         const [openHours, openMinutes] = openTime.split(':').map(Number);
         const [closeHours, closeMinutes] = closeTime.split(':').map(Number);
@@ -65,27 +66,27 @@ export default function CourtDateModal({ isVisible, onClose }) {
         ...days,
         [day]: { ...days[day], intervals: updatedIntervals },
       });
+
+      // Após a escolha do horário, fechamos o TimePicker
+      setShowTimePicker({ visible: false, day: null, index: null, type: null });
+    } else {
+      // Cancela a seleção e fecha o picker
+      setShowTimePicker({ visible: false, day: null, index: null, type: null });
     }
-    setShowTimePicker({ day: null, index: null, type: null }); // Fecha o picker após a seleção
   };
 
   const openTimePicker = (day, index, type) => {
-    setShowTimePicker({ day, index, type });
+    setShowTimePicker({ visible: true, day, index, type });
   };
 
   const addInterval = (day) => {
-    if (days[day].intervals.length < 6) {
+    if (days[day].intervals.length < 4) {
       const updatedIntervals = [...days[day].intervals, { open: '', close: '' }];
       setDays({
         ...days,
         [day]: { ...days[day], intervals: updatedIntervals },
       });
     }
-  };
-
-  const applyChanges = () => {
-    // Lógica de aplicação das mudanças pode ser adicionada aqui
-    onClose(); 
   };
 
   return (
@@ -109,7 +110,7 @@ export default function CourtDateModal({ isVisible, onClose }) {
                   onValueChange={() => toggleDay(day)}
                 />
               </View>
-    
+
               {days[day].enabled && (
                 <View style={styles.intervalContainer}>
                   {days[day].intervals.map((interval, index) => (
@@ -120,7 +121,7 @@ export default function CourtDateModal({ isVisible, onClose }) {
                       >
                         <Text
                           style={{
-                            color: interval.open ? '#46FF6F' : '#999'  // Cor do texto e do "placeholder"
+                            color: interval.open ? '#46FF6F' : '#999',  // Cor do texto e do "placeholder"
                           }}
                         >
                           {interval.open || '08:00'}
@@ -133,7 +134,7 @@ export default function CourtDateModal({ isVisible, onClose }) {
                       >
                         <Text
                           style={{
-                            color: interval.close ? '#46FF6F' : '#999'  // Cor do texto e do "placeholder"
+                            color: interval.close ? '#46FF6F' : '#999',  // Cor do texto e do "placeholder"
                           }}
                         >
                           {interval.close || '18:00'}
@@ -141,8 +142,8 @@ export default function CourtDateModal({ isVisible, onClose }) {
                       </TouchableOpacity>
                     </View>
                   ))}
-    
-                  {days[day].intervals.length < 6 && (
+
+                  {days[day].intervals.length < 4 && (
                     <View style={styles.addButtonContainer}>
                       <TouchableOpacity
                         style={styles.addButton}
@@ -154,12 +155,12 @@ export default function CourtDateModal({ isVisible, onClose }) {
                   )}
                 </View>
               )}
-    
+
               {!days[day].enabled && <Text style={styles.closedText}>Fechado</Text>}
-    
             </View>
           ))}
-          {showTimePicker.day && (
+
+          {showTimePicker.visible && (
             <DateTimePicker
               mode="time"
               display="spinner"
@@ -172,14 +173,14 @@ export default function CourtDateModal({ isVisible, onClose }) {
           )}
         </View>
       </ScrollView>
-          <View style={styles.actions}>
-            <TouchableOpacity style={styles.button} onPress={onClose}>
-              <Text style={styles.cancelButton}>Cancelar</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={onClose}>
-              <Text style={styles.applyButton}>Aplicar</Text>
-            </TouchableOpacity>
-          </View>
+      <View style={styles.actions}>
+        <TouchableOpacity style={styles.button} onPress={onClose}>
+          <Text style={styles.cancelButton}>Cancelar</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={onClose}>
+          <Text style={styles.applyButton}>Aplicar</Text>
+        </TouchableOpacity>
+      </View>
     </Modal>
   );
 }
