@@ -38,3 +38,22 @@ export async function getMatch (matchId, token) {
 
     }
 }
+
+
+export async function getMatchs (userId, token) {
+    try {
+        const response = await axios.get(
+            `${BASE_URL}/match/get-matchs/${userId}`,
+            {
+                headers: {
+                  'Authorization': `Bearer ${token}`,
+                  'Content-Type': 'application/json',
+                },
+            }
+        )
+
+        return response
+    } catch (error) {
+
+    }
+}

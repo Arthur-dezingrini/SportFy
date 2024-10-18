@@ -66,7 +66,7 @@ export default function CourtDateModal({ isVisible, onClose }) {
         [day]: { ...days[day], intervals: updatedIntervals },
       });
     }
-    setShowTimePicker({ day: null, index: null, type: null }); // Fecha o picker após a seleção
+    setShowTimePicker({ day: null, index: null, type: null });
   };
 
   const openTimePicker = (day, index, type) => {

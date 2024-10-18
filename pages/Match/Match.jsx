@@ -50,7 +50,7 @@ export default function Match({ navigation, route }) {
 
           <View style={styles.infoRow}>
             <Icon name="account-circle" size={20} color="#fff" />
-            <Text style={styles.infoText}>Jogadores confirmados: {match.confirmPlayersCount} / {match.totalPlayersCount}</Text>
+            <Text style={styles.infoText}>Jogadores confirmados: {match.confirmPlayersCount + 1} / {match.totalPlayersCount + 1}</Text>
           </View>
         </View>
       </View>

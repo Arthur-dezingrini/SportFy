@@ -8,6 +8,7 @@ import { useAuth } from "../../appContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import * as NotificationService from "../../services/NotificationService";
+import * as registerMatchService from "../../services/RegisterMatchService"
 
 export default function Home({ navigation }) {
   const { user, token } = useAuth();
@@ -15,7 +16,7 @@ export default function Home({ navigation }) {
   const [userType, setUserType] = useState(null);
   const [notificationsCount, setNotificationsCount] = useState(null);
   const [notifications, setNotifications] = useState(null);
-
+  const [matchs, SetMatchs] = useState([])
   const headerOpacity = scrollY.interpolate({
     inputRange: [0, 100],
     outputRange: [1, 0],
@@ -52,6 +53,19 @@ export default function Home({ navigation }) {
       fetchUserType();
     });
 
+    const getGames = async () => {
+      try {
+        const response = await registerMatchService.getMatchs(user.id, token)
+        if (response.status === 200) {
+          console.log(response)
+          console.log(response.data)
+          SetMatchs(response.data)
+        }
+      } catch (error) {
+        console.log('Erro ao pegar proximas partidas', error)
+      }
+    }
+    getGames()
     fetchUserType();
     getNotifications();
 
@@ -119,12 +133,12 @@ export default function Home({ navigation }) {
             <Text style={styles.title}>Seus Próximos Jogos</Text>
           </View>
           <Carousel
-            data={data}
+            data={matchs}
             renderItem={renderItem}
             sliderWidth={styles.sliderWidth}
             itemWidth={styles.itemWidth}
             layout={"default"}
-            inactiveSlideScale={0.9}
+            inactiveSlideScale={0.7}
             inactiveSlideOpacity={0.7}
             loop={true}
           />
