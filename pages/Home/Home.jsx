@@ -8,7 +8,7 @@ import { useAuth } from "../../appContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import * as NotificationService from "../../services/NotificationService";
-import * as registerMatchService from "../../services/RegisterMatchService"
+import * as registerMatchService from "../../services/RegisterMatchService";
 
 export default function Home({ navigation }) {
   const { user, token } = useAuth();
@@ -16,7 +16,7 @@ export default function Home({ navigation }) {
   const [userType, setUserType] = useState(null);
   const [notificationsCount, setNotificationsCount] = useState(null);
   const [notifications, setNotifications] = useState(null);
-  const [matchs, SetMatchs] = useState([])
+  const [matchs, SetMatchs] = useState([]);
   const headerOpacity = scrollY.interpolate({
     inputRange: [0, 100],
     outputRange: [1, 0],
@@ -24,16 +24,22 @@ export default function Home({ navigation }) {
   });
 
   const renderItem = ({ item, index }) => {
-    return <CardGameHome navigation={navigation} key={index} game={item}/>;
+    return <CardGameHome navigation={navigation} key={index} game={item} />;
   };
 
   useEffect(() => {
     const getNotifications = async () => {
       try {
-        const response = await NotificationService.getNotifications(user.id, token)
+        const response = await NotificationService.getNotifications(
+          user.id,
+          token
+        );
         if (response.status === 200) {
-          setNotificationsCount(response.data.friendRequests.length + response.data.matchRequests.length)
-          setNotifications(response.data)
+          setNotificationsCount(
+            response.data.friendRequests.length +
+              response.data.matchRequests.length
+          );
+          setNotifications(response.data);
         }
       } catch (error) {
         console.error("Erro ao verificar a sessão:", error.response.data);
@@ -49,41 +55,38 @@ export default function Home({ navigation }) {
         console.error("Erro ao buscar o tipo de usuário:", error);
       }
     };
-    const focusListener = navigation.addListener('focus', () => {
+    const focusListener = navigation.addListener("focus", () => {
       fetchUserType();
     });
 
     const getGames = async () => {
       try {
-        const response = await registerMatchService.getMatchs(user.id, token)
+        const response = await registerMatchService.getMatchs(user.id, token);
         if (response.status === 200) {
-          console.log(response)
-          console.log(response.data)
-          SetMatchs(response.data)
+          SetMatchs(response.data);
         }
       } catch (error) {
-        console.log('Erro ao pegar proximas partidas', error)
+        console.log("Erro ao pegar proximas partidas", error);
       }
-    }
-    getGames()
+    };
+    getGames();
     fetchUserType();
     getNotifications();
 
     return () => {
-      focusListener(); 
+      focusListener();
     };
   }, [navigation]);
 
   const data = [{}, {}, {}, {}, {}, {}, {}, {}];
 
-  const containerStyleHeader = userType === "dono" ? styles.headerContainerOwner : styles.headerContainer;
+  const containerStyleHeader =
+    userType === "dono" ? styles.headerContainerOwner : styles.headerContainer;
   const imageStyle = userType === "dono" ? styles.imageOwner : styles.image;
 
   return (
     <SafeAreaView style={styles.container}>
-      <Animated.View
-        style={[containerStyleHeader, { opacity: headerOpacity }]}
-      >
+      <Animated.View style={[containerStyleHeader, { opacity: headerOpacity }]}>
         <View style={styles.infoContainer}>
           <Image
             source={require("./../../assets/bola.png")}
@@ -91,10 +94,14 @@ export default function Home({ navigation }) {
           />
           <Text style={styles.textName}>
             Olá, <Text style={styles.boldText}>{user.name.split(" ")[0]}</Text>
-
           </Text>
         </View>
-        <TouchableOpacity style={styles.notifications} onPress={() => navigation.navigate('Notifications', { notifications })}>
+        <TouchableOpacity
+          style={styles.notifications}
+          onPress={() =>
+            navigation.navigate("Notifications", { notifications })
+          }
+        >
           <Icon name="notifications" color={"#FFF"} size={30} />
           {notificationsCount > 0 && (
             <View style={styles.badge}>
@@ -128,21 +135,23 @@ export default function Home({ navigation }) {
             loop={true}
           />
         </View>
-        <View>
-          <View style={styles.titleContainer}>
-            <Text style={styles.title}>Seus Próximos Jogos</Text>
+        {matchs.length > 0 && (
+          <View>
+            <View style={styles.titleContainer}>
+              <Text style={styles.title}>Seus Próximos Jogos</Text>
+            </View>
+            <Carousel
+              data={matchs}
+              renderItem={renderItem}
+              sliderWidth={styles.sliderWidth}
+              itemWidth={styles.itemWidth}
+              layout={"default"}
+              inactiveSlideScale={0.7}
+              inactiveSlideOpacity={0.7}
+              loop={true}
+            />
           </View>
-          <Carousel
-            data={matchs}
-            renderItem={renderItem}
-            sliderWidth={styles.sliderWidth}
-            itemWidth={styles.itemWidth}
-            layout={"default"}
-            inactiveSlideScale={0.7}
-            inactiveSlideOpacity={0.7}
-            loop={true}
-          />
-        </View>
+        )}
       </Animated.ScrollView>
     </SafeAreaView>
   );

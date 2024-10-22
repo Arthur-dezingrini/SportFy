@@ -25,9 +25,7 @@ export default function Profile({ navigation }) {
 }, []);
 
   const options = [
-    { 
-      id: '1', icon: 'account-circle', text: userType === 'jogador' ? 'Ir para perfil de dono de quadra' : 'Ir para perfil de jogador', onPress: () => switchProfile() 
-    },
+    { id: '1', icon: 'account-circle', text: userType === 'jogador' ? 'Ir para perfil de dono de quadra' : 'Ir para perfil de jogador', onPress: () => switchProfile()  },
     { id: '2', icon: 'message', text: 'Mensagens' },
     { id: '3', icon: 'group', text: 'Convidar amigos', onPress: () => navigation.navigate('FriendList')},
     { id: '4', icon: 'sports-soccer', text: 'Novo time' },

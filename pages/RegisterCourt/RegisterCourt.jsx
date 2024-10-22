@@ -1,11 +1,15 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import {
   SafeAreaView,
   View,
   Button,
   Alert,
   Platform,
+  TouchableOpacity,
+  Text,
+  Image
 } from "react-native";
+import * as ImagePicker from "expo-image-picker";
 import styles from "./RegisterCourtStyle";
 import ActionInput from "../../components/ActionInput/ActionInput";
 import MapView, { Marker } from "react-native-maps";
@@ -14,21 +18,22 @@ import * as Location from "expo-location";
 import HeaderTop from "./../../components/HeaderTop/HeaderTop";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CourtDateModal from "../../modals/CourtDateModal/CourtDateModal";
+import { storage } from '../../firebaseConfig.js';
+import { ref, uploadString, getDownloadURL } from 'firebase/storage';
+import * as FileSystem from 'expo-file-system';
 
-export default function RegisterCourt({ locationMatch }) {
+export default function RegisterCourt({ navigation }) {
   const [location, setLocation] = useState("");
   const [showCourtDateModal, setShowCourtDateModal] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
   const [showMap, setShowMap] = useState(false);
   const [latiLong, setlatiLong] = useState(null);
+  const [imageUrl, setImageUrl] = useState('')
   const [initialRegion, setInitialRegion] = useState({
     latitude: -23.55052,
     longitude: -46.633308,
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   });
-  const [value, setValue] = useState(null)
-  const actionSheetRef = useRef(null);
 
   const GOOGLE_API_KEY = "AIzaSyCqR9pyqkCysNHTtDz_hNXjIJNLGuDYq0Q";
 
@@ -117,6 +122,24 @@ export default function RegisterCourt({ locationMatch }) {
     getLocationPermission();
   }, []);
 
+  const uploadImageAsBase64ToFirebase = async (base64) => {
+    try {
+      console.log(base64)
+      const imageName = `images-quadras/${Date.now()}.jpg`;
+      const storageRef = ref(storage, imageName);
+  
+      await uploadString(storageRef, base64, 'base64');
+      console.log('Imagem enviada com sucesso!');
+  
+      const downloadURL = await getDownloadURL(storageRef);
+      console.log('URL da imagem:', downloadURL);
+  
+      return downloadURL; 
+    } catch (error) {
+      console.error('Erro ao enviar imagem:', error);
+    }
+  };
+  
   const handleSelectLocation = async (event) => {
     const { latitude, longitude } = event.nativeEvent.coordinate;
     setlatiLong({ latitude, longitude });
@@ -135,9 +158,67 @@ export default function RegisterCourt({ locationMatch }) {
     setShowMap(false);
   };
 
+  const handleImagePicker = async () => {
+    Alert.alert(
+      "Selecionar Foto",
+      "Escolha uma opção:",
+      [
+        {
+          text: "Abrir Galeria",
+          onPress: async () => {
+            let result = await ImagePicker.launchImageLibraryAsync({
+              mediaTypes: ImagePicker.MediaTypeOptions.Images,
+              quality: 1,
+              base64: true
+            });
+  
+            if (!result.canceled) {
+              const base64 = await FileSystem.readAsStringAsync(result.assets[0].uri, {
+                encoding: FileSystem.EncodingType.Base64,
+              });
+  
+              const url = await uploadImageAsBase64ToFirebase(base64);
+              setImageUrl(url)
+            }
+          },
+        },
+        {
+          text: "Tirar Foto",
+          onPress: async () => {
+            const { status } = await ImagePicker.requestCameraPermissionsAsync();
+  
+            if (status !== "granted") {
+              Alert.alert(
+                "Permissão Necessária",
+                "A permissão da câmera é necessária para tirar fotos."
+              );
+              return;
+            }
+  
+            let result = await ImagePicker.launchCameraAsync({
+              quality: 1,
+              base64: true
+            });
+  
+            if (!result.canceled) {
+              await uploadImageToFirebase( result.assets[0].uri);
+            } else {
+            }
+          },
+        },
+        {
+          text: "Cancelar",
+          style: "cancel",
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+    
+  
   return (
     <SafeAreaView style={styles.container}>
-      <HeaderTop style={{ backgroundColor: "#2C67FF" }}>Registrar Quadra</HeaderTop>
+      <HeaderTop back={true} navigation={navigation} style={{ backgroundColor: "#2C67FF" }}>Registrar Quadra</HeaderTop>
       {showMap ? (
         <View style={styles.mapContainer}>
           <MapView
@@ -172,12 +253,11 @@ export default function RegisterCourt({ locationMatch }) {
             textButton={"Inserir"}
             placeholder={"Valor da hora"}
           />
-          <ActionInput
-            textButton={"Inserir"}
-            placeholder={"Fotos"}
-          />
+          <TouchableOpacity onPress={handleImagePicker} style={styles.photoButton}>
+            <Text>Inserir Foto</Text>
+          </TouchableOpacity>
+          <Image source={{ uri: imageUrl }} style={{ width: 100, height: 100 }} />
         </View>
-        
       )}
       <CourtDateModal
         isVisible={showCourtDateModal}

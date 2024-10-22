@@ -7,8 +7,9 @@ export default StyleSheet.create({
     backgroundColor: '#111',
     borderRadius: 20,
     maxHeight: 580,
-    width: '70%',
-    margin: 60,
+    width: '85%',
+    margin: 30,
+    marginTop: 90
   },
 
   dayRow: {
