@@ -6,12 +6,10 @@ import {
   Alert,
   Platform,
   TouchableOpacity,
-  Text,
-  Image
+  Text
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import styles from "./RegisterCourtStyle";
-import ActionInput from "../../components/ActionInput/ActionInput";
 import MapView, { Marker } from "react-native-maps";
 import axios from "axios";
 import * as Location from "expo-location";
@@ -19,14 +17,19 @@ import HeaderTop from "./../../components/HeaderTop/HeaderTop";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CourtDateModal from "../../modals/CourtDateModal/CourtDateModal";
 import { storage } from '../../firebaseConfig.js';
-import { ref, uploadString, getDownloadURL } from 'firebase/storage';
-import * as FileSystem from 'expo-file-system';
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import Input from '../../components/Input/Input.jsx'
 
 export default function RegisterCourt({ navigation }) {
   const [location, setLocation] = useState("");
+  const [timeSlots, setTimeSlots] = useState([]);
+  const [newTimeSlot, setNewTimeSlot] = useState({ start: '', end: '' });
+  const [name, setName] = useState(null)
+  const [value, setValue] = useState(null)
   const [showCourtDateModal, setShowCourtDateModal] = useState(false);
   const [showMap, setShowMap] = useState(false);
   const [latiLong, setlatiLong] = useState(null);
+  const [image, setImage] = useState('')
   const [imageUrl, setImageUrl] = useState('')
   const [initialRegion, setInitialRegion] = useState({
     latitude: -23.55052,
@@ -122,23 +125,51 @@ export default function RegisterCourt({ navigation }) {
     getLocationPermission();
   }, []);
 
-  const uploadImageAsBase64ToFirebase = async (base64) => {
+  const uploadImage = async () => {
+    if (!image) {
+      Alert.alert("Selecione uma imagem antes de fazer o upload.");
+      return;
+    }
     try {
-      console.log(base64)
-      const imageName = `images-quadras/${Date.now()}.jpg`;
-      const storageRef = ref(storage, imageName);
-  
-      await uploadString(storageRef, base64, 'base64');
-      console.log('Imagem enviada com sucesso!');
-  
+      const response = await fetch(image.uri);
+      const blob = await response.blob();
+      const filename = image.uri.substring(image.uri.lastIndexOf('/') + 1);
+      const storageRef = ref(storage, filename);
+      await uploadBytes(storageRef, blob);
+
       const downloadURL = await getDownloadURL(storageRef);
-      console.log('URL da imagem:', downloadURL);
+      setImageUrl(downloadURL)
+      Alert.alert("Imagem carregada com sucesso!");
   
-      return downloadURL; 
-    } catch (error) {
-      console.error('Erro ao enviar imagem:', error);
+      setImage(null);
+  
+    } catch (e) {
+      console.error("Erro ao carregar a imagem:", e);
+      Alert.alert("Erro ao carregar a imagem.");
     }
   };
+
+  const handleRegisterCourt = async () => {
+    try {
+      uploadImage()
+
+      const objeto = {
+        name: name,
+        location, location,
+        latitude: latiLong.latitude,
+        longitude: latiLong.longitude,
+        value: value,
+        imageUrl: imageUrl
+
+      }
+
+
+
+
+    } catch(error) {
+      Alert.alert("Erro ao cadastrar Quadra")
+    }
+  }
   
   const handleSelectLocation = async (event) => {
     const { latitude, longitude } = event.nativeEvent.coordinate;
@@ -169,16 +200,13 @@ export default function RegisterCourt({ navigation }) {
             let result = await ImagePicker.launchImageLibraryAsync({
               mediaTypes: ImagePicker.MediaTypeOptions.Images,
               quality: 1,
-              base64: true
+              base64: true,
+              allowsEditing: true,
             });
   
             if (!result.canceled) {
-              const base64 = await FileSystem.readAsStringAsync(result.assets[0].uri, {
-                encoding: FileSystem.EncodingType.Base64,
-              });
-  
-              const url = await uploadImageAsBase64ToFirebase(base64);
-              setImageUrl(url)
+              const source = {uri: result.assets[0].uri}
+              setImage(source)
             }
           },
         },
@@ -196,13 +224,15 @@ export default function RegisterCourt({ navigation }) {
             }
   
             let result = await ImagePicker.launchCameraAsync({
+              mediaTypes: ImagePicker.MediaTypeOptions.Images,
               quality: 1,
-              base64: true
+              base64: true,
+              allowsEditing: true,
             });
   
             if (!result.canceled) {
-              await uploadImageToFirebase( result.assets[0].uri);
-            } else {
+              const source = {uri: result.assets[0].uri}
+              setImage(source)
             }
           },
         },
@@ -215,7 +245,18 @@ export default function RegisterCourt({ navigation }) {
     );
   };
     
-  
+  const addTimeSlot = (selectedTimes) => {
+    for (const day in selectedTimes) {
+      selectedTimes[day].forEach(interval => {
+        if (!interval.open || !interval.close) {
+          Alert.alert("Por favor, preencha ambos os horários.");
+          return;
+        }
+        setTimeSlots((prev) => [...prev, { day, start: interval.open, end: interval.close }]);
+      });
+    }
+    setNewTimeSlot({ start: '', end: '' }); 
+  };
   return (
     <SafeAreaView style={styles.container}>
       <HeaderTop back={true} navigation={navigation} style={{ backgroundColor: "#2C67FF" }}>Registrar Quadra</HeaderTop>
@@ -234,34 +275,46 @@ export default function RegisterCourt({ navigation }) {
         </View>
       ) : (
         <View style={styles.form}>
-          <ActionInput
-            textButton={"Inserir"}
+          <Input
+            value={name}
+            onChangeText={setName}
             placeholder={"Nome da Arena"}
           />
-          <ActionInput
-            textButton={"Inserir"}
+          <Input
+            icon={'search'}
             placeholder={"Localização"}
-            value={location}
-            onPress={() => setShowMap(true)}
+            onPressIcon={() => setShowMap(true)}
+            editable={false}
           />
-          <ActionInput
-            textButton={"Inserir"}
+          <Input
+            icon={'calendar-today'}
             placeholder={"Horários"}
-            onPress={() => setShowCourtDateModal(true)}
+            onPressIcon={() => setShowCourtDateModal(true)}
+            editable={false}
           />
-          <ActionInput
-            textButton={"Inserir"}
+          <Input
+            value={value}
+            onChangeText={setValue}
             placeholder={"Valor da hora"}
+            keyboardType={'numeric'}
           />
-          <TouchableOpacity onPress={handleImagePicker} style={styles.photoButton}>
-            <Text>Inserir Foto</Text>
-          </TouchableOpacity>
-          <Image source={{ uri: imageUrl }} style={{ width: 100, height: 100 }} />
+          <Input
+            placeholder={"Fotos"}
+            onPressIcon={() => handleImagePicker()} 
+            editable={false}
+            icon={'photo'}
+          />
         </View>
       )}
+
+      <TouchableOpacity onPress={() => uploadImage()}>
+        <Text>Teste</Text>
+      </TouchableOpacity>
+
       <CourtDateModal
         isVisible={showCourtDateModal}
         onClose={() => setShowCourtDateModal(false)}
+        onApply={addTimeSlot}
       />
     </SafeAreaView>
   );
