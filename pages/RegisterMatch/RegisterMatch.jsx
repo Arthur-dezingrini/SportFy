@@ -190,7 +190,6 @@ export default function RegisterMatch({ navigation, locationMatch }) {
       const response = await RegisterMatchService.Register(Match, token);
       if (response.status === 200) {
         const createdMatch = await RegisterMatchService.getMatch(response.data, token)
-        console.log(createdMatch.data)
         navigation.navigate("Match", { match: createdMatch.data })
       }
     } catch (error) {

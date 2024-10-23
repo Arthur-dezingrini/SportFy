@@ -14,7 +14,7 @@ const initialDaysState = {
   Sáb: { enabled: false, intervals: [{ open: '', close: '' }] },
 };
 
-export default function CourtDateModal({ isVisible, onClose }) {
+export default function CourtDateModal({ isVisible, onClose, onApply }) {
 
   const [days, setDays] = useState(initialDaysState);
 
@@ -93,30 +93,36 @@ export default function CourtDateModal({ isVisible, onClose }) {
     }
   };
 
-  // Função para resetar o modal
   const resetDays = () => {
-    setDays(initialDaysState);  // Reseta os dias para o estado inicial
+    setDays(initialDaysState);  
   };
 
-  // Função para validar se há intervalos incompletos (apenas um horário inserido)
   const validateIntervals = () => {
     for (const day in days) {
       if (days[day].enabled) {
         for (const interval of days[day].intervals) {
           if ((!interval.open && interval.close) || (interval.open && !interval.close)) {
             alert('Não é possível um intervalo de horários com apenas um horário inserido!');
-            return false; // Interrompe a execução e não permite aplicar
+            return false; 
           }
         }
       }
     }
-    return true; // Validação passou
+    return true;
   };
 
-  // Função chamada ao clicar em "Aplicar" para validação de intervalos
   const handleApply = () => {
     if (validateIntervals()) {
-      onClose(); // Fecha o modal se a validação passar
+      const selectedTimes = {};
+      for (const day in days) {
+        if (days[day].enabled) {
+          selectedTimes[day] = days[day].intervals.filter(interval => interval.open && interval.close);
+        }
+      }
+      
+      onApply(selectedTimes);
+      
+      onClose();
     }
   };
 
@@ -158,14 +164,14 @@ export default function CourtDateModal({ isVisible, onClose }) {
                           {interval.open || '08:00'}
                         </Text>
                       </TouchableOpacity>
-                      <Text style={{ color: 'white' }}>  -  </Text>
+                      <Text style={{ color: 'white' }}> -  </Text>
                       <TouchableOpacity
                         style={styles.timeInput}
                         onPress={() => openTimePicker(day, index, 'close')}
                       >
                         <Text
                           style={{
-                            color: interval.close ? '#46FF6F' : '#999',  fontSize: 18// Cor do texto e do "placeholder"
+                            color: interval.close ? '#46FF6F' : '#999',  fontSize: 18
                           }}
                         >
                           {interval.close || '18:00'}
@@ -209,7 +215,7 @@ export default function CourtDateModal({ isVisible, onClose }) {
         <TouchableOpacity
           style={styles.button}
           onPress={() => {
-            resetDays(); // Reseta o estado quando o usuário clica em cancelar
+            resetDays(); 
             onClose();
           }}
         >

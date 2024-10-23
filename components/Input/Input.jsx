@@ -3,7 +3,7 @@ import { View, TextInput, Image } from 'react-native';
 import styles from './InputStyle';
 import Icon from "react-native-vector-icons/MaterialIcons";
 
-export default function Input({ value, placeholder, onChangeText, secureTextEntry, icon, onPressIcon}) {
+export default function Input({ value, placeholder, onChangeText, secureTextEntry, icon, onPressIcon, editable, keyboardType}) {
   return (
     <View style={styles.inputContainer}>
       <TextInput
@@ -13,7 +13,9 @@ export default function Input({ value, placeholder, onChangeText, secureTextEntr
         onChangeText={onChangeText}
         secureTextEntry={secureTextEntry}
         placeholderTextColor={'#FFF'}
-      />
+        editable={editable}
+        keyboardType={keyboardType}
+      />  
       {icon && (
         <Icon name={icon} size={24} color="#FFF" onPress={onPressIcon}/>
       )}
