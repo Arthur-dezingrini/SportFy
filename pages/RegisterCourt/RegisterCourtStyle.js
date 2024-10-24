@@ -62,5 +62,17 @@ export default StyleSheet.create({
     backgroundColor: "#46FF6F",
     bottom: 50,
     right: 0
+  },
+
+  register: {
+    position: "absolute",
+    borderRadius: 25,
+    height: 50,
+    width: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: "#46FF6F",
+    bottom: 80,
+    right: 40
   }
 });
