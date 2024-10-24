@@ -158,7 +158,7 @@ export default function CourtDateModal({ isVisible, onClose, onApply }) {
                       >
                         <Text
                           style={{
-                            color: interval.open ? '#46FF6F' : '#999',  fontSize: 18// Cor do texto e do "placeholder"
+                            color: interval.open ? '#46FF6F' : '#',  fontSize: 18// Cor do texto e do "placeholder"
                           }}
                         >
                           {interval.open || '08:00'}

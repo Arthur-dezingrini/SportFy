@@ -6,7 +6,7 @@ import {
   Alert,
   Platform,
   TouchableOpacity,
-  Text
+  Text,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import styles from "./RegisterCourtStyle";
@@ -16,21 +16,25 @@ import * as Location from "expo-location";
 import HeaderTop from "./../../components/HeaderTop/HeaderTop";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CourtDateModal from "../../modals/CourtDateModal/CourtDateModal";
-import { storage } from '../../firebaseConfig.js';
+import { storage } from "../../firebaseConfig.js";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import Input from '../../components/Input/Input.jsx'
+import Input from "../../components/Input/Input.jsx";
+import { useAuth } from "../../appContext";
+import * as courtService from "../../services/courtService.js";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 export default function RegisterCourt({ navigation }) {
+  const { user, token } = useAuth();
   const [location, setLocation] = useState("");
   const [timeSlots, setTimeSlots] = useState([]);
-  const [newTimeSlot, setNewTimeSlot] = useState({ start: '', end: '' });
-  const [name, setName] = useState(null)
-  const [value, setValue] = useState(null)
+  const [newTimeSlot, setNewTimeSlot] = useState({ start: "", end: "" });
+  const [name, setName] = useState(null);
+  const [value, setValue] = useState(null);
   const [showCourtDateModal, setShowCourtDateModal] = useState(false);
   const [showMap, setShowMap] = useState(false);
   const [latiLong, setlatiLong] = useState(null);
-  const [image, setImage] = useState('')
-  const [imageUrl, setImageUrl] = useState('')
+  const [image, setImage] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
   const [initialRegion, setInitialRegion] = useState({
     latitude: -23.55052,
     longitude: -46.633308,
@@ -133,16 +137,15 @@ export default function RegisterCourt({ navigation }) {
     try {
       const response = await fetch(image.uri);
       const blob = await response.blob();
-      const filename = image.uri.substring(image.uri.lastIndexOf('/') + 1);
-      const storageRef = ref(storage, filename);
+      const filename = image.uri.substring(image.uri.lastIndexOf("/") + 1);
+      const storageRef = ref(storage, 'images-quadras/' + filename);
       await uploadBytes(storageRef, blob);
 
       const downloadURL = await getDownloadURL(storageRef);
-      setImageUrl(downloadURL)
+      setImageUrl(downloadURL);
       Alert.alert("Imagem carregada com sucesso!");
-  
+
       setImage(null);
-  
     } catch (e) {
       console.error("Erro ao carregar a imagem:", e);
       Alert.alert("Erro ao carregar a imagem.");
@@ -151,26 +154,29 @@ export default function RegisterCourt({ navigation }) {
 
   const handleRegisterCourt = async () => {
     try {
-      uploadImage()
+      uploadImage();
 
       const objeto = {
         name: name,
-        location, location,
+        location: location,
         latitude: latiLong.latitude,
         longitude: latiLong.longitude,
         value: value,
-        imageUrl: imageUrl
+        imageUrl: imageUrl,
+        timeslots: timeSlots,
+        ownerId: user.id,
+      };
 
+      const response = await courtService.addCourt(token, objeto);
+      if (response.status === 200) {
+        Alert.alert('Sucesso', 'Quadra Cadastrada com sucesso')
+        navigation.navigate("MainTabs");
       }
-
-
-
-
-    } catch(error) {
-      Alert.alert("Erro ao cadastrar Quadra")
+    } catch (error) {
+      Alert.alert("Erro ao cadastrar Quadra");
     }
-  }
-  
+  };
+
   const handleSelectLocation = async (event) => {
     const { latitude, longitude } = event.nativeEvent.coordinate;
     setlatiLong({ latitude, longitude });
@@ -203,18 +209,19 @@ export default function RegisterCourt({ navigation }) {
               base64: true,
               allowsEditing: true,
             });
-  
+
             if (!result.canceled) {
-              const source = {uri: result.assets[0].uri}
-              setImage(source)
+              const source = { uri: result.assets[0].uri };
+              setImage(source);
             }
           },
         },
         {
           text: "Tirar Foto",
           onPress: async () => {
-            const { status } = await ImagePicker.requestCameraPermissionsAsync();
-  
+            const { status } =
+              await ImagePicker.requestCameraPermissionsAsync();
+
             if (status !== "granted") {
               Alert.alert(
                 "Permissão Necessária",
@@ -222,17 +229,17 @@ export default function RegisterCourt({ navigation }) {
               );
               return;
             }
-  
+
             let result = await ImagePicker.launchCameraAsync({
               mediaTypes: ImagePicker.MediaTypeOptions.Images,
               quality: 1,
               base64: true,
               allowsEditing: true,
             });
-  
+
             if (!result.canceled) {
-              const source = {uri: result.assets[0].uri}
-              setImage(source)
+              const source = { uri: result.assets[0].uri };
+              setImage(source);
             }
           },
         },
@@ -244,22 +251,43 @@ export default function RegisterCourt({ navigation }) {
       { cancelable: true }
     );
   };
-    
+
   const addTimeSlot = (selectedTimes) => {
     for (const day in selectedTimes) {
-      selectedTimes[day].forEach(interval => {
+      selectedTimes[day].forEach((interval) => {
         if (!interval.open || !interval.close) {
           Alert.alert("Por favor, preencha ambos os horários.");
           return;
         }
-        setTimeSlots((prev) => [...prev, { day, start: interval.open, end: interval.close }]);
+
+        const timeSlotExists = timeSlots.some(
+          (slot) =>
+            slot.day === day &&
+            slot.startRange === interval.open &&
+            slot.endRange === interval.close
+        );
+
+        if (timeSlotExists) {
+          return;
+        }
+        setTimeSlots((prev) => [
+          ...prev,
+          { day, startRange: interval.open, endRange: interval.close },
+        ]);
       });
     }
-    setNewTimeSlot({ start: '', end: '' }); 
+    setNewTimeSlot({ startRange: "", endRange: "" });
   };
+
   return (
     <SafeAreaView style={styles.container}>
-      <HeaderTop back={true} navigation={navigation} style={{ backgroundColor: "#2C67FF" }}>Registrar Quadra</HeaderTop>
+      <HeaderTop
+        back={true}
+        navigation={navigation}
+        style={{ backgroundColor: "#2C67FF" }}
+      >
+        Registrar Quadra
+      </HeaderTop>
       {showMap ? (
         <View style={styles.mapContainer}>
           <MapView
@@ -281,13 +309,14 @@ export default function RegisterCourt({ navigation }) {
             placeholder={"Nome da Arena"}
           />
           <Input
-            icon={'search'}
+            value={location}
+            icon={"search"}
             placeholder={"Localização"}
             onPressIcon={() => setShowMap(true)}
             editable={false}
           />
           <Input
-            icon={'calendar-today'}
+            icon={"calendar-today"}
             placeholder={"Horários"}
             onPressIcon={() => setShowCourtDateModal(true)}
             editable={false}
@@ -296,26 +325,24 @@ export default function RegisterCourt({ navigation }) {
             value={value}
             onChangeText={setValue}
             placeholder={"Valor da hora"}
-            keyboardType={'numeric'}
+            keyboardType={"numeric"}
           />
           <Input
             placeholder={"Fotos"}
-            onPressIcon={() => handleImagePicker()} 
+            onPressIcon={() => handleImagePicker()}
             editable={false}
-            icon={'photo'}
+            icon={"photo"}
           />
         </View>
       )}
-
-      <TouchableOpacity onPress={() => uploadImage()}>
-        <Text>Teste</Text>
-      </TouchableOpacity>
-
       <CourtDateModal
         isVisible={showCourtDateModal}
         onClose={() => setShowCourtDateModal(false)}
         onApply={addTimeSlot}
       />
+      <TouchableOpacity onPress={handleRegisterCourt} style={styles.register}>
+        <Icon name="arrow-forward" size={24} style={{ color: "#FFF" }} />
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }
