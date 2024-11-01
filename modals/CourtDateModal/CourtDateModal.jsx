@@ -30,12 +30,12 @@ export default function CourtDateModal({ isVisible, onClose, onApply }) {
     });
   };
 
-  const handleTimeChange = (event, selectedTime, day, index, type) => {
+ const handleTimeChange = (event, selectedTime, day, index, type) => {
     if (event.type === 'set' && selectedTime) {
       const formattedTime = selectedTime.toLocaleTimeString('pt-BR', {
         hour: '2-digit',
         minute: '2-digit',
-      });
+      }); 
 
       const updatedIntervals = days[day].intervals.map((interval, i) =>
         i === index ? { ...interval, [type]: formattedTime } : interval
@@ -199,14 +199,18 @@ export default function CourtDateModal({ isVisible, onClose, onApply }) {
 
           {showTimePicker.visible && (
             <DateTimePicker
-              mode="time"
-              display="spinner"
-              is24Hour={true}  // Define o formato 24 horas
-              value={new Date()}
-              onChange={(event, selectedTime) =>
-                handleTimeChange(event, selectedTime, showTimePicker.day, showTimePicker.index, showTimePicker.type)
-              }
-            />
+  mode="time"
+  display="spinner"
+  is24Hour={true}  // Define o formato 24 horas
+  value={new Date()}
+  onChange={(event, selectedTime) => {
+    if (selectedTime) {
+      // Ajusta os minutos para zero
+      selectedTime.setMinutes(0);
+      handleTimeChange(event, selectedTime, showTimePicker.day, showTimePicker.index, showTimePicker.type);
+    }
+  }}
+/>
           )}
         </View>
       </ScrollView>
