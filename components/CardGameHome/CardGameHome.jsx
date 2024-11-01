@@ -2,9 +2,9 @@ import { View, Image, Text, Pressable } from "react-native";
 import styles from "./CardGameHomeStyle";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
-export default function CardGameHome({ navigation, game }) {
+export default function CardGameHome({ navigation, game, navigate }) {
   return (
-    <Pressable onPress={() => navigation.navigate('Match', { match: game })} style={styles.container}>
+    <Pressable onPress={() => navigation.navigate(navigate, { match: game })} style={styles.container}>
       <View>
         <Image
           style={styles.image}
@@ -12,7 +12,7 @@ export default function CardGameHome({ navigation, game }) {
         ></Image>
       </View>
       <View style={styles.infoContainer}>
-        <Text style={styles.title}>{game.nomeArena || 'Arena'}</Text>
+        <Text style={styles.title}>{game.name || 'Arena'}</Text>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <Icon name={"near-me"}> </Icon>
           <Text style={styles.addres}>{ game.location?.substring(0, 20) }</Text>

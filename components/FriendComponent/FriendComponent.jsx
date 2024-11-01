@@ -4,7 +4,7 @@ import Add from "../Add/Add";
 import React, { useState, useEffect } from "react";
 import Check from "./../../components/Check/Check";
 
-export default function FriendComponent({ friend, friendAdd, friendsAdicionados, onPressAdd }) {
+export default function FriendComponent({ friend, friendAdd, friendsAdicionados, onPressAdd, textColor }) {
   const [isAdded, setIsAdded] = useState(false);
 
   useEffect(() => {
@@ -30,7 +30,7 @@ export default function FriendComponent({ friend, friendAdd, friendsAdicionados,
           source={require("./../../assets/stadium.png")}
           style={styles.image}
         />
-        <Text>{friend.name}</Text>
+        <Text style={{color: textColor}}>{friend.name}</Text>
       </View>
       <TouchableOpacity onPress={handleAddFriend}>
         {!isAdded ? <Add /> : <Check />}

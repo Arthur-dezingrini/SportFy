@@ -7,7 +7,7 @@ import FriendComponent from "../../components/FriendComponent/FriendComponent";
 import * as FriendListService from './../../services/FriendListService';
 import { useAuth } from "./../../appContext";  
 
-export default function FriendList() {
+export default function FriendList({navigation}) {
   const { token, user } = useAuth(); 
   const [condition, setCondition] = useState('');
   const [players, setPlayers] = useState([]);
@@ -22,7 +22,6 @@ export default function FriendList() {
   const FindPlayers = async (condition = '') => {
     try {
       const response = await FriendListService.findPlayers(user.id, condition, token);
-      console.log(response)
       if (response.status === 200) {
         setPlayers(response.data);
       } 
@@ -52,7 +51,7 @@ export default function FriendList() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <HeaderTop>Adicionar Amigos</HeaderTop>
+      <HeaderTop back={true} navigation={navigation}>Adicionar Amigos</HeaderTop>
       <View style={styles.searchContainer}>
         <Input
           placeholder={"Buscar Jogador"}

@@ -9,25 +9,25 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import * as NotificationService from "../../services/NotificationService";
 import * as registerMatchService from "../../services/RegisterMatchService";
+import * as Location from "expo-location";
+import * as courtService from "../../services/courtService";
 
 export default function Home({ navigation }) {
   const { user, token } = useAuth();
+  const [location, setLocation] = useState(null);
   const scrollY = useRef(new Animated.Value(0)).current;
   const [userType, setUserType] = useState(null);
   const [notificationsCount, setNotificationsCount] = useState(null);
   const [notifications, setNotifications] = useState(null);
   const [matchs, SetMatchs] = useState([]);
+  const [courts, setCourts] = useState([]);
   const headerOpacity = scrollY.interpolate({
     inputRange: [0, 100],
     outputRange: [1, 0],
     extrapolate: "clamp",
   });
 
-  const renderItem = ({ item, index }) => {
-    return <CardGameHome navigation={navigation} key={index} game={item} />;
-  };
-
-  useEffect(() => {
+  useEffect( () => {
     const getNotifications = async () => {
       try {
         const response = await NotificationService.getNotifications(
@@ -69,6 +69,53 @@ export default function Home({ navigation }) {
         console.log("Erro ao pegar proximas partidas", error);
       }
     };
+
+    const getLocation = async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        setErrorMsg("Permissão para acessar localização foi negada.");
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.High,
+      });
+      setLocation(location);
+    };
+
+    const getCourts = async () => {
+      try {
+        const response = await courtService.getAllCourts(token);
+        if (response.status === 200) {
+          const allCourts = response.data;
+          if (location) {
+            const userCoords = {
+              latitude: location.coords.latitude,
+              longitude: location.coords.longitude,
+            };
+
+            const courtsWithDistance = allCourts.map((court) => {
+              const courtCoords = {
+                latitude: court.latitude,
+                longitude: court.longitude,
+              };
+              const distance = haversineDistance(userCoords, courtCoords);
+              return { ...court, distance };
+            });
+
+            const closestCourts = courtsWithDistance
+              .sort((a, b) => a.distance - b.distance)
+              .slice(0, 10); 
+            setCourts(closestCourts);
+          }
+        }
+      } catch (error) {
+        console.log("Erro ao buscar quadras", error);
+      }
+    };
+
+    getCourts();
+    getLocation();
     getGames();
     fetchUserType();
     getNotifications();
@@ -125,8 +172,15 @@ export default function Home({ navigation }) {
             </Text>
           </View>
           <Carousel
-            data={data}
-            renderItem={renderItem}
+            data={courts}
+            renderItem={({ item, index }) => (
+              <CardGameHome
+                navigation={navigation}
+                key={index}
+                game={item}
+                navigate={"RegisterMatch"}
+              />
+            )}
             sliderWidth={styles.sliderWidth}
             itemWidth={styles.itemWidth}
             layout={"default"}
@@ -142,7 +196,14 @@ export default function Home({ navigation }) {
             </View>
             <Carousel
               data={matchs}
-              renderItem={renderItem}
+              renderItem={({ item, index }) => (
+                <CardGameHome
+                  navigation={navigation}
+                  key={index}
+                  game={item}
+                  navigate={"Match"}
+                />
+              )}
               sliderWidth={styles.sliderWidth}
               itemWidth={styles.itemWidth}
               layout={"default"}
@@ -156,3 +217,26 @@ export default function Home({ navigation }) {
     </SafeAreaView>
   );
 }
+
+const haversineDistance = (coords1, coords2) => {
+  const toRad = (value) => (value * Math.PI) / 180;
+
+  const lat1 = coords1.latitude;
+  const lon1 = coords1.longitude;
+  const lat2 = coords2.latitude;
+  const lon2 = coords2.longitude;
+
+  const R = 6371;
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(lat1)) *
+      Math.cos(toRad(lat2)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  const distance = R * c;
+  return distance;
+};

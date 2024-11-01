@@ -143,7 +143,6 @@ export default function RegisterCourt({ navigation }) {
 
       const downloadURL = await getDownloadURL(storageRef);
       setImageUrl(downloadURL);
-      Alert.alert("Imagem carregada com sucesso!");
 
       setImage(null);
     } catch (e) {
@@ -154,7 +153,7 @@ export default function RegisterCourt({ navigation }) {
 
   const handleRegisterCourt = async () => {
     try {
-      uploadImage();
+      await uploadImage();
 
       const objeto = {
         name: name,

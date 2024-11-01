@@ -6,10 +6,13 @@ import {
   Alert,
   Platform,
   TouchableOpacity,
+  Image,
+  Text,
+  Pressable
 } from "react-native";
 import styles from "./RegisterMatchStyle";
 import ActionInput from "../../components/ActionInput/ActionInput";
-import MapView, { Marker } from "react-native-maps";
+import MapView, { Marker, Callout } from "react-native-maps";
 import axios from "axios";
 import * as Location from "expo-location";
 import moment from "moment";
@@ -22,18 +25,26 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as RegisterMatchService from "./../../services/RegisterMatchService";
 import * as FriendListService from "./../../services/FriendListService";
 import { useAuth } from "./../../appContext";
+import * as courtService from '../../services/courtService'
 
 const GOOGLE_API_KEY = "AIzaSyCqR9pyqkCysNHTtDz_hNXjIJNLGuDYq0Q";
 
-export default function RegisterMatch({ navigation, locationMatch }) {
-  const [location, setLocation] = useState("");
+export default function RegisterMatch({ navigation, route }) {
+  const { match } = route.params || {};
+  const [location, setLocation] = useState(
+    match && match.location ? match.location : ""
+  );
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [showMap, setShowMap] = useState(false);
-  const [latiLong, setlatiLong] = useState(null);
+  const [latiLong, setlatiLong] = useState(
+    match && match.latitude && match.longitude
+      ? { latitude: match.latitude, longitude: match.longitude }
+      : null
+  );
   const [initialRegion, setInitialRegion] = useState({
-    latitude: -23.55052,
-    longitude: -46.633308,
+    latitude: match && match.latitude ? match.latitude : -23.55052,
+    longitude: match && match.longitude ? match.longitude : -46.633308,
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   });
@@ -41,11 +52,14 @@ export default function RegisterMatch({ navigation, locationMatch }) {
   const [markedDates, setMarkedDates] = useState({});
   const [selectedDate, setSelectedDate] = useState(null);
   const [showTimeModal, setShowTimeModal] = useState(false);
-  const [value, setValue] = useState(null);
+  const [value, setValue] = useState(match && match.value ? match.value : null);
   const actionSheetRef = useRef(null);
   const [friendsList, setFriendsList] = useState(null);
   const { user, token } = useAuth();
-  const [friendMatch, setFriendsMatch] = useState([])
+  const [friendMatch, setFriendsMatch] = useState([]);
+  const [availableCourts, setAvailableCourts] = useState([])
+  const [selectedCourt, setSelectedCourt] = useState(match || null);
+  const [reservedHours, setReservedHours] = useState(null)
 
   useEffect(() => {
     const getLocationPermission = async () => {
@@ -75,7 +89,7 @@ export default function RegisterMatch({ navigation, locationMatch }) {
           [
             {
               text: "Cancelar",
-              onPress: () => console.log("Permissão cancelada"),
+              onPress: () => ("Permissão cancelada"),
               style: "cancel",
             },
             {
@@ -133,10 +147,33 @@ export default function RegisterMatch({ navigation, locationMatch }) {
       }
     };
 
+    const loadCourts = async () => {
+      try {
+        const response = await courtService.getAllCourts(token);
+        if (response.status === 200) {
+          setAvailableCourts(response.data)
+        }
+      } catch (error) {
+        console.error("Erro ao carregar as quadras", error);
+      }
+    };
+
+    loadCourts();
     getLocationPermission();
   }, []);
 
   const handleSelectLocation = async (event) => {
+    if (event.id) {
+      setSelectedCourt(event)
+      setLocation(event.location)
+      setShowMap(false)
+      const response = await courtService.getReservedHours(token, event.id)
+      if (response.status === 200) {
+        setReservedHours(response.data)
+      }
+      return
+    }
+    setSelectedCourt(null)
     const { latitude, longitude } = event.nativeEvent.coordinate;
     setlatiLong({ latitude, longitude });
     try {
@@ -174,23 +211,27 @@ export default function RegisterMatch({ navigation, locationMatch }) {
   const registerMatch = async () => {
     try {
       if (latiLong.latitude == null || time == null) {
-        Alert.alert('Ops', 'Esta faltando alguma informação')
-        return
+        Alert.alert("Ops", "Esta faltando alguma informação");
+        return;
       }
       const Match = {
-        latitude: latiLong.latitude,
-        longitude: latiLong.longitude,
-        date: moment(new Date (date)).format('YYYY-MM-DD'),
+        latitude: selectedCourt ? selectedCourt.latitude : latiLong.latitude,
+        longitude: selectedCourt ? selectedCourt.longitude : latiLong.longitude,
+        date: moment(date, "DD-MM-YYYY").format("YYYY-MM-DD"),
         hour: time,
-        value: value ? value : 0,
+        value: selectedCourt ? selectedCourt.value : 0,
         creator_id: user.id,
-        location: location,
-        inviteMatchFriends: friendMatch.map(friend => friend.id),
+        location: selectedCourt ? selectedCourt.location : location,
+        court_id: selectedCourt && selectedCourt.id ? selectedCourt.id : null,
+        inviteMatchFriends: friendMatch.map((friend) => friend.id),
       };
       const response = await RegisterMatchService.Register(Match, token);
       if (response.status === 200) {
-        const createdMatch = await RegisterMatchService.getMatch(response.data, token)
-        navigation.navigate("Match", { match: createdMatch.data })
+        const createdMatch = await RegisterMatchService.getMatch(
+          response.data,
+          token
+        );
+        navigation.navigate("Match", { match: createdMatch.data });
       }
     } catch (error) {
       console.error(error);
@@ -207,9 +248,35 @@ export default function RegisterMatch({ navigation, locationMatch }) {
             initialRegion={initialRegion}
             onPress={handleSelectLocation}
           >
-            {latiLong && (
-              <Marker title="Local Selecionado" coordinate={latiLong} />
-            )}
+            {availableCourts.map((court, index) => (
+              <Marker
+                key={index}
+                coordinate={{
+                  latitude: court.latitude,
+                  longitude: court.longitude,
+                }}
+                title={court.name}
+              >
+                <Pressable
+                  onPress={() => handleSelectLocation(court)}
+                  style={{ alignItems: "center", padding: 15 }}
+                >
+                  <Image
+                    source={court.image_url ? {uri: court.image_url} : require("./../../assets/stadium.png")}
+                    style={{ width: 50, height: 50, borderRadius: 50 }}
+                  />
+                </Pressable>
+                <Callout
+                  onPress={() =>
+                    handleSelectLocation(court)
+                  }
+                >
+                  <View style={{ alignItems: "center" }}>
+                    <Text>{court.name}</Text>
+                  </View>
+                </Callout>
+              </Marker>
+            ))}
           </MapView>
           <Button title="Cancelar" onPress={() => setShowMap(false)} />
         </View>
@@ -247,15 +314,26 @@ export default function RegisterMatch({ navigation, locationMatch }) {
             onBackdropPress={() => setShowTimeModal(false)}
             onSelectTime={handleSelectTime}
           />
-          {locationMatch && (
-            <ActionInput textButton={"Pagar"} placeholder={"Valor Total"} />
+          {selectedCourt && (
+            <ActionInput
+              value={selectedCourt && selectedCourt.value ? selectedCourt.value : 0}
+              textButton={"Pagar"}
+              placeholder={
+                selectedCourt && selectedCourt.value ? `R$${selectedCourt.value}` : "Valor Total"
+              }
+            />
           )}
           <ActionInput
             textButton={"Convidar"}
             placeholder={"Convidar Amigos"}
             onPress={handleInviteFriends}
           />
-          <InviteModal friends={friendsList} friendsAdicionados={friendMatch} enviaAmigos={reviceFriends} ref={actionSheetRef} />
+          <InviteModal
+            friends={friendsList}
+            friendsAdicionados={friendMatch}
+            enviaAmigos={reviceFriends}
+            ref={actionSheetRef}
+          />
           <TouchableOpacity onPress={registerMatch} style={styles.register}>
             <Icon name="arrow-forward" size={24} style={{ color: "#FFF" }} />
           </TouchableOpacity>
