@@ -6,7 +6,6 @@ import {
   Alert,
   Platform,
   TouchableOpacity,
-  Text,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import styles from "./RegisterCourtStyle";
@@ -34,7 +33,6 @@ export default function RegisterCourt({ navigation }) {
   const [showMap, setShowMap] = useState(false);
   const [latiLong, setlatiLong] = useState(null);
   const [image, setImage] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
   const [initialRegion, setInitialRegion] = useState({
     latitude: -23.55052,
     longitude: -46.633308,
@@ -138,13 +136,14 @@ export default function RegisterCourt({ navigation }) {
       const response = await fetch(image.uri);
       const blob = await response.blob();
       const filename = image.uri.substring(image.uri.lastIndexOf("/") + 1);
+      console.log(filename, 'teste')
       const storageRef = ref(storage, 'images-quadras/' + filename);
+      console.log(storageRef, 'teste 1')
       await uploadBytes(storageRef, blob);
 
       const downloadURL = await getDownloadURL(storageRef);
-      setImageUrl(downloadURL);
+      return downloadURL
 
-      setImage(null);
     } catch (e) {
       console.error("Erro ao carregar a imagem:", e);
       Alert.alert("Erro ao carregar a imagem.");
@@ -153,19 +152,18 @@ export default function RegisterCourt({ navigation }) {
 
   const handleRegisterCourt = async () => {
     try {
-      await uploadImage();
-
+      const image = await uploadImage();
       const objeto = {
         name: name,
         location: location,
         latitude: latiLong.latitude,
         longitude: latiLong.longitude,
         value: value,
-        imageUrl: imageUrl,
+        imageUrl: image,
         timeslots: timeSlots,
         ownerId: user.id,
       };
-
+      setImage(null);
       const response = await courtService.addCourt(token, objeto);
       if (response.status === 200) {
         Alert.alert('Sucesso', 'Quadra Cadastrada com sucesso')

@@ -75,7 +75,7 @@ export default function Notifications({ navigation }) {
               keyExtractor={(item) => item.id.toString()}
             />
           ) : (
-            <Text>Nenhum Pedido de Amizade Pendente</Text>
+            <Text style={{color: '#FFF'}}>Nenhum Pedido de Amizade Pendente</Text>
           )}
         </View>
         <View style={styles.MatchContainer}>
@@ -93,7 +93,7 @@ export default function Notifications({ navigation }) {
               keyExtractor={(item) => item.id.toString()}
             />
           ) : (
-            <Text>Nenhum Convite Pendente</Text>
+            <Text style={{color: '#FFF'}}>Nenhum Convite Pendente</Text>
           )}
         </View>
       </View>

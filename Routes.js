@@ -39,14 +39,14 @@ function MainTabs() {
         tabBarInactiveTintColor: "gray",
         tabBarStyle: {
           backgroundColor: "#333",
-          paddingBottom: 10, // Adiciona um espaçamento interno na parte inferior
+          paddingBottom: 10,
           height: 60,
         },
         tabBarItemStyle: {
-          marginBottom: 0, // Adiciona uma margem na parte inferior
+          marginBottom: 0,
         },
         tabBarLabelStyle: {
-          marginTop: -5, // Diminui o espaço entre o ícone e o nome
+          marginTop: -5, 
         },
         headerShown: false,
       })}

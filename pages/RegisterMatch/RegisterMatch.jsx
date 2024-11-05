@@ -4,28 +4,29 @@ import {
   View,
   Button,
   Alert,
-  Platform,
   TouchableOpacity,
   Image,
   Text,
-  Pressable
+  Pressable,
 } from "react-native";
 import styles from "./RegisterMatchStyle";
 import ActionInput from "../../components/ActionInput/ActionInput";
 import MapView, { Marker, Callout } from "react-native-maps";
 import axios from "axios";
-import * as Location from "expo-location";
 import moment from "moment";
 import DateModal from "../../modals/DateModal/DateModal";
 import TimeModal from "../../modals/TimeModal/TimeModal";
 import InviteModal from "../../modals/InviteModal/InviteModal";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import HeaderTop from "./../../components/HeaderTop/HeaderTop";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as RegisterMatchService from "./../../services/RegisterMatchService";
 import * as FriendListService from "./../../services/FriendListService";
 import { useAuth } from "./../../appContext";
-import * as courtService from '../../services/courtService'
+import * as courtService from "../../services/courtService";
+import * as Location from 'expo-location'
+
+import "moment/locale/pt-br";
+moment.locale("pt-br");
 
 const GOOGLE_API_KEY = "AIzaSyCqR9pyqkCysNHTtDz_hNXjIJNLGuDYq0Q";
 
@@ -43,8 +44,8 @@ export default function RegisterMatch({ navigation, route }) {
       : null
   );
   const [initialRegion, setInitialRegion] = useState({
-    latitude: match && match.latitude ? match.latitude : -23.55052,
-    longitude: match && match.longitude ? match.longitude : -46.633308,
+    latitude: -23.55052,
+    longitude: -46.633308,
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   });
@@ -57,123 +58,64 @@ export default function RegisterMatch({ navigation, route }) {
   const [friendsList, setFriendsList] = useState(null);
   const { user, token } = useAuth();
   const [friendMatch, setFriendsMatch] = useState([]);
-  const [availableCourts, setAvailableCourts] = useState([])
+  const [availableCourts, setAvailableCourts] = useState([]);
   const [selectedCourt, setSelectedCourt] = useState(match || null);
-  const [reservedHours, setReservedHours] = useState(null)
+  const [reservedHours, setReservedHours] = useState([]);
+  const [hoursFree, setHourFree] = useState([]);
+  const [hoursDay, setHoursDay] = useState(null);
 
   useEffect(() => {
-    const getLocationPermission = async () => {
+    const loadFriends = async () => {
       const response = await FriendListService.getFriends(user.id, token);
       if (response.status === 200 && response.data.length > 0) {
         setFriendsList(response.data);
-      }
-      const storedPermissionStatus = await AsyncStorage.getItem(
-        "locationPermissionStatus"
-      );
-
-      if (storedPermissionStatus === "granted") {
-        let userLocation = await Location.getCurrentPositionAsync({});
-        setInitialRegion({
-          latitude: userLocation.coords.latitude,
-          longitude: userLocation.coords.longitude,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        });
-        return;
-      }
-
-      if (Platform.OS === "android") {
-        Alert.alert(
-          "Permissão de Localização",
-          "Precisamos da sua localização para mostrar os jogos mais próximos.",
-          [
-            {
-              text: "Cancelar",
-              onPress: () => ("Permissão cancelada"),
-              style: "cancel",
-            },
-            {
-              text: "OK",
-              onPress: async () => {
-                let { status } =
-                  await Location.requestForegroundPermissionsAsync();
-                await AsyncStorage.setItem("locationPermissionStatus", status);
-
-                if (status !== "granted") {
-                  Alert.alert(
-                    "Permissão negada",
-                    "Permissão de localização foi negada."
-                  );
-                  return;
-                }
-
-                let userLocation = await Location.getCurrentPositionAsync({});
-                setInitialRegion({
-                  latitude: userLocation.coords.latitude,
-                  longitude: userLocation.coords.longitude,
-                  latitudeDelta: 0.0922,
-                  longitudeDelta: 0.0421,
-                });
-              },
-            },
-          ]
-        );
-      } else if (Platform.OS === "ios") {
-        let { status } = await Location.requestForegroundPermissionsAsync({
-          rationale: {
-            title: "Permissão de Localização",
-            message:
-              "Precisamos da sua localização para mostrar os jogos mais próximos.",
-          },
-        });
-
-        await AsyncStorage.setItem("locationPermissionStatus", status);
-
-        if (status !== "granted") {
-          Alert.alert(
-            "Permissão negada",
-            "Permissão de localização foi negada."
-          );
-          return;
-        }
-
-        let userLocation = await Location.getCurrentPositionAsync({});
-        setInitialRegion({
-          latitude: userLocation.coords.latitude,
-          longitude: userLocation.coords.longitude,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        });
-      }
-    };
+      }  
+    }
 
     const loadCourts = async () => {
       try {
         const response = await courtService.getAllCourts(token);
         if (response.status === 200) {
-          setAvailableCourts(response.data)
+          setAvailableCourts(response.data);
         }
       } catch (error) {
         console.error("Erro ao carregar as quadras", error);
       }
     };
 
+    const loadLocation = async () => {
+      let location = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.High,
+      });
+      setInitialRegion({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      });
+    }
+
+    loadLocation();
+    loadFriends();
     loadCourts();
-    getLocationPermission();
   }, []);
 
   const handleSelectLocation = async (event) => {
     if (event.id) {
-      setSelectedCourt(event)
-      setLocation(event.location)
-      setShowMap(false)
-      const response = await courtService.getReservedHours(token, event.id)
+      setSelectedCourt(event);
+      setLocation(event.location);
+      setShowMap(false);
+      setDate(null);
+      const response = await courtService.getFreeDays(token, event.id);
       if (response.status === 200) {
-        setReservedHours(response.data)
+        setReservedHours(response.data.map((map) => map.day));
+        setHoursDay(response.data);
       }
-      return
+      return;
     }
-    setSelectedCourt(null)
+    setReservedHours([]);
+    setSelectedCourt(null);
+    setDate(null);
     const { latitude, longitude } = event.nativeEvent.coordinate;
     setlatiLong({ latitude, longitude });
     try {
@@ -208,12 +150,43 @@ export default function RegisterMatch({ navigation, route }) {
     setFriendsMatch(data);
   };
 
+  const generateHourlySlots = async (startRange, endRange, day) => {
+    const hoursReserved = await courtService.getReservedHours(
+      token,
+      moment(day).format("YYYY-MM-DD")
+    );
+
+
+    const slots = [];
+    let start = moment(startRange, "HH:mm");
+    const end = moment(endRange, "HH:mm");
+
+    while (start.isBefore(end)) {
+      if (!hoursReserved.data.some(some => some === start.format("HH:mm"))) {
+        slots.push(start.format("HH:mm"));
+      }
+      start.add(1, "hour");
+    }
+    setHourFree(slots);
+    setShowTimeModal(true);
+  };
+
+  const validaSetShowTimeModal = () => {
+    const momentDate = moment(date, "DD-MM-YYYY");
+
+    if (!momentDate.isValid()) {
+      console.error("Data inválida:", date);
+      return;
+    }
+
+    const dia = momentDate.format("ddd");
+    const diaSelect = hoursDay.find((find) => find.day.toLowerCase() === dia);
+
+    generateHourlySlots(diaSelect.startRange, diaSelect.endRange, momentDate);
+  };
+
   const registerMatch = async () => {
     try {
-      if (latiLong.latitude == null || time == null) {
-        Alert.alert("Ops", "Esta faltando alguma informação");
-        return;
-      }
       const Match = {
         latitude: selectedCourt ? selectedCourt.latitude : latiLong.latitude,
         longitude: selectedCourt ? selectedCourt.longitude : latiLong.longitude,
@@ -262,15 +235,15 @@ export default function RegisterMatch({ navigation, route }) {
                   style={{ alignItems: "center", padding: 15 }}
                 >
                   <Image
-                    source={court.image_url ? {uri: court.image_url} : require("./../../assets/stadium.png")}
+                    source={
+                      court.image_url
+                        ? { uri: court.image_url }
+                        : require("./../../assets/stadium.png")
+                    }
                     style={{ width: 50, height: 50, borderRadius: 50 }}
                   />
                 </Pressable>
-                <Callout
-                  onPress={() =>
-                    handleSelectLocation(court)
-                  }
-                >
+                <Callout onPress={() => handleSelectLocation(court)}>
                   <View style={{ alignItems: "center" }}>
                     <Text>{court.name}</Text>
                   </View>
@@ -302,24 +275,30 @@ export default function RegisterMatch({ navigation, route }) {
             selectedDate={selectedDate}
             markedDates={markedDates}
             onDayPress={handleDateSelect}
+            daysOfWeek={reservedHours}
           />
           <ActionInput
             textButton={"Alterar"}
             placeholder={"Horário"}
             value={time}
-            onPress={() => setShowTimeModal(true)}
+            onPress={() => validaSetShowTimeModal(true)}
           />
           <TimeModal
+            times={hoursFree}
             isVisible={showTimeModal}
             onBackdropPress={() => setShowTimeModal(false)}
             onSelectTime={handleSelectTime}
           />
           {selectedCourt && (
             <ActionInput
-              value={selectedCourt && selectedCourt.value ? selectedCourt.value : 0}
+              value={
+                selectedCourt && selectedCourt.value ? selectedCourt.value : 0
+              }
               textButton={"Pagar"}
               placeholder={
-                selectedCourt && selectedCourt.value ? `R$${selectedCourt.value}` : "Valor Total"
+                selectedCourt && selectedCourt.value
+                  ? `R$${selectedCourt.value}`
+                  : "Valor Total"
               }
             />
           )}

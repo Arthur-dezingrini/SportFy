@@ -15,9 +15,10 @@ export default StyleSheet.create({
     FriendContainer: {
       marginBottom: 16,
       padding: 16,
+      gap: 15,
       backgroundColor: '#2c2c2c',
       borderRadius: 10,
-      maxHeight: '50%'
+      maxHeight: '50%',
     },
     MatchContainer: {
       padding: 16,

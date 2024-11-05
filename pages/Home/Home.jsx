@@ -57,6 +57,9 @@ export default function Home({ navigation }) {
     };
     const focusListener = navigation.addListener("focus", () => {
       fetchUserType();
+      getNotifications();
+      getGames();
+      getCourts;
     });
 
     const getGames = async () => {
@@ -186,7 +189,7 @@ export default function Home({ navigation }) {
             layout={"default"}
             inactiveSlideScale={0.7}
             inactiveSlideOpacity={0.7}
-            loop={true}
+            loop={false}
           />
         </View>
         {matchs.length > 0 && (
@@ -209,7 +212,7 @@ export default function Home({ navigation }) {
               layout={"default"}
               inactiveSlideScale={0.7}
               inactiveSlideOpacity={0.7}
-              loop={true}
+              loop={false}
             />
           </View>
         )}

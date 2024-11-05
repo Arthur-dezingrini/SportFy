@@ -51,7 +51,6 @@ export async function getMatchs (userId, token) {
                 },
             }
         )
-
         return response
     } catch (error) {
 

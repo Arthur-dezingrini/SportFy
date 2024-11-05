@@ -1,8 +1,9 @@
-import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import React, { useMemo } from 'react';
+import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import Modal from 'react-native-modal';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
-import styles from './DateModalStyle'
+import moment from 'moment';
+import styles from './DateModalStyle';
 
 LocaleConfig.locales['pt-br'] = {
   monthNames: [
@@ -23,7 +24,52 @@ LocaleConfig.locales['pt-br'] = {
 };
 LocaleConfig.defaultLocale = 'pt-br';
 
-export default function DateModal ({ isVisible, onBackdropPress, selectedDate, markedDates, onDayPress }) {
+const getAvailableDaysInYear = (year, daysOfWeek) => {
+  const markedDates = {};
+  const startOfYear = moment(`${year}-01-01`).subtract(10, 'year');
+  const endOfYear = moment(`${year}-12-31`).add(10, 'year');
+
+
+  for (let day = startOfYear; day.isBefore(endOfYear); day.add(1, 'day')) {
+    const dayOfWeek = day.isoWeekday();
+    if (Object.values(daysOfWeek).includes(dayOfWeek)) {
+      markedDates[day.format("YYYY-MM-DD")] = { disabled: false };
+    } else {
+      markedDates[day.format("YYYY-MM-DD")] = { disabled: true };
+    }
+  }
+
+  return markedDates;
+};
+
+export default function DateModal({ isVisible, onBackdropPress, selectedDate, onDayPress, daysOfWeek }) {
+  const currentYear = new Date().getFullYear();
+  let markedDates = [];
+  const daysOfWeekNumbers = daysOfWeek.map(day => {
+    switch (day) {
+      case 'Seg': return 1; 
+      case 'Ter': return 2; 
+      case 'Qua': return 3; 
+      case 'Qui': return 4;
+      case 'Sex': return 5; 
+      case 'Sab': return 6;
+      case 'Dom': return 7;
+      default: return null;
+    }
+  }).filter(day => day !== null);
+  if (daysOfWeek.length > 0) {
+    markedDates = useMemo(() => getAvailableDaysInYear(currentYear, daysOfWeekNumbers), [currentYear, daysOfWeek]);
+  }
+
+  const handleDayPress = (day) => {
+    if (markedDates[day.dateStrnig]?.disabled !== true) {
+      onDayPress(day);
+      onBackdropPress();
+    } else {
+      Alert.alert("Data indisponível", "Por favor, selecione um dia disponível.");
+    }
+  };
+
   return (
     <Modal
       isVisible={isVisible}
@@ -40,7 +86,7 @@ export default function DateModal ({ isVisible, onBackdropPress, selectedDate, m
         <Calendar
           current={selectedDate || new Date().toISOString().split('T')[0]}
           markedDates={markedDates}
-          onDayPress={onDayPress}
+          onDayPress={handleDayPress} 
           markingType="custom"
           theme={{
             calendarBackground: "#FFFFFF",
@@ -63,4 +109,4 @@ export default function DateModal ({ isVisible, onBackdropPress, selectedDate, m
       </View>
     </Modal>
   );
-};
+}

@@ -17,6 +17,7 @@ export function AppProvider({ children }) {
       try {
         const userEmail = await AsyncStorage.getItem("userEmail");
         const userPassword = await AsyncStorage.getItem("userPassword");
+        const savedUserType = await AsyncStorage.getItem("userType");
         if (userEmail && userPassword) {
           const response = await userService.Login({email: userEmail, password: userPassword})
           if (response.status === 200) {
@@ -28,6 +29,9 @@ export function AppProvider({ children }) {
             });
             setToken(response.data.token);
           }
+        }
+        if (savedUserType) {
+          setTheme(savedUserType)
         }
       } catch (error) {
         console.error("Erro ao verificar a sessão:", error);

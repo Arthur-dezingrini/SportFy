@@ -18,7 +18,6 @@ export async function getNotifications(id, token) {
 
 export async function alterStatusRequestFriend(request, token) {
   try {
-    console.log(request)
     const response = await axios.put(`${BASE_URL}/notifications/alter-status-friend-request`, request,  {
       headers: {
         Authorization: `Bearer ${token}`,

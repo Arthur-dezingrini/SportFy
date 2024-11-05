@@ -32,14 +32,30 @@ export async function getAllCourts(token) {
   }
 }
 
-export async function getReservedHours(token, court) {
+export async function getFreeDays(token, court) {
   try {
-    const response = await axios.get(`${BASE_URL}/court/get-reserved-hours/${court}`, {
+    const response = await axios.get(`${BASE_URL}/court/get-free-days/${court}`, {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
     })
+    return response
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}
+
+export async function getReservedHours (token, day) {
+  try {
+    const response = await axios.get(`${BASE_URL}/court/get-reserved-days/${day}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      }
+    })
+    console.log(response.data)
     return response
   } catch (error) {
     console.error(error)

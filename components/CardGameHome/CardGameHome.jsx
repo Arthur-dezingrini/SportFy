@@ -8,7 +8,11 @@ export default function CardGameHome({ navigation, game, navigate }) {
       <View>
         <Image
           style={styles.image}
-          source={require("./../../assets/exemplo.png")}
+          source={
+            game.image_url
+              ? { uri: game.image_url }
+              : require("./../../assets/stadium.png")
+          }
         ></Image>
       </View>
       <View style={styles.infoContainer}>
