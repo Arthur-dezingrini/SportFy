@@ -31,7 +31,7 @@ export default function Profile({ navigation }) {
     { id: '4', icon: 'sports-soccer', text: 'Novo time' },
     { id: '5', icon: 'stadium', text: 'Cadastrar quadra', onPress: () => navigation.navigate('RegisterCourt')},
     { id: '6', icon: 'info', text: 'Suporte' },   
-    { id: '7', icon: 'exit-to-app', text: 'Sair' },
+    { id: '7', icon: 'exit-to-app', text: 'Sair', onPress: () => exit() },
     ];
     
     const switchProfile = async () => {
@@ -56,6 +56,12 @@ export default function Profile({ navigation }) {
       }
       return true;
     });
+  }
+
+  const exit = async () => {
+    await AsyncStorage.removeItem('userEmail')
+    await AsyncStorage.removeItem('userPassword')
+    navigation.navigate('Initial')
   }
 
   const filteredOptions = Filter(userType);

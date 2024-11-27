@@ -1,1 +1,1 @@
-export const BASE_URL = "https://sportfy-back-production.up.railway.app"
+export const BASE_URL = "http://192.168.0.4:8080"

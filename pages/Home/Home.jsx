@@ -27,7 +27,7 @@ export default function Home({ navigation }) {
     extrapolate: "clamp",
   });
 
-  useEffect( () => {
+  useEffect(() => {
     const getNotifications = async () => {
       try {
         const response = await NotificationService.getNotifications(
@@ -64,7 +64,7 @@ export default function Home({ navigation }) {
 
     const getGames = async () => {
       try {
-        const response = await registerMatchService.getMatchs(user.id, token);
+        const response = await registerMatchService.getMatchs(user.id, token)
         if (response.status === 200) {
           SetMatchs(response.data);
         }
@@ -108,7 +108,7 @@ export default function Home({ navigation }) {
 
             const closestCourts = courtsWithDistance
               .sort((a, b) => a.distance - b.distance)
-              .slice(0, 10); 
+              .slice(0, 10);
             setCourts(closestCourts);
           }
         }
@@ -168,30 +168,32 @@ export default function Home({ navigation }) {
         scrollEventThrottle={16}
         contentContainerStyle={{ paddingTop: 80 }}
       >
-        <View>
-          <View style={styles.titleContainer}>
-            <Text style={styles.title}>
-              Quadras próximas da sua Localização
-            </Text>
+        {courts.length > 0 && (
+          <View>
+            <View style={styles.titleContainer}>
+              <Text style={styles.title}>
+                Quadras próximas da sua Localização
+              </Text>
+            </View>
+            <Carousel
+              data={courts}
+              renderItem={({ item, index }) => (
+                <CardGameHome
+                  navigation={navigation}
+                  key={index}
+                  game={item}
+                  navigate={"RegisterMatch"}
+                />
+              )}
+              sliderWidth={styles.sliderWidth}
+              itemWidth={styles.itemWidth}
+              layout={"default"}
+              inactiveSlideScale={0.7}
+              inactiveSlideOpacity={0.7}
+              loop={false}
+            />
           </View>
-          <Carousel
-            data={courts}
-            renderItem={({ item, index }) => (
-              <CardGameHome
-                navigation={navigation}
-                key={index}
-                game={item}
-                navigate={"RegisterMatch"}
-              />
-            )}
-            sliderWidth={styles.sliderWidth}
-            itemWidth={styles.itemWidth}
-            layout={"default"}
-            inactiveSlideScale={0.7}
-            inactiveSlideOpacity={0.7}
-            loop={false}
-          />
-        </View>
+        )}
         {matchs.length > 0 && (
           <View>
             <View style={styles.titleContainer}>
@@ -214,6 +216,13 @@ export default function Home({ navigation }) {
               inactiveSlideOpacity={0.7}
               loop={false}
             />
+          </View>
+        )}
+        {matchs.length <= 0 && courts.length <= 0 && (
+          <View>
+            <View style={styles.titleContainer}>
+              <Text style={styles.title}>Não há nada para ver por aqui ainda.</Text>
+            </View>
           </View>
         )}
       </Animated.ScrollView>

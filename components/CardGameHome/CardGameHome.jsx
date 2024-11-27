@@ -1,6 +1,7 @@
 import { View, Image, Text, Pressable } from "react-native";
 import styles from "./CardGameHomeStyle";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import moment from "moment";
 
 export default function CardGameHome({ navigation, game, navigate }) {
   return (
@@ -22,7 +23,7 @@ export default function CardGameHome({ navigation, game, navigate }) {
           <Text style={styles.addres}>{ game.location?.substring(0, 20) }</Text>
         </View>
 
-        <Text style={styles.value}>R$ {game.value}/Hora</Text>
+        <Text style={styles.value}>Dia: {moment(game.date).format('DD-MM-YYYY')} às {game.hour}</Text>
       </View>
     </Pressable>
   );

@@ -52,7 +52,6 @@ export default function Notifications({ navigation }) {
       console.error("Erro ao alterar status da requisição:", error);
     }
   };
-
   return (
     <SafeAreaView style={styles.container}>
       <HeaderTop back={true} navigation={navigation}>

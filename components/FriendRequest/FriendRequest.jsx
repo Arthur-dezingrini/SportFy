@@ -17,7 +17,7 @@ const FriendRequest = ({ request, type, onPressAccept, onPressReject }) => {
           </Text>
         ) : (
           <Text style={styles.inviteText}>
-            <Text style={styles.userName}>{request.senderName}</Text> convidou
+            <Text style={styles.userName}>{request.sender.name}</Text> convidou
             você para uma partida
           </Text>
         )}

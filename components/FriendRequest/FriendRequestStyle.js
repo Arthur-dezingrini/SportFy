@@ -21,9 +21,9 @@ export default StyleSheet.create({
     alignItems: 'center'
   },
   userName: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
-    color: 'black'
+    color: '#FFF'
   },
   inviteText: {
     fontSize: 14,

@@ -1,5 +1,12 @@
-import React from "react";
-import { View, Text, Pressable, KeyboardAvoidingView, ScrollView, Platform } from "react-native";
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  Pressable,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform,
+} from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
@@ -7,36 +14,60 @@ import Button from "../../components/Button/Button";
 import Input from "../../components/Input/Input";
 import styles from "./RegisterStyle";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import * as userService from '../../services/userService'
-import { SafeAreaView } from 'react-native-safe-area-context';
+import * as userService from "../../services/userService";
+import { SafeAreaView } from "react-native-safe-area-context";
+import DateModal from "../../modals/DateModal/DateModal";
+import moment from 'moment';
 
 const schema = Yup.object().shape({
   name: Yup.string().required("Nome é obrigatório"),
   email: Yup.string().email("E-mail inválido").required("E-mail é obrigatório"),
   number: Yup.string().required("Número é obrigatório").max(11),
   birthday: Yup.string().required("Data de nascimento é obrigatória"),
-  password: Yup.string().min(6, "A senha deve ter no mínimo 6 caracteres").required("Senha é obrigatória"),
-  repetPassword: Yup.string().oneOf([Yup.ref("password"), null], "As senhas não coincidem").required("Confirme sua senha"),
+  password: Yup.string()
+    .min(6, "A senha deve ter no mínimo 6 caracteres")
+    .required("Senha é obrigatória"),
+  repetPassword: Yup.string()
+    .oneOf([Yup.ref("password"), null], "As senhas não coincidem")
+    .required("Confirme sua senha"),
 });
 
 export default function Register({ navigation }) {
-  const { control, handleSubmit, formState: { errors } } = useForm({
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm({
     resolver: yupResolver(schema),
   });
+
+  const [showCalendarModal, setShowCalendarModal] = useState(null)
 
   const onSubmit = async (data) => {
     try {
       data.birthday = new Date(data.birthday);
-      data.email = data.email.toLowerCase()
+      data.email = data.email.toLowerCase();
       const response = userService.cadastrar(data);
       if (response) {
-        navigation.navigate("Login")
+        navigation.navigate("Login");
       }
     } catch (error) {
-      console.error(error.message)
+      console.error(error.message);
     }
   };
 
+  const handleDateSelect = (day) => {
+    const formattedDate = moment(day.dateString).format("DD-MM-YYYY");
+    setValue("birthday", formattedDate);
+    setShowCalendarModal(false);
+  };
+  
+
+  const abreModalDate = () => {
+    setShowCalendarModal(true);
+  };
+  
   return (
     <SafeAreaView style={styles.safeArea}>
       <KeyboardAvoidingView
@@ -48,7 +79,12 @@ export default function Register({ navigation }) {
           keyboardShouldPersistTaps="handled"
         >
           <View style={styles.header}>
-            <Icon onPress={() => navigation.navigate('Initial')} name="arrow-back" size={24} color="#43F16A" />
+            <Icon
+              onPress={() => navigation.navigate("Initial")}
+              name="arrow-back"
+              size={24}
+              color="#43F16A"
+            />
           </View>
           <View style={styles.container}>
             {/* Nome */}
@@ -64,7 +100,9 @@ export default function Register({ navigation }) {
                 />
               )}
             />
-            {errors.name && <Text style={{ color: 'red' }}>{errors.name.message}</Text>}
+            {errors.name && (
+              <Text style={{ color: "red" }}>{errors.name.message}</Text>
+            )}
 
             {/* E-mail */}
             <Controller
@@ -79,7 +117,9 @@ export default function Register({ navigation }) {
                 />
               )}
             />
-            {errors.email && <Text style={{ color: 'red' }}>{errors.email.message}</Text>}
+            {errors.email && (
+              <Text style={{ color: "red" }}>{errors.email.message}</Text>
+            )}
 
             {/* Número */}
             <Controller
@@ -94,7 +134,9 @@ export default function Register({ navigation }) {
                 />
               )}
             />
-            {errors.number && <Text style={{ color: 'red' }}>{errors.number.message}</Text>}
+            {errors.number && (
+              <Text style={{ color: "red" }}>{errors.number.message}</Text>
+            )}
 
             {/* Data de nascimento */}
             <Controller
@@ -106,10 +148,20 @@ export default function Register({ navigation }) {
                   onChangeText={onChange}
                   placeholder="Nascimento"
                   onBlur={onBlur}
+                  icon={"calendar-today"}
+                  onPressIcon={abreModalDate}
                 />
               )}
             />
-            {errors.birthday && <Text style={{ color: 'red' }}>{errors.birthday.message}</Text>}
+            {errors.birthday && (
+              <Text style={{ color: "red" }}>{errors.birthday.message}</Text>
+            )}
+            <DateModal
+              isVisible={showCalendarModal}
+              onBackdropPress={() => setShowCalendarModal(false)}
+              onDayPress={handleDateSelect}
+              daysOfWeek={[]}
+            />
 
             {/* Senha */}
             <Controller
@@ -125,7 +177,9 @@ export default function Register({ navigation }) {
                 />
               )}
             />
-            {errors.password && <Text style={{ color: 'red' }}>{errors.password.message}</Text>}
+            {errors.password && (
+              <Text style={{ color: "red" }}>{errors.password.message}</Text>
+            )}
 
             {/* Repetir Senha */}
             <Controller
@@ -141,11 +195,15 @@ export default function Register({ navigation }) {
                 />
               )}
             />
-            {errors.repetPassword && <Text style={{ color: 'red' }}>{errors.repetPassword.message}</Text>}
+            {errors.repetPassword && (
+              <Text style={{ color: "red" }}>
+                {errors.repetPassword.message}
+              </Text>
+            )}
 
             <View style={styles.passwordContainer}>
               <Text style={styles.password}>Já tem conta? </Text>
-              <Pressable onPress={() => navigation.navigate('Login')}>
+              <Pressable onPress={() => navigation.navigate("Login")}>
                 <Text style={styles.login}>Logar</Text>
               </Pressable>
             </View>

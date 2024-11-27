@@ -8,6 +8,7 @@ import moment from "moment";
 
 export default function Match({ navigation, route }) {
   const { match } = route.params || {};
+  console.log(match)
   return (
     <SafeAreaView style={styles.container}>
       <HeaderTop back={true} navigation={navigation}>
@@ -32,7 +33,7 @@ export default function Match({ navigation, route }) {
         </View>
 
         <View style={styles.infoContainer}>
-          <Text style={styles.title}>{"Nome da Quadra"}</Text>
+          <Text style={styles.title}>{match.name ?? "Nome da Quadra"}</Text>
 
           <View style={styles.infoRow}>
             <Icon name="event" size={20} color="#fff" />

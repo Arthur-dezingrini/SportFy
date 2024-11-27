@@ -136,9 +136,7 @@ export default function RegisterCourt({ navigation }) {
       const response = await fetch(image.uri);
       const blob = await response.blob();
       const filename = image.uri.substring(image.uri.lastIndexOf("/") + 1);
-      console.log(filename, 'teste')
       const storageRef = ref(storage, 'images-quadras/' + filename);
-      console.log(storageRef, 'teste 1')
       await uploadBytes(storageRef, blob);
 
       const downloadURL = await getDownloadURL(storageRef);

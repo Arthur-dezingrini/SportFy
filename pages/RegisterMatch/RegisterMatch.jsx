@@ -23,7 +23,7 @@ import * as RegisterMatchService from "./../../services/RegisterMatchService";
 import * as FriendListService from "./../../services/FriendListService";
 import { useAuth } from "./../../appContext";
 import * as courtService from "../../services/courtService";
-import * as Location from 'expo-location'
+import * as Location from "expo-location";
 
 import "moment/locale/pt-br";
 moment.locale("pt-br");
@@ -69,14 +69,14 @@ export default function RegisterMatch({ navigation, route }) {
       const response = await FriendListService.getFriends(user.id, token);
       if (response.status === 200 && response.data.length > 0) {
         setFriendsList(response.data);
-      }  
-    }
+      }
+    };
 
     const loadCourts = async () => {
       try {
         const response = await courtService.getAllCourts(token);
         if (response.status === 200) {
-          setAvailableCourts(response.data);
+          setAvailableCourts(response.data)
         }
       } catch (error) {
         console.error("Erro ao carregar as quadras", error);
@@ -93,7 +93,7 @@ export default function RegisterMatch({ navigation, route }) {
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
       });
-    }
+    };
 
     loadLocation();
     loadFriends();
@@ -156,13 +156,12 @@ export default function RegisterMatch({ navigation, route }) {
       moment(day).format("YYYY-MM-DD")
     );
 
-
     const slots = [];
     let start = moment(startRange, "HH:mm");
     const end = moment(endRange, "HH:mm");
 
     while (start.isBefore(end)) {
-      if (!hoursReserved.data.some(some => some === start.format("HH:mm"))) {
+      if (!hoursReserved.data.some((some) => some === start.format("HH:mm"))) {
         slots.push(start.format("HH:mm"));
       }
       start.add(1, "hour");
@@ -195,7 +194,7 @@ export default function RegisterMatch({ navigation, route }) {
         value: selectedCourt ? selectedCourt.value : 0,
         creator_id: user.id,
         location: selectedCourt ? selectedCourt.location : location,
-        court_id: selectedCourt && selectedCourt.id ? selectedCourt.id : null,
+        court: selectedCourt && selectedCourt.id ? selectedCourt : null,
         inviteMatchFriends: friendMatch.map((friend) => friend.id),
       };
       const response = await RegisterMatchService.Register(Match, token);
@@ -204,6 +203,12 @@ export default function RegisterMatch({ navigation, route }) {
           response.data,
           token
         );
+        setLocation(null);
+        setDate(null);
+        setTime(null);
+        setValue(null);
+        setFriendsMatch([]);
+        setSelectedCourt(null);
         navigation.navigate("Match", { match: createdMatch.data });
       }
     } catch (error) {
@@ -285,6 +290,7 @@ export default function RegisterMatch({ navigation, route }) {
           />
           <TimeModal
             times={hoursFree}
+            court={selectedCourt}
             isVisible={showTimeModal}
             onBackdropPress={() => setShowTimeModal(false)}
             onSelectTime={handleSelectTime}
